@@ -1,0 +1,132 @@
+<app-header class="nav-bar-eo4geo" [navbarBrandRouterLink]="['/upload']" [fixed]="true" [navbarBrandFull]="{
+  src: 'assets/img/brand/icon-inline.svg',
+  width: 255,
+  height: 45,
+  alt: 'CoreUI Logo'
+}" [sidebarToggler]="false" [mobileSidebarToggler]="false" [mobileAsideMenuToggler]="false"
+[asideMenuToggler]="false">
+<!--   <ul class="nav navbar-nav d-md-down-none">
+  <li class="nav-item px-3">
+    <a class="nav-link" href="#">Home</a>
+    <a class="nav-link" routerLink="/list" routerLinkActive="active" href="#">List</a>
+  </li>
+</ul> -->
+</app-header>
+<div class="app-body">
+<main class="main d-flex align-items-center">
+  <div class="container">
+    <div class="row">
+      <img class="d-sm-down-none" style="margin: auto;" src="assets/img/brand/iconUB-square.png" />
+      <div class="col-md-8 mx-auto">
+        <div class="card-group">
+          <div class="card card-accent-secondary p-4">
+            <div class="card-body">
+              <form>
+                <h1>Login</h1>
+                <p class="text-muted">Sign In to your account</p>
+                <div class="input-group mb-3">
+                  <div class="input-group-prepend">
+                    <span class="input-group-text"><i class="icon-user"></i></span>
+                  </div>
+                  <input type="text" class="form-control" placeholder="Email" name="email" required
+                    [(ngModel)]="email">
+                </div>
+                <div class="input-group mb-4">
+                  <div class="input-group-prepend">
+                    <span class="input-group-text"><i class="icon-lock"></i></span>
+                  </div>
+                  <input type="password" class="form-control" placeholder="Password" name="pwd" required
+                    [(ngModel)]="pwd">
+                </div>
+                <div class="row">
+                  <div class="col-6">
+                    <button type="button" class="btn btn-primary px-4" (click)="login()">Login</button>
+                  </div>
+                  <div class="col-6 text-right">
+                    <button type="button" class="btn btn-link px-0" (click)="forgotPwd()">Forgot password?</button>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-12">
+                    <p class="text-center text-danger mt-4" [innerText]="errorLogin" [hidden]="!errorLogin"></p>
+                  </div>
+                </div>
+              </form>
+            </div>
+          </div>
+          <div class="card text-white bg-primary py-5">
+            <!-- d-md-down-none" style="width:44%" -->
+            <div class="card-body text-center">
+              <div>
+                <h2>Sign up</h2>
+                <div *ngIf="isRegistering">
+                  <form>
+                    <p class="text-muted">Fill in your credentials</p>
+                    <div class="input-group mb-2">
+                      <div class="input-group-prepend">
+                        <span class="input-group-text"><i class="icon-user"></i></span>
+                      </div>
+                      <input type="text" class="form-control" placeholder="Email" name="emailRegister" required
+                        [(ngModel)]="emailRegister">
+                    </div>
+                    <div class="input-group mb-2">
+                      <div class="input-group-prepend">
+                        <span class="input-group-text"><i class="icon-lock"></i></span>
+                      </div>
+                      <input type="password" class="form-control" placeholder="Password" name="pwdRegister" required
+                        [(ngModel)]="pwdRegister">
+                    </div>
+                    <div class="input-group mb-3">
+                      <div class="input-group-prepend">
+                        <span class="input-group-text"><i class="icon-lock"></i></span>
+                      </div>
+                      <input type="password" class="form-control" placeholder="Repeat password" name="pwdRegister"
+                        required [(ngModel)]="pwdRepRegister">
+                    </div>
+                    <div class="row">
+                      <div class="col-12">
+                        <button type="button" class="btn btn-primary active px-4"
+                          (click)="register()">Register</button>
+                      </div>
+                    </div>
+                    <div class="row">
+                      <div class="col-12">
+                        <p class="text-center text-danger mt-4" [innerText]="errorRegister" [hidden]="!errorRegister">
+                        </p>
+                      </div>
+                    </div>
+                  </form>
+                  <div class="row">
+                    <div class="col-12">
+                      <button type="button" class="btn btn-secondary px-4 mt-3" (click)="loginWithGoogle()">Sign in
+                        with
+                        Google</button>
+                    </div>
+                  </div>
+                </div>
+                <div *ngIf="!isRegistering">
+                  <p class="text-muted">This account can be used in all eo4geo tools.</p>
+                  <button type="button" class="btn btn-primary active mt-3"
+                    (click)="isRegistering= !isRegistering">Register Now!</button>
+                  <div class="row">
+                    <div class="col-12">
+                      <button type="button" class="btn btn-secondary px-4 mt-3" (click)="loginWithGoogle()">Sign in
+                        with
+                        Google</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+</div>
+<app-footer class="footer-eo4geo">
+<span><a href="http://eo4geo.uji.es">EO4GEO</a></span>
+<span class="ml-auto"> <a href="#">FAQ</a> <a
+    href="mailto:eo4geo@gmail.com?subject=EO4GEO Tools Contact">Contact</a></span>
+</app-footer>

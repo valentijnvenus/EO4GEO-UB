@@ -1,0 +1,36 @@
+<app-eo4geo-header></app-eo4geo-header>
+<div class="app-body">
+  <app-sidebar [fixed]="true" [display]="false">
+    <!-- Change to true to show sidebar menu  [sidebarToggler]="'lg'"  -->
+    <app-sidebar-nav
+      [navItems]="navItems"
+      [perfectScrollbar]
+      [disabled]="sidebarMinimized"
+    ></app-sidebar-nav>
+    <app-sidebar-minimizer></app-sidebar-minimizer>
+  </app-sidebar>
+  <!-- Main content -->
+  <main class="main">
+    <!-- Breadcrumb -->
+    <!-- breaking change 'cui-breadcrumb' -->
+    <cui-breadcrumb>
+      <!-- Breadcrumb Menu-->
+      <li class="breadcrumb-menu d-md-down-none">
+        <div
+          class="btn-group"
+          role="group"
+          aria-label="Button group with nested dropdown">
+
+          <a class="btn" href="#" routerLink="/user"> Hello {{username}}! </a>
+          <a class="btn" href="#" routerLink="/upload"><i class="icon-home"></i>&nbsp;Home</a >
+          <a class="btn" href="#" routerLink="/login" (click)="logOut()"><i class="icon-logout"></i> <span [innerText]="isAnonymous ? '&nbsp;Login' : '&nbsp;Log Out'"></span></a>
+        </div>
+      </li>
+    </cui-breadcrumb>
+    <div class="container-fluid">
+      <router-outlet></router-outlet>
+    </div>
+    <!-- /.container-fluid -->
+  </main>
+</div>
+<app-eo4geo-footer></app-eo4geo-footer>

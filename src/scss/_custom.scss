@@ -1,0 +1,163 @@
+// Here you can add other styles
+
+// Bok Concepts colors
+
+.bok-AM {
+  background-color: #1f77b4 !important;
+  color: #faf9f8;
+}
+.bok-CF {
+  background-color: #2ca02c !important;
+  color: #faf9f8;
+}
+.bok-CV {
+  background-color: #d62728 !important;
+  color: #faf9f8;
+}
+.bok-DA {
+  background-color: #8c564b !important;
+  color: #faf9f8;
+}
+.bok-DM {
+  background-color: #bcbd22 !important;
+  color: #faf9f8;
+}
+.bok-DN {
+  background-color: #8c564b !important;
+  color: #faf9f8;
+}
+.bok-GC {
+  background-color: #17becf !important;
+  color: #faf9f8;
+}
+.bok-GD {
+  background-color: #ff7f0e !important;
+  color: #faf9f8;
+}
+.bok-GI {
+  background-color: #7f7f7f !important;
+  color: #faf9f8;
+}
+.bok-GS {
+  background-color: #e377c2 !important;
+  color: #faf9f8;
+}
+.bok-OI {
+  background-color: #9467bd !important;
+  color: #faf9f8;
+}
+.bok-WB {
+  background-color: #7f7f7f !important;
+  color: #faf9f8;
+}
+.bok-no {
+  background-color: #7f7f7f !important;
+  color: #faf9f8;
+}
+
+/*
+.bok-skills-AM {
+  background: linear-gradient(to right, #1f77b4 60px, #f0f3f5 0px) !important;
+}
+.bok-skills-CF {
+  background: linear-gradient(to right, #2ca02c 60px, #f0f3f5 0px) !important;
+}
+.bok-skills-CV {
+  background: linear-gradient(to right, #d62728 60px, #f0f3f5 0px) !important;
+}
+.bok-skills-DA {
+  background: linear-gradient(to right, #8c564b 60px, #f0f3f5 0px) !important;
+}
+.bok-skills-DM {
+  background: linear-gradient(to right, #bcbd22 60px, #f0f3f5 0px) !important;
+}
+.bok-skills-DN {
+  background: linear-gradient(to right, #8c564b 60px, #f0f3f5 0px) !important;
+}
+.bok-skills-GC {
+  background: linear-gradient(to right, #17becf 60px, #f0f3f5 0px) !important;
+}
+.bok-skills-GD {
+  background: linear-gradient(to right, #ff7f0e 60px, #f0f3f5 0px) !important;
+}
+.bok-skills-GI {
+  background: linear-gradient(to right, #7f7f7f 60px, #f0f3f5 0px) !important;
+}
+.bok-skills-GS {
+  background: linear-gradient(to right, #e377c2 60px, #f0f3f5 0px) !important;
+}
+.bok-skills-OI {
+  background: linear-gradient(to right, #9467bd 60px, #f0f3f5 0px) !important;
+}
+.bok-skills-WB {
+  background: linear-gradient(to right, #7f7f7f 60px, #f0f3f5 0px) !important;
+}
+.bok-skills-no {
+  background: linear-gradient(to right, #7f7f7f 60px, #f0f3f5 0px) !important;
+}
+*/
+
+.nav-bar-eo4geo {
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-image: url(assets/img/eo4geo_back_satellites.png);
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.1),
+    0 6px 20px 0 rgba(161, 161, 161, 0.19);
+}
+
+.nav-bar-eo4geo a {
+  position: unset !important;
+}
+
+.navbar-brand {
+  margin: auto !important;
+  margin-right: none !important;
+}
+
+.footer-eo4geo {
+  background-position: bottom;
+  background-repeat: no-repeat;
+  background-size: cover;
+  font-family: 'Roboto', sans-serif;
+  background-image: url(assets/img/eo4geo_back_satellites.png);
+}
+
+body {
+  font-family: 'Open Sans', sans-serif;
+  color: $gray-body;
+  background-color: #faf9f8;
+}
+
+h1 {
+  font-family: 'Roboto Slab', serif;
+  color: #333c4e;
+}
+.title {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+p {
+  font-family: 'Open Sans', sans-serif;
+  color: $gray-body;
+}
+
+.card-header {
+  background-color: white;
+  border-bottom: none;
+}
+
+popover-container {
+  min-width: max-content !important;
+  max-width: none !important;
+}
+// ng-select from newsp, hide selected options inside the dropdown
+.ng-select.ng-select-multiple .ng-select-container .ng-value-container .ng-value {
+  display: none !important;
+}
+
+// double border card in accordion
+.panel.card.panel-default {
+  border: none !important;
+}
+

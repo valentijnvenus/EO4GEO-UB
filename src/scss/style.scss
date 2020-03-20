@@ -1,0 +1,12 @@
+// If you want to override variables do it here
+@import 'variables';
+
+// Import styles
+@import '~@coreui/coreui/scss/coreui';
+
+// If you want to add something do it here
+@import 'custom';
+
+@import url('https://fonts.googleapis.com/css?family=Open+Sans|Roboto+Slab:700&display=swap');
+
+@import "~@ng-select/ng-select/themes/default.theme.css";

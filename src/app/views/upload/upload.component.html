@@ -1,0 +1,40 @@
+<div class="animated fadeIn">
+  <div class="row">
+    <div class="col-sm-12 col-md-12">
+      <h1 class="title">
+        Upload Bok
+      </h1>
+      <div class="text-center" [hidden]="!isAnonymous">
+        <h5>You have limited functionality because you are not logged in. <a href="#" routerLink="/login"> Login </a> to
+          use all functionality in the tool.
+        </h5>
+      </div>
+      <div>
+        <span></span>
+        <h5>
+          Import here a JSON file directly exported from the Living Text Book with the simple linked node format. And that version of the BoK will replace the current version in our tools.
+          Be careful, this action can not be undone, make sure the version you are uploading is the correct one.
+        </h5>
+      </div>
+      <div class="input-group col-sm-12 col-md-12 col-lg-2" >
+        <div class="input-group-prepend ">
+          <span class="input-group-text" id="inputGroupFileAddon01">Upload</span>
+        </div>
+        <div class="custom-file ">
+          <input #jsonInput
+                 type="file"
+                 (change)="uploadFile($event)" class="custom-file-input" id="uploadFile" [disabled]="isAnonymous">
+          <label class="custom-file-label" for="uploadFile">Choose file</label>
+        </div>
+        <div class="alert alert-success" role="alert" [hidden]="successUpload">
+          File successfully uploaded
+        </div>
+        <div class="alert alert-danger" role="alert" [hidden]="errorUpload">
+          File was not upload, please check the format
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
