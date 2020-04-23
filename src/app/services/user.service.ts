@@ -9,17 +9,15 @@ export class User extends Object {
   public _id: string;
   public name: string;
   public email: string;
-  public affiliation: string;
-  public consortium: Boolean;
+  public organizations: string[];
 
-  constructor(public user: firebase.User = null) {
+  constructor(public user = null) {
     super();
     if (user) {
-      this._id = user.uid;
-      this.email = user.email;
-      this.name = user.displayName;
-      this.affiliation = '';
-      this.consortium = false;
+      this._id = user.uid != null ? user.uid : user._id != null ? user._id : '';
+      this.email = user.email != null ? user.email : '';
+      this.name = user.displayName != null ? user.displayName : user.name != null ? user.name : '';
+      this.organizations = user.organizations != null ? user.organizations : [];
       this.user = null;
     }
   }
@@ -47,6 +45,10 @@ export class UserService {
       .valueChanges();
   }
 
+  getUserByEmail(userEmail: string): Observable<any[]> {
+    return this.db.collection('Users', ref => ref.where('email', '==', userEmail)).valueChanges();
+  }
+
   updateUserWithId(userId: string, updatedUser: User) {
     this.db
       .collection(collection)
@@ -56,8 +58,8 @@ export class UserService {
 
   addNewUser(user: firebase.User) {
     const usr = new User(user);
-    console.log('new user ' + usr);
     this.db.collection<User>(collection).doc(user.uid).set(usr);
   }
+
 
 }

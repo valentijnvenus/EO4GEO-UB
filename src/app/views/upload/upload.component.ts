@@ -2,6 +2,8 @@ import { Component, OnInit, OnDestroy, Input, ViewChild } from '@angular/core';
 import { FileUploadServiceService } from '../../services/fileUploadService.service';
 import { ModalDirective } from 'ngx-bootstrap/modal';
 import { AngularFireAuth } from '@angular/fire/auth';
+import { User, UserService } from '../../services/user.service';
+import { Organization, OrganizationService } from '../../services/organization.service';
 
 @Component({
   selector: 'app-upload',
@@ -13,14 +15,28 @@ export class UploadComponent {
   public successUpload = true;
   isAnonymous = null;
   ownUsrId = null;
+  currentUser: User;
+  hasPermissions = null;
   public errorText = '';
   public errorUpload = true;
-
   @ViewChild('dangerModal') public dangerModal: ModalDirective;
 
-  constructor(private fileUploadService: FileUploadServiceService, public afAuth: AngularFireAuth) {
+  constructor(private fileUploadService: FileUploadServiceService, public afAuth: AngularFireAuth, private userService: UserService,
+              private organizationService: OrganizationService) {
     this.afAuth.auth.onAuthStateChanged(user => {
       if (user) {
+        this.userService.getUserById(user.uid).subscribe(userDB => {
+          this.currentUser = new User(userDB);
+          if (this.currentUser.organizations && this.currentUser.organizations.length > 0) {
+            this.currentUser.organizations.forEach(orgId => {
+              this.organizationService.getOrganizationById(orgId).subscribe(org => {
+                if ( org.name === 'EO4GEO') {
+                  this.hasPermissions = true;
+                }
+              });
+            });
+          }
+        });
         this.isAnonymous = user.isAnonymous;
         this.ownUsrId = user.uid;
       } else {
@@ -65,6 +81,7 @@ export class UploadComponent {
   convertFile( file: any ): any {
     const fileToSave = {'concepts': [] , 'relations': [] , 'references': [] , 'skills': [] };
     const obj = JSON.parse(file);
+    let gistNode = 0;
     if ( obj.hasOwnProperty('nodes')  ) {
       fileToSave.concepts[0] = {};
       Object.keys(obj['nodes']).forEach( k => {
@@ -74,6 +91,7 @@ export class UploadComponent {
             'name' : obj['nodes'][k].label.split(']')[1].trim(),
             'description' : obj['nodes'][k].definition
           };
+          gistNode = Number(k);
         } else {
           fileToSave.concepts.push({
             'code' : (obj['nodes'][k].label.split(']', 1)[0].split('[', 2)[1] != null &&
@@ -91,43 +109,43 @@ export class UploadComponent {
     }
     if (  obj.hasOwnProperty('links') ) {
       Object.keys(obj['links']).forEach( k => {
-        if ( obj['links'][k].target === 330 && obj['links'][k].source <= 330 ) {
+        if ( obj['links'][k].target === gistNode && obj['links'][k].source <= gistNode ) {
           fileToSave.relations.push({
             'target' : 0 ,
             'source' : obj['links'][k].source != null ? obj['links'][k].source + 1 : ' ',
             'name' : (obj['links'][k].relationName != null && obj['links'][k].relationName.length > 0 ) ? obj['links'][k].relationName : ' '
           });
-        } else if ( obj['links'][k].source === 330 && obj['links'][k].target <= 330) {
+        } else if ( obj['links'][k].source === gistNode && obj['links'][k].target <= gistNode) {
           fileToSave.relations.push({
             'target' : obj['links'][k].target != null ? obj['links'][k].target + 1 : ' ',
             'source' : 0 ,
             'name' : (obj['links'][k].relationName != null && obj['links'][k].relationName.length > 0 ) ? obj['links'][k].relationName : ' '
           });
-        } else if ( obj['links'][k].target === 330 && obj['links'][k].source > 330 ) {
+        } else if ( obj['links'][k].target === gistNode && obj['links'][k].source > gistNode ) {
           fileToSave.relations.push({
             'target' : 0 ,
             'source' : obj['links'][k].source != null ? obj['links'][k].source : ' ',
             'name' : (obj['links'][k].relationName != null && obj['links'][k].relationName.length > 0 ) ? obj['links'][k].relationName : ' '
           });
-        } else if ( obj['links'][k].source === 330 && obj['links'][k].target > 330) {
+        } else if ( obj['links'][k].source === gistNode && obj['links'][k].target > gistNode) {
           fileToSave.relations.push({
             'target' : obj['links'][k].target != null ? obj['links'][k].target  : ' ',
             'source' : 0 ,
             'name' : (obj['links'][k].relationName != null && obj['links'][k].relationName.length > 0 ) ? obj['links'][k].relationName : ' '
           });
-        } else if (obj['links'][k].source <= 330 &&  obj['links'][k].target > 330 ) {
+        } else if (obj['links'][k].source <= gistNode &&  obj['links'][k].target > gistNode ) {
           fileToSave.relations.push({
             'target' : obj['links'][k].target != null ? obj['links'][k].target : ' ',
             'source' : obj['links'][k].source != null ? obj['links'][k].source + 1 : ' ',
             'name' : (obj['links'][k].relationName != null && obj['links'][k].relationName.length > 0 ) ? obj['links'][k].relationName : ' '
           });
-        } else if (obj['links'][k].target <= 330 &&  obj['links'][k].source > 330 ) {
+        } else if (obj['links'][k].target <= gistNode &&  obj['links'][k].source > gistNode ) {
           fileToSave.relations.push({
             'target' : obj['links'][k].target != null ? obj['links'][k].target + 1 : ' ',
             'source' : obj['links'][k].source != null ? obj['links'][k].source : ' ',
             'name' : (obj['links'][k].relationName != null && obj['links'][k].relationName.length > 0 ) ? obj['links'][k].relationName : ' '
           });
-        } else if (obj['links'][k].source <= 330 && obj['links'][k].target <= 330 ) {
+        } else if (obj['links'][k].source <= gistNode && obj['links'][k].target <= gistNode ) {
           fileToSave.relations.push({
             'target' : obj['links'][k].target != null ? obj['links'][k].target + 1 : ' ',
             'source' : obj['links'][k].source != null ? obj['links'][k].source + 1 : ' ',
