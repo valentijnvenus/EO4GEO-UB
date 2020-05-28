@@ -169,7 +169,8 @@ export class UploadComponent {
             'concepts' : obj['external_resources'][k].nodes,
             'name' :  obj['external_resources'][k].title.length > 0 ?  obj['external_resources'][k].title : ' ',
             'description' : obj['external_resources'][k].description.length > 0 ? obj['external_resources'][k].description : ' ',
-            'url' : obj['external_resources'][k].url.length > 0 ? obj['external_resources'][k].url : ' '
+            'url' : ( obj['external_resources'][k].url !== null && obj['external_resources'][k].url.length > 0 ) ?
+              obj['external_resources'][k].url : ' '
           });
         }
       });
