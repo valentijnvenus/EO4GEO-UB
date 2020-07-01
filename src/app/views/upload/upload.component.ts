@@ -79,7 +79,7 @@ export class UploadComponent {
     }
   }
   convertFile( file: any ): any {
-    const fileToSave = {'concepts': [] , 'relations': [] , 'references': [] , 'skills': [] };
+    const fileToSave = {'concepts': [] , 'relations': [] , 'references': [] , 'skills': [] , 'contributors': [] };
     const obj = JSON.parse(file);
     let gistNode = 0;
     if ( obj.hasOwnProperty('nodes')  ) {
@@ -105,7 +105,7 @@ export class UploadComponent {
         }
       });
     } else {
-      return {'Error' : 'Invalid Format'};
+      return {'Error' : 'Invalid Format in concepts section'};
     }
     if (  obj.hasOwnProperty('links') ) {
       Object.keys(obj['links']).forEach( k => {
@@ -160,7 +160,7 @@ export class UploadComponent {
         }
       });
     } else {
-      return {'Error' : 'Invalid Format'};
+      return {'Error' : 'Invalid Format in relations section'};
     }
     if ( obj.hasOwnProperty('external_resources') ) {
       Object.keys(obj['external_resources']).forEach( k => {
@@ -175,19 +175,44 @@ export class UploadComponent {
         }
       });
     } else {
-      return {'Error' : 'Invalid Format'};
+      return {'Error' : 'Invalid Format in external_resources section'};
     }
-    if ( obj.hasOwnProperty('learning_outcomes') ) {
-      Object.keys(obj[ 'learning_outcomes' ]).forEach( k => {
-        if (obj['learning_outcomes'][k].nodes.length > 0) {
+    if ( obj.hasOwnProperty('learningOutcomes') ) {
+      Object.keys(obj[ 'learningOutcomes' ]).forEach( k => {
+        if (obj['learningOutcomes'][k].nodes.length > 0) {
           fileToSave.skills.push({
-            'concepts': obj['learning_outcomes'][k].nodes,
-            'name': obj['learning_outcomes'][k].name.length > 0 ? obj['learning_outcomes'][k].name : ' ',
+            'concepts': obj['learningOutcomes'][k].nodes,
+            'name': obj['learningOutcomes'][k].name.length > 0 ? obj['learningOutcomes'][k].name : ' ',
           });
         }
       });
     } else {
-      return {'Error' : 'Invalid Format'};
+      return {'Error' : 'Invalid Format in learning_outcomes section'};
+    }
+    if ( obj.hasOwnProperty('contributors') ) {
+      Object.keys(obj['contributors']).forEach( k => {
+        let nodeToAdd = [];
+        if (obj['contributors'][k].nodes.length > 0) {
+          obj['contributors'][k].nodes.forEach( node => {
+            if (node < gistNode ) {
+              nodeToAdd.push(node + 1);
+            } else if (node  === gistNode ) {
+              nodeToAdd.push( 0 );
+            } else {
+              nodeToAdd.push(node);
+            }
+          });
+          fileToSave.contributors.push({
+            'concepts' : nodeToAdd.length > 0 ? nodeToAdd : ' ',
+            'name' :  obj['contributors'][k].name.length > 0 ?  obj['contributors'][k].name : ' ',
+            'description' : obj['contributors'][k].description.length > 0 ? obj['contributors'][k].description : ' ',
+            'url' : ( obj['contributors'][k].url !== null && obj['contributors'][k].url.length > 0 ) ?
+              obj['contributors'][k].url : ' '
+          });
+        }
+      });
+    } else {
+      return {'Error' : 'Invalid Format in contributors section'};
     }
     return fileToSave;
   }
