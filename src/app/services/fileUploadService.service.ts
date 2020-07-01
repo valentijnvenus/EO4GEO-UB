@@ -25,6 +25,7 @@ export class FileUploadServiceService {
           const newVersion = (parseInt(cversion) + 1).toString();
           file.version = newVersion;
           file.updateDate = new Date();
+          file.creationYear = file.updateDate.getFullYear();
           this.resp = file;
           const currentFile = JSON.stringify(file);
           const configUrl = this.URL_BASE + 'v' + newVersion + '.json?auth=' + user;
