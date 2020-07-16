@@ -39,6 +39,7 @@ export class UploadComponent {
         });
         this.isAnonymous = user.isAnonymous;
         this.ownUsrId = user.uid;
+        this.hasPermissions = true;
       } else {
         this.isAnonymous = true;
         this.ownUsrId = null;
@@ -89,7 +90,7 @@ export class UploadComponent {
           fileToSave.concepts[0] = {
             'code' : obj['nodes'][k].label.split(']', 1)[0].split('[', 2)[1] ,
             'name' : obj['nodes'][k].label.split(']')[1].trim(),
-            'description' : obj['nodes'][k].definition
+            'description' : obj['nodes'][k].description
           };
           gistNode = Number(k);
         } else {
@@ -99,8 +100,10 @@ export class UploadComponent {
               obj['nodes'][k].label.split(']', 1)[0].split('[', 2)[1] : ' ',
             'name' : ( obj['nodes'][k].label.split(']')[1] != null && obj['nodes'][k].label.split(']')[1].length > 0 ) ?
               obj['nodes'][k].label.split(']')[1].trim() : ' ',
-            'description' : ( obj['nodes'][k].definition != null && obj['nodes'][k].definition.length > 0 ) ?
-              obj['nodes'][k].definition : ' '
+            'description' : ( obj['nodes'][k].description != null && obj['nodes'][k].description.length > 0 ) ?
+              obj['nodes'][k].description : ' ',
+            'selfAssesment' : ( obj['nodes'][k].status != null && obj['nodes'][k].status.length > 0 ) ?
+              obj['nodes'][k].status : ' '
           });
         }
       });
@@ -164,9 +167,19 @@ export class UploadComponent {
     }
     if ( obj.hasOwnProperty('external_resources') ) {
       Object.keys(obj['external_resources']).forEach( k => {
+        let nodeToAdd = [];
         if (obj['external_resources'][k].nodes.length > 0) {
+          obj['external_resources'][k].nodes.forEach( node => {
+            if (node < gistNode ) {
+              nodeToAdd.push(node + 1);
+            } else if (node  === gistNode ) {
+              nodeToAdd.push( 0 );
+            } else {
+              nodeToAdd.push(node);
+            }
+          });
           fileToSave.references.push({
-            'concepts' : obj['external_resources'][k].nodes,
+            'concepts' : nodeToAdd.length > 0 ? nodeToAdd : ' ',
             'name' :  obj['external_resources'][k].title.length > 0 ?  obj['external_resources'][k].title : ' ',
             'description' : obj['external_resources'][k].description.length > 0 ? obj['external_resources'][k].description : ' ',
             'url' : ( obj['external_resources'][k].url !== null && obj['external_resources'][k].url.length > 0 ) ?
@@ -177,12 +190,22 @@ export class UploadComponent {
     } else {
       return {'Error' : 'Invalid Format in external_resources section'};
     }
-    if ( obj.hasOwnProperty('learningOutcomes') ) {
-      Object.keys(obj[ 'learningOutcomes' ]).forEach( k => {
-        if (obj['learningOutcomes'][k].nodes.length > 0) {
+    if ( obj.hasOwnProperty('skills') ) {
+      Object.keys(obj[ 'skills' ]).forEach( k => {
+        let nodeToAdd = [];
+        if (obj['skills'][k].nodes.length > 0) {
+          obj['skills'][k].nodes.forEach( node => {
+            if (node < gistNode ) {
+              nodeToAdd.push(node + 1);
+            } else if (node  === gistNode ) {
+              nodeToAdd.push( 0 );
+            } else {
+              nodeToAdd.push(node);
+            }
+          });
           fileToSave.skills.push({
-            'concepts': obj['learningOutcomes'][k].nodes,
-            'name': obj['learningOutcomes'][k].name.length > 0 ? obj['learningOutcomes'][k].name : ' ',
+            'concepts': nodeToAdd.length > 0 ? nodeToAdd : ' ',
+            'name': obj['skills'][k].name.length > 0 ? obj['skills'][k].name : ' ',
           });
         }
       });
