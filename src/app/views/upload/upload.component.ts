@@ -55,7 +55,8 @@ export class UploadComponent {
       if ( file.type === 'application/json') {
         fileReader.onload = (e) => {
           this.afAuth.auth.currentUser.getIdToken( true).then((idToken) => {
-            const newFile = this.convertFile(fileReader.result);
+            let newFile = this.convertFile(fileReader.result);
+            newFile = this.cleanIsolatedNodes(newFile);
             if ( !(newFile.hasOwnProperty('Error') )) {
               fileService.uploadFile(newFile, idToken);
               this.errorUpload = true;
@@ -167,7 +168,7 @@ export class UploadComponent {
     }
     if ( obj.hasOwnProperty('external_resources') ) {
       Object.keys(obj['external_resources']).forEach( k => {
-        let nodeToAdd = [];
+        const nodeToAdd = [];
         if (obj['external_resources'][k].nodes.length > 0) {
           obj['external_resources'][k].nodes.forEach( node => {
             if (node < gistNode ) {
@@ -192,7 +193,7 @@ export class UploadComponent {
     }
     if ( obj.hasOwnProperty('skills') ) {
       Object.keys(obj[ 'skills' ]).forEach( k => {
-        let nodeToAdd = [];
+        const nodeToAdd = [];
         if (obj['skills'][k].nodes.length > 0) {
           obj['skills'][k].nodes.forEach( node => {
             if (node < gistNode ) {
@@ -214,7 +215,7 @@ export class UploadComponent {
     }
     if ( obj.hasOwnProperty('contributors') ) {
       Object.keys(obj['contributors']).forEach( k => {
-        let nodeToAdd = [];
+        const nodeToAdd = [];
         if (obj['contributors'][k].nodes.length > 0) {
           obj['contributors'][k].nodes.forEach( node => {
             if (node < gistNode ) {
@@ -238,5 +239,26 @@ export class UploadComponent {
       return {'Error' : 'Invalid Format in contributors section'};
     }
     return fileToSave;
+  }
+  cleanIsolatedNodes ( bok ) {
+    const concepts = bok.concepts;
+    for ( let code of Object.keys(concepts) ) {
+      let hasRelation = false;
+      bok.relations.forEach( node => {
+        const target = node.target;
+        const source = node.source;
+        if ( code == target || source == code) {
+          hasRelation = true;
+        }
+      });
+      if ( !hasRelation ) {
+        bok.concepts[code].code = ' ';
+        bok.concepts[code].description = ' ';
+        bok.concepts[code].name = ' ';
+        bok.concepts[code].selfAssesment = ' ';
+      }
+      hasRelation = false;
+    }
+    return bok;
   }
 }
