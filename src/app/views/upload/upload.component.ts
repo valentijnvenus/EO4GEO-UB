@@ -244,14 +244,18 @@ export class UploadComponent {
     const concepts = bok.concepts;
     for ( let code of Object.keys(concepts) ) {
       let hasRelation = false;
+      let isGISTChildren = null;
       bok.relations.forEach( node => {
         const target = node.target;
         const source = node.source;
-        if ( code == target || source == code) {
-          hasRelation = true;
+        if ( source == code && node.name == 'is subconcept of' ) {
+          isGISTChildren = this.hasGISTConnection(target, bok, concepts[source]);
+          if ( isGISTChildren  !== null ) {
+            hasRelation = true;
+          }
         }
       });
-      if ( !hasRelation ) {
+      if ( !hasRelation && code !== '0') {
         bok.concepts[code].code = ' ';
         bok.concepts[code].description = ' ';
         bok.concepts[code].name = ' ';
@@ -260,5 +264,18 @@ export class UploadComponent {
       hasRelation = false;
     }
     return bok;
+  }
+  hasGISTConnection ( nodeId, bok, originalNode ) {
+    if ( nodeId === 0) {
+      return 'hasParent';
+    } else {
+      bok.relations.forEach( node => {
+        const target = node.target;
+        const source = node.source;
+        if ( source == nodeId && node.name == 'is subconcept of') {
+          return this.hasGISTConnection(target, bok, originalNode);
+        }
+      });
+    }
   }
 }

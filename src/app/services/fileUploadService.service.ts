@@ -11,7 +11,7 @@ import { formatDate } from '@angular/common';
 export class FileUploadServiceService {
   constructor(private http: HttpClient) { }
 
-  public URL_BASE = 'https://eo4geo-uji.firebaseio.com/';
+  public URL_BASE = 'https://eo4geo-uji-backup.firebaseio.com/';
   public resp = {};
   uploadFile(file: any, user: any) {
     const httpOptions = {
