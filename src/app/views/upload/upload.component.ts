@@ -52,7 +52,7 @@ export class UploadComponent {
 
     // Only first time to load all existing versions
 
-   // this.convertBoKAPIPreviousVersion();
+    //this.convertBoKAPIPreviousVersion();
 
   }
 
@@ -362,23 +362,28 @@ export class UploadComponent {
     }
     if (version.relations) {
       version.relations.forEach(r => {
-        fileToSave.relations.push({
-          name: r.name,
-          source: codeNameHash[r.source],
-          target: codeNameHash[r.target]
-        });
 
-        fileToSave.concepts[codeNameHash[r.source]].relations.push({
-          name: r.name,
-          source: codeNameHash[r.source],
-          target: codeNameHash[r.target]
-        });
-        fileToSave.concepts[codeNameHash[r.target]].relations.push({
-          name: r.name,
-          source: codeNameHash[r.source],
-          target: codeNameHash[r.target]
-        });
-
+        if (codeNameHash[r.source] && codeNameHash[r.target]){
+          fileToSave.relations.push({
+            name: r.name,
+            source: codeNameHash[r.source],
+            target: codeNameHash[r.target]
+          });
+          fileToSave.concepts[codeNameHash[r.source]].relations.push({
+            name: r.name,
+            source: codeNameHash[r.source],
+            target: codeNameHash[r.target]
+          });
+          fileToSave.concepts[codeNameHash[r.target]].relations.push({
+            name: r.name,
+            source: codeNameHash[r.source],
+            target: codeNameHash[r.target]
+          });
+        } else {
+          console.log('fail source ' + r.source)
+          console.log('fail target ' + r.target)
+        }
+       
       });
     }
     return fileToSave;

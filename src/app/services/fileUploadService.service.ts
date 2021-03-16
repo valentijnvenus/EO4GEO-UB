@@ -14,6 +14,9 @@ export class FileUploadServiceService {
 
   public URL_BASE = 'https://eo4geo-uji.firebaseio.com/';
   public URL_BASE_BOKAPI = 'https://eo4geo-bok.firebaseio.com/';
+  public URL_BASE_BACKUP1 = 'https://findinbok.firebaseio.com/';
+  public URL_BASE_BACKUP2 = 'https://eo4geo-uji-backup.firebaseio.com/';
+
 
   public resp = {};
   uploadFile(file: any, user: any) { //, user: any
@@ -32,6 +35,7 @@ export class FileUploadServiceService {
       file.updateDate = formatDate(new Date(), 'yyyy/MM/dd', 'en');
       this.resp = file;
       const currentFile = JSON.stringify(file);
+      // eo4geo-uji
       const configUrl = this.URL_BASE + 'v' + newVersion + '.json?auth=' + user;
       const currentUrl = this.URL_BASE + 'current.json?auth=' + user;
       this.http.put(configUrl, fileToSave, httpOptions).pipe(
@@ -46,8 +50,39 @@ export class FileUploadServiceService {
         res => this.resp = res,
         err => this.resp = err,
       );
+      // findinbok
+      const configUrl1 = this.URL_BASE_BACKUP1 + 'v' + newVersion + '.json';
+      const currentUrl1 = this.URL_BASE_BACKUP1 + 'current.json';
+      this.http.put(configUrl1, fileToSave, httpOptions).pipe(
+        catchError(this.handleError)
+      ).subscribe(
+        res => this.resp = res,
+        err => this.resp = err,
+      );
+      this.http.put(currentUrl1, currentFile, httpOptions).pipe(
+        catchError(this.handleError)
+      ).subscribe(
+        res => this.resp = res,
+        err => this.resp = err,
+      );
+      // eo4geo-uji-backup
+      const configUrl2 = this.URL_BASE_BACKUP2 + 'v' + newVersion + '.json';
+      const currentUrl2 = this.URL_BASE_BACKUP2 + 'current.json';
+      this.http.put(configUrl2, fileToSave, httpOptions).pipe(
+        catchError(this.handleError)
+      ).subscribe(
+        res => this.resp = res,
+        err => this.resp = err,
+      );
+      this.http.put(currentUrl2, currentFile, httpOptions).pipe(
+        catchError(this.handleError)
+      ).subscribe(
+        res => this.resp = res,
+        err => this.resp = err,
+      );
     },
       err => this.resp = err);
+
   }
 
   uploadBoKAPIFile(newVersion, file: any) {
