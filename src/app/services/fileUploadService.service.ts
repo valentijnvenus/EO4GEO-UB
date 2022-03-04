@@ -12,10 +12,10 @@ export class FileUploadServiceService {
   constructor(private http: HttpClient) { }
 
 
-  public URL_BASE = 'https://eo4geo-uji.firebaseio.com/';
-  public URL_BASE_BOKAPI = 'https://eo4geo-bok.firebaseio.com/';
-  public URL_BASE_BACKUP1 = 'https://findinbok.firebaseio.com/';
-  public URL_BASE_BACKUP2 = 'https://eo4geo-uji-backup.firebaseio.com/';
+  public URL_BASE = 'https://ocuprotool.firebaseio.com/';
+  // public URL_BASE_BOKAPI = 'https://eo4geo-bok.firebaseio.com/';
+  public URL_BASE_BACKUP1 = 'https://ocuprotool.firebaseio.com/';
+  // public URL_BASE_BACKUP2 = 'https://eo4geo-uji-backup.firebaseio.com/';
 
 
   public resp = {};
@@ -66,7 +66,7 @@ export class FileUploadServiceService {
         err => this.resp = err,
       );
       // eo4geo-uji-backup
-      const configUrl2 = this.URL_BASE_BACKUP2 + 'v' + newVersion + '.json';
+    /*   const configUrl2 = this.URL_BASE_BACKUP2 + 'v' + newVersion + '.json';
       const currentUrl2 = this.URL_BASE_BACKUP2 + 'current.json';
       this.http.put(configUrl2, fileToSave, httpOptions).pipe(
         catchError(this.handleError)
@@ -79,14 +79,14 @@ export class FileUploadServiceService {
       ).subscribe(
         res => this.resp = res,
         err => this.resp = err,
-      );
+      ); */
     },
       err => this.resp = err);
 
   }
 
   uploadBoKAPIFile(newVersion, file: any) {
-    const httpOptions = {
+/*     const httpOptions = {
       headers: new HttpHeaders({
         'Content-Type': 'application/json'
       })
@@ -99,7 +99,7 @@ export class FileUploadServiceService {
       ).subscribe(
         res => this.resp = res,
         err => this.resp = err,
-      );
+      ); */
   }
 
   // Get fullBoK
