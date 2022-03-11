@@ -5,7 +5,7 @@
         Upload Bok
       </h1>
       <div class="text-center" [hidden]="!isAnonymous">
-        <h5>You have limited functionality because you are not logged in. <a href="#" routerLink="/login"> Login </a> to
+        <h5>You have limited functionality because you are not logged in with the right user. Log out and <a href="#" routerLink="/login"> Login </a> to
           use all functionality in the tool.
         </h5>
       </div>
@@ -16,10 +16,9 @@
         <span></span>
         <h5>
           Import here a JSON file directly exported from the Living Text Book with the simple linked node format. And that version of the BoK will replace the current version in our tools.
-          Be careful, this action can not be undone, make sure the version you are uploading is the correct one.
         </h5>
       </div>
-      <div class="input-group col-sm-12 col-md-12 col-lg-2" >
+      <div class="input-group col-sm-12 col-md-12 col-lg-12" >
         <div class="input-group-prepend ">
           <span class="input-group-text" id="inputGroupFileAddon01">Upload</span>
         </div>
@@ -35,6 +34,15 @@
         <div class="alert alert-danger" role="alert" [hidden]="errorUpload">
           File was not upload.  {{ errorText }}
         </div>
+      </div>
+      <div>
+        <br><br>
+        <h5>
+         Click this button to recover until v6 in the BoK
+        </h5>
+
+        <input class="btn btn-primary" type="button" value="Recover v6" (click)="recoverv6()" [disabled]="!hasPermissions">
+
       </div>
     </div>
   </div>

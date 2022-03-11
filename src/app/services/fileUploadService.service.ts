@@ -4,6 +4,7 @@ import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { HttpHeaders } from '@angular/common/http';
 import { catchError } from 'rxjs/operators';
 import { formatDate } from '@angular/common';
+import * as v6 from '../../assets/json/eo4geo-v6.json';
 
 @Injectable({
   providedIn: 'root'
@@ -16,6 +17,7 @@ export class FileUploadServiceService {
   public URL_BASE_BOKAPI = 'https://eo4geo-bok.firebaseio.com/';
   public URL_BASE_BACKUP1 = 'https://findinbok.firebaseio.com/';
   public URL_BASE_BACKUP2 = 'https://eo4geo-uji-backup.firebaseio.com/';
+  public URL_BASE_BACKUP3 = 'https://eo4geo-uji-backup2-default-rtdb.europe-west1.firebasedatabase.app/';
 
 
   public resp = {};
@@ -80,6 +82,21 @@ export class FileUploadServiceService {
         res => this.resp = res,
         err => this.resp = err,
       );
+      // https://eo4geo-uji-backup2-default-rtdb.europe-west1.firebasedatabase.app/
+      const configUrl3 = this.URL_BASE_BACKUP3 + 'v' + newVersion + '.json';
+      const currentUrl3 = this.URL_BASE_BACKUP3 + 'current.json';
+      this.http.put(configUrl3, fileToSave, httpOptions).pipe(
+        catchError(this.handleError)
+      ).subscribe(
+        res => this.resp = res,
+        err => this.resp = err,
+      );
+      this.http.put(currentUrl3, currentFile, httpOptions).pipe(
+        catchError(this.handleError)
+      ).subscribe(
+        res => this.resp = res,
+        err => this.resp = err,
+      );
     },
       err => this.resp = err);
 
@@ -91,15 +108,15 @@ export class FileUploadServiceService {
         'Content-Type': 'application/json'
       })
     };
-      const fileToSave = JSON.stringify(file);
-      this.resp = file;
-      const configUrl = this.URL_BASE_BOKAPI + newVersion + '.json';
-      this.http.put(configUrl, fileToSave, httpOptions).pipe(
-        catchError(this.handleError)
-      ).subscribe(
-        res => this.resp = res,
-        err => this.resp = err,
-      );
+    const fileToSave = JSON.stringify(file);
+    this.resp = file;
+    const configUrl = this.URL_BASE_BOKAPI + newVersion + '.json';
+    this.http.put(configUrl, fileToSave, httpOptions).pipe(
+      catchError(this.handleError)
+    ).subscribe(
+      res => this.resp = res,
+      err => this.resp = err,
+    );
   }
 
   // Get fullBoK
@@ -113,6 +130,43 @@ export class FileUploadServiceService {
   }
   handleError(error: Error) {
     return throwError(error);
+  }
+
+
+  recoverV6() {
+    const currentFile = JSON.stringify((v6 as any).default);
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json'
+      })
+    };
+
+    console.log('recover v6');
+
+    this.http.put(this.URL_BASE + '.json', currentFile, httpOptions).pipe(
+      catchError(this.handleError)
+    ).subscribe(
+      res => this.resp = res,
+      err => this.resp = err,
+    );
+    this.http.put(this.URL_BASE_BACKUP1 + '.json', currentFile, httpOptions).pipe(
+      catchError(this.handleError)
+    ).subscribe(
+      res => this.resp = res,
+      err => this.resp = err,
+    );
+    this.http.put(this.URL_BASE_BACKUP2 + '.json', currentFile, httpOptions).pipe(
+      catchError(this.handleError)
+    ).subscribe(
+      res => this.resp = res,
+      err => this.resp = err,
+    );
+    this.http.put(this.URL_BASE_BACKUP3 + '.json', currentFile, httpOptions).pipe(
+      catchError(this.handleError)
+    ).subscribe(
+      res => this.resp = res,
+      err => this.resp = err,
+    );
   }
 
 }

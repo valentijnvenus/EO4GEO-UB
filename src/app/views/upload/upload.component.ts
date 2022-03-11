@@ -25,22 +25,9 @@ export class UploadComponent {
 
   BOK_BASE_URI = 'http://bok.eo4geo.eu/';
 
-  constructor(private fileUploadService: FileUploadServiceService, public afAuth: AngularFireAuth, private userService: UserService,
-    private organizationService: OrganizationService) {
+  constructor(private fileUploadService: FileUploadServiceService, public afAuth: AngularFireAuth, private userService: UserService) {
     this.afAuth.auth.onAuthStateChanged(user => {
-      if (user) {
-        this.userService.getUserById(user.uid).subscribe(userDB => {
-          this.currentUser = new User(userDB);
-          if (this.currentUser.organizations && this.currentUser.organizations.length > 0) {
-            this.currentUser.organizations.forEach(orgId => {
-              this.organizationService.getOrganizationById(orgId).subscribe(org => {
-                if (org.name === 'EO4GEO') {
-                  this.hasPermissions = true;
-                }
-              });
-            });
-          }
-        });
+      if (user && user.uid === 'k3otaNhyTMYg0lvph0TP0EPE3pV2') {
         this.isAnonymous = user.isAnonymous;
         this.ownUsrId = user.uid;
         this.hasPermissions = true;
@@ -363,7 +350,7 @@ export class UploadComponent {
     if (version.relations) {
       version.relations.forEach(r => {
 
-        if (codeNameHash[r.source] && codeNameHash[r.target]){
+        if (codeNameHash[r.source] && codeNameHash[r.target]) {
           fileToSave.relations.push({
             name: r.name,
             source: codeNameHash[r.source],
@@ -383,7 +370,7 @@ export class UploadComponent {
           console.log('fail source ' + r.source)
           console.log('fail target ' + r.target)
         }
-       
+
       });
     }
     return fileToSave;
@@ -395,17 +382,17 @@ export class UploadComponent {
       let hasRelation = false;
 
       let isGISTChildren = null;
-      bok.relations.forEach( node => {
+      bok.relations.forEach(node => {
         const target = node.target;
         const source = node.source;
-        if ( source == code && node.name == 'is subconcept of' ) {
+        if (source == code && node.name == 'is subconcept of') {
           isGISTChildren = this.hasGISTConnection(target, bok, concepts[source]);
-          if ( isGISTChildren  !== null ) {
+          if (isGISTChildren !== null) {
             hasRelation = true;
           }
         }
       });
-      if ( !hasRelation && code !== '0') {
+      if (!hasRelation && code !== '0') {
         bok.concepts[code].code = ' ';
         bok.concepts[code].description = ' ';
         bok.concepts[code].name = ' ';
@@ -415,17 +402,21 @@ export class UploadComponent {
     }
     return bok;
   }
-  hasGISTConnection ( nodeId, bok, originalNode ) {
-    if ( nodeId === 0) {
+  hasGISTConnection(nodeId, bok, originalNode) {
+    if (nodeId === 0) {
       return 'hasParent';
     } else {
-      bok.relations.forEach( node => {
+      bok.relations.forEach(node => {
         const target = node.target;
         const source = node.source;
-        if ( source == nodeId && node.name == 'is subconcept of') {
+        if (source == nodeId && node.name == 'is subconcept of') {
           return this.hasGISTConnection(target, bok, originalNode);
         }
       });
     }
+  }
+
+  recoverv6() {
+    this.fileUploadService.recoverV6();
   }
 }
