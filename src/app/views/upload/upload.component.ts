@@ -3,7 +3,6 @@ import { FileUploadServiceService } from '../../services/fileUploadService.servi
 import { ModalDirective } from 'ngx-bootstrap/modal';
 import { AngularFireAuth } from '@angular/fire/auth';
 import { User, UserService } from '../../services/user.service';
-import { Organization, OrganizationService } from '../../services/organization.service';
 
 @Component({
   selector: 'app-upload',
@@ -23,36 +22,18 @@ export class UploadComponent {
 
   codeNameHash = {};
 
-  BOK_BASE_URI = 'http://bok.eo4geo.eu/';
+  BOK_BASE_URI = 'https://ucgis-bok.web.app/';
 
-  constructor(private fileUploadService: FileUploadServiceService, public afAuth: AngularFireAuth, private userService: UserService,
-    private organizationService: OrganizationService) {
+  constructor(private fileUploadService: FileUploadServiceService, public afAuth: AngularFireAuth, private userService: UserService) {
     this.afAuth.auth.onAuthStateChanged(user => {
       if (user) {
-        this.userService.getUserById(user.uid).subscribe(userDB => {
-          this.currentUser = new User(userDB);
-          if (this.currentUser.organizations && this.currentUser.organizations.length > 0) {
-            this.currentUser.organizations.forEach(orgId => {
-              this.organizationService.getOrganizationById(orgId).subscribe(org => {
-                if (org.name === 'EO4GEO') {
-                  this.hasPermissions = true;
-                }
-              });
-            });
+        this.hasPermissions = true;
           }
         });
-        this.isAnonymous = user.isAnonymous;
-        this.ownUsrId = user.uid;
-        this.hasPermissions = true;
-      } else {
-        this.isAnonymous = true;
-        this.ownUsrId = null;
-      }
-    });
 
     // Only first time to load all existing versions
 
-    //this.convertBoKAPIPreviousVersion();
+    // this.convertBoKAPIPreviousVersion();
 
   }
 
@@ -253,7 +234,7 @@ export class UploadComponent {
   }
 
   convertBoKAPIPreviousVersion() {
-    this.fileUploadService.fullBoK().subscribe((fullBoK) => {
+/*     this.fileUploadService.fullBoK().subscribe((fullBoK) => {
 
       const allV = Object.keys(fullBoK);
 
@@ -262,7 +243,7 @@ export class UploadComponent {
         const fileToSave = this.convertFileBoKAPI(fullBoK[v]);
         this.fileUploadService.uploadBoKAPIFile(v, fileToSave);
       });
-    });
+    }); */
 
   }
 
@@ -383,7 +364,7 @@ export class UploadComponent {
           console.log('fail source ' + r.source)
           console.log('fail target ' + r.target)
         }
-       
+
       });
     }
     return fileToSave;
