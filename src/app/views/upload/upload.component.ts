@@ -52,7 +52,7 @@ export class UploadComponent {
 
     // Only first time to load all existing versions
 
-    //this.convertBoKAPIPreviousVersion();
+    this.convertBoKAPIPreviousVersion();
 
   }
 
@@ -65,8 +65,11 @@ export class UploadComponent {
         fileReader.onload = (e) => {
           this.afAuth.auth.currentUser.getIdToken(true).then((idToken) => {
             let newFile = this.convertFile(fileReader.result);
-            newFile = this.cleanIsolatedNodes(newFile);
-            const newFileBoKAPI = this.convertFileBoKAPI(newFile);
+            console.log(newFile);
+            // newFile = this.cleanIsolatedNodes(newFile);
+            // console.log(newFile);
+
+            // const newFileBoKAPI = this.convertFileBoKAPI(newFile);
             if (!(newFile.hasOwnProperty('Error'))) {
               console.log(newFile);
               fileService.uploadFile(newFile, idToken);
@@ -101,8 +104,10 @@ export class UploadComponent {
         if (obj['nodes'][k].label === '[GIST] Geographic Information Science and Technology' && obj['nodes'][k].numberOfLinks > 0) {
           fileToSave.concepts[0] = {
             'code': obj['nodes'][k].label.split(']', 1)[0].split('[', 2)[1],
-            'name': obj['nodes'][k].label.split(']')[1].trim(),
-            'description': obj['nodes'][k].description
+            'name': obj['nodes'][k].label.indexOf(']') > 0 ? obj['nodes'][k].label.split(']')[1].trim() : obj['nodes'][k].label.trim(),
+            'description': obj['nodes'][k].definition,
+            'link': (obj['nodes'][k].link != null && obj['nodes'][k].link.length > 0) ?
+              obj['nodes'][k].link : ' '
           };
           gistNode = Number(k);
         } else {
@@ -112,10 +117,12 @@ export class UploadComponent {
               obj['nodes'][k].label.split(']', 1)[0].split('[', 2)[1] : ' ',
             'name': (obj['nodes'][k].label.split(']')[1] != null && obj['nodes'][k].label.split(']')[1].length > 0) ?
               obj['nodes'][k].label.split(']')[1].trim() : ' ',
-            'description': (obj['nodes'][k].description != null && obj['nodes'][k].description.length > 0) ?
-              obj['nodes'][k].description : ' ',
+            'description': (obj['nodes'][k].definition != null && obj['nodes'][k].definition.length > 0) ?
+              obj['nodes'][k].definition : ' ',
             'selfAssesment': (obj['nodes'][k].status != null && obj['nodes'][k].status.length > 0) ?
-              obj['nodes'][k].status : ' '
+              obj['nodes'][k].status : ' ',
+            'link': (obj['nodes'][k].link != null && obj['nodes'][k].link.length > 0) ?
+              obj['nodes'][k].link : ' '
           });
         }
       });
@@ -202,11 +209,11 @@ export class UploadComponent {
     } else {
       return { 'Error': 'Invalid Format in external_resources section' };
     }
-    if (obj.hasOwnProperty('skills')) {
-      Object.keys(obj['skills']).forEach(k => {
+    if (obj.hasOwnProperty('learningOutcomes')) {
+      Object.keys(obj['learningOutcomes']).forEach(k => {
         const nodeToAdd = [];
-        if (obj['skills'][k].nodes.length > 0) {
-          obj['skills'][k].nodes.forEach(node => {
+        if (obj['learningOutcomes'][k].nodes.length > 0) {
+          obj['learningOutcomes'][k].nodes.forEach(node => {
             if (node < gistNode) {
               nodeToAdd.push(node + 1);
             } else if (node === gistNode) {
@@ -217,7 +224,7 @@ export class UploadComponent {
           });
           fileToSave.skills.push({
             'concepts': nodeToAdd.length > 0 ? nodeToAdd : ' ',
-            'name': obj['skills'][k].name.length > 0 ? obj['skills'][k].name : ' ',
+            'name': obj['learningOutcomes'][k].name.length > 0 ? obj['learningOutcomes'][k].name : ' ',
           });
         }
       });
@@ -253,6 +260,8 @@ export class UploadComponent {
   }
 
   convertBoKAPIPreviousVersion() {
+    console.log("convertBoKAPIPreviousVersion");
+
     this.fileUploadService.fullBoK().subscribe((fullBoK) => {
 
       const allV = Object.keys(fullBoK);
@@ -363,7 +372,7 @@ export class UploadComponent {
     if (version.relations) {
       version.relations.forEach(r => {
 
-        if (codeNameHash[r.source] && codeNameHash[r.target]){
+        if (codeNameHash[r.source] && codeNameHash[r.target]) {
           fileToSave.relations.push({
             name: r.name,
             source: codeNameHash[r.source],
@@ -383,7 +392,7 @@ export class UploadComponent {
           console.log('fail source ' + r.source)
           console.log('fail target ' + r.target)
         }
-       
+
       });
     }
     return fileToSave;
@@ -395,17 +404,17 @@ export class UploadComponent {
       let hasRelation = false;
 
       let isGISTChildren = null;
-      bok.relations.forEach( node => {
+      bok.relations.forEach(node => {
         const target = node.target;
         const source = node.source;
-        if ( source == code && node.name == 'is subconcept of' ) {
+        if (source == code && node.name == 'is subconcept of') {
           isGISTChildren = this.hasGISTConnection(target, bok, concepts[source]);
-          if ( isGISTChildren  !== null ) {
+          if (isGISTChildren !== null) {
             hasRelation = true;
           }
         }
       });
-      if ( !hasRelation && code !== '0') {
+      if (!hasRelation && code !== '0') {
         bok.concepts[code].code = ' ';
         bok.concepts[code].description = ' ';
         bok.concepts[code].name = ' ';
@@ -415,14 +424,14 @@ export class UploadComponent {
     }
     return bok;
   }
-  hasGISTConnection ( nodeId, bok, originalNode ) {
-    if ( nodeId === 0) {
+  hasGISTConnection(nodeId, bok, originalNode) {
+    if (nodeId === 0) {
       return 'hasParent';
     } else {
-      bok.relations.forEach( node => {
+      bok.relations.forEach(node => {
         const target = node.target;
         const source = node.source;
-        if ( source == nodeId && node.name == 'is subconcept of') {
+        if (source == nodeId && node.name == 'is subconcept of') {
           return this.hasGISTConnection(target, bok, originalNode);
         }
       });
