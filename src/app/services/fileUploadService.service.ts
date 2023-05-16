@@ -21,13 +21,17 @@ export class FileUploadServiceService {
 
 
   public resp = {};
-  uploadFile(file: any, user: any) { //, user: any
+  uploadFile(file: any, user: any) {
     const httpOptions = {
       headers: new HttpHeaders({
         'Content-Type': 'application/json'
       })
     };
-    return this.currentVersion().pipe(
+
+    const currentFile = JSON.stringify(file);
+    const currentUrl = this.URL_BASE + 'current.json?auth=' + user;
+
+    this.http.put(currentUrl, currentFile, httpOptions).pipe(
       catchError(this.handleError)
     ).subscribe((cversion) => {
       file.creationYear = new Date().getFullYear();
@@ -88,7 +92,7 @@ export class FileUploadServiceService {
   }
 
   uploadBoKAPIFile(newVersion, file: any) {
-    const httpOptions = {
+/*     const httpOptions = {
       headers: new HttpHeaders({
         'Content-Type': 'application/json'
       })
@@ -101,7 +105,7 @@ export class FileUploadServiceService {
     ).subscribe(
       res => this.resp = res,
       err => this.resp = err,
-    );
+    ); */
   }
 
   // Get fullBoK
@@ -109,10 +113,6 @@ export class FileUploadServiceService {
     return this.http.get(this.URL_BASE + '.json');
   }
 
-  // Get current version
-  currentVersion(): Observable<any> {
-    return this.http.get(this.URL_BASE + 'current/version.json');
-  }
   handleError(error: Error) {
     return throwError(error);
   }
