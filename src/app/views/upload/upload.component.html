@@ -5,6 +5,13 @@
         Compare BoK versions
       </h1>
 
+            <div class="text-center" [hidden]="!isAnonymous">
+              <h5>You have limited functionality because you are not logged in with the right user. Log out and <a href="#"
+                  routerLink="/login"> Login </a> to
+                use all functionality in the tool.
+              </h5>
+            </div>
+
 
       <div class="row" *ngIf="!fileCS.loading">
         <div class="col-sm-12 col-md-4 offset-md-2">
