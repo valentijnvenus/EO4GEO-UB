@@ -1,5 +1,6 @@
 import { Component, OnInit, OnDestroy, Input, ViewChild } from '@angular/core';
 import { FileUploadServiceService } from '../../services/fileUploadService.service';
+import { FileCompareService } from '../../services/fileCompareService.service';
 import { ModalDirective } from 'ngx-bootstrap/modal';
 import { AngularFireAuth } from '@angular/fire/auth';
 import { User, UserService } from '../../services/user.service';
@@ -23,17 +24,19 @@ export class UploadComponent {
 
   codeNameHash = {};
 
-  BOK_BASE_URI = 'http://bok.eo4geo.eu/';
+  BOK_BASE_URI = 'https://ucgis-bok.web.app/';
 
-  constructor(private fileUploadService: FileUploadServiceService, public afAuth: AngularFireAuth, private userService: UserService) {
+  constructor(private fileUploadService: FileUploadServiceService, public fileCS: FileCompareService, public afAuth: AngularFireAuth, private userService: UserService) {
     this.afAuth.auth.onAuthStateChanged(user => {
-      if (user && user.uid === 'k3otaNhyTMYg0lvph0TP0EPE3pV2') {
+      if (user && (user.uid === 'zdDeVbNrfJZIv71BnI4YthkqSzT2' || user.uid === '7QFB2A7OI8d9zrRdGFQ9B8WADkC2' )) {
         this.isAnonymous = user.isAnonymous;
         this.ownUsrId = user.uid;
         this.hasPermissions = true;
+        this.fileCS.compareBoK();
       } else {
         this.isAnonymous = true;
         this.ownUsrId = null;
+        this.hasPermissions = false;
       }
     });
 
@@ -417,6 +420,6 @@ export class UploadComponent {
   }
 
   recoverv6() {
-    this.fileUploadService.recoverV6();
+  //  this.fileUploadService.recoverV6();
   }
 }

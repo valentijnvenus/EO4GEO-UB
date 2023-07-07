@@ -4,7 +4,6 @@ import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { HttpHeaders } from '@angular/common/http';
 import { catchError } from 'rxjs/operators';
 import { formatDate } from '@angular/common';
-import * as v6 from '../../assets/json/eo4geo-v6.json';
 
 @Injectable({
   providedIn: 'root'
@@ -132,41 +131,5 @@ export class FileUploadServiceService {
     return throwError(error);
   }
 
-
-  recoverV6() {
-    const currentFile = JSON.stringify((v6 as any).default);
-    const httpOptions = {
-      headers: new HttpHeaders({
-        'Content-Type': 'application/json'
-      })
-    };
-
-    console.log('recover v6');
-
-    this.http.put(this.URL_BASE + '.json', currentFile, httpOptions).pipe(
-      catchError(this.handleError)
-    ).subscribe(
-      res => this.resp = res,
-      err => this.resp = err,
-    );
-    this.http.put(this.URL_BASE_BACKUP1 + '.json', currentFile, httpOptions).pipe(
-      catchError(this.handleError)
-    ).subscribe(
-      res => this.resp = res,
-      err => this.resp = err,
-    );
-    this.http.put(this.URL_BASE_BACKUP2 + '.json', currentFile, httpOptions).pipe(
-      catchError(this.handleError)
-    ).subscribe(
-      res => this.resp = res,
-      err => this.resp = err,
-    );
-    this.http.put(this.URL_BASE_BACKUP3 + '.json', currentFile, httpOptions).pipe(
-      catchError(this.handleError)
-    ).subscribe(
-      res => this.resp = res,
-      err => this.resp = err,
-    );
-  }
 
 }
