@@ -16,7 +16,7 @@ import { UserComponent } from './views/user/user.component';
 export const routes: Routes = [
   {
     path: '',
-    redirectTo: 'upload',
+    redirectTo: 'publish',
     pathMatch: 'full'
   },
   {
@@ -44,13 +44,13 @@ export const routes: Routes = [
     path: '',
     component: DefaultLayoutComponent,
     data: {
-      title: 'UB'
+      title: 'CUB'
     },
     children: [
       {
-        path: 'upload',
+        path: 'publish',
         data: {
-          title: 'Upload'
+          title: 'Compare and Publish'
         },
         component: UploadComponent
       },

@@ -26,6 +26,8 @@ export class UploadComponent {
 
   BOK_BASE_URI = 'https://ucgis-bok.web.app/';
 
+  bokSelected = '';
+
   constructor(private fileUploadService: FileUploadServiceService, public fileCS: FileCompareService, public afAuth: AngularFireAuth, private userService: UserService) {
     this.afAuth.auth.onAuthStateChanged(user => {
       if (user && (user.uid === 'zdDeVbNrfJZIv71BnI4YthkqSzT2' || user.uid === '7QFB2A7OI8d9zrRdGFQ9B8WADkC2' )) {
@@ -33,6 +35,7 @@ export class UploadComponent {
         this.ownUsrId = user.uid;
         this.hasPermissions = true;
         this.fileCS.compareBoK();
+     
       } else {
         this.isAnonymous = true;
         this.ownUsrId = null;
@@ -44,6 +47,19 @@ export class UploadComponent {
 
     //this.convertBoKAPIPreviousVersion();
 
+  }
+
+  ngAfterViewInit () {
+    setTimeout(() => {
+      console.log(this.fileCS.listKeys);
+      this.bokSelected = this.fileCS.listKeys[0];
+    }, 4000);
+ 
+  }
+
+  loadComparison() {
+    this.fileCS.resetComparison();
+    this.fileCS.compareBoK(this.bokSelected);
   }
 
   uploadFile(jsonInput: any) {
