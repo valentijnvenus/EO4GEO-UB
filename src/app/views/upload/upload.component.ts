@@ -279,10 +279,10 @@ export class UploadComponent {
 
     const fileToSave = { 'concepts': {}, 'relations': [], 'references': [], 'skills': [], 'contributors': [] };
 
-    fileToSave['updateDate'] = version.updateDate;
-    fileToSave['version'] = version.version;
+/*     fileToSave['updateDate'] = version.updateDate;
+    fileToSave['version'] = version.version; */
 
-    fileToSave.concepts['GIST'] = {
+/*     fileToSave.concepts['GIST'] = {
       name: 'Geographic Information Science and Technology',
       id: 'GIST',
       uri: this.BOK_BASE_URI + 'GIST',
@@ -291,7 +291,7 @@ export class UploadComponent {
       skills: [],
       contributors: []
     };
-    codeNameHash[0] = 'GIST';
+    codeNameHash[0] = 'GIST'; */
 
     version.concepts.forEach((c, k) => {
       if (c.code && c.code !== '') {

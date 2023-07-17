@@ -16,7 +16,7 @@ import { UserComponent } from './views/user/user.component';
 export const routes: Routes = [
   {
     path: '',
-    redirectTo: 'publish',
+    redirectTo: 'manage',
     pathMatch: 'full'
   },
   {
@@ -48,9 +48,9 @@ export const routes: Routes = [
     },
     children: [
       {
-        path: 'publish',
+        path: 'manage',
         data: {
-          title: 'Compare and Publish'
+          title: 'Manage BoK Versions'
         },
         component: UploadComponent
       },
