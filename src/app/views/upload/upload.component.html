@@ -5,183 +5,235 @@
         Compare BoK versions
       </h1>
 
+
+
       <div class="text-center" [hidden]="!isAnonymous">
-        <h5>You have limited functionality because you are not logged in with the right user. Log out and <a href="#"
-            routerLink="/login"> Login </a> to
-          use all functionality in the tool.
-        </h5>
+        <h5>You need to <a href="#" routerLink="/login"> log in </a> to manage BoK versions. </h5>
       </div>
 
-      <div class="row" *ngIf="fileCS.listKeys.length > 0 && !isAnonymous">
-        <div class="col-sm-6 col-md-6 text-right">
-          Compare against:
-        </div>
-        <div class="col-sm-6 col-md-3">
-          <ng-select [items]="fileCS.listKeys" name="fileCS.listKeys" bindLabel="name" [multiple]="false"
-            [(ngModel)]="bokSelected" (change)="loadComparison()">
-            <ng-template ng-optgroup-tmp let-item="item">
-              {{item}}
-            </ng-template>
-          </ng-select>
+      <div *ngIf="!isAnonymous" class="card card-accent-primary">
+
+        <!--         <div class="row" *ngIf="fileCS.listKeys.length > 0">
+          <div class="col-sm-6 col-md-6 text-right">
+            Compare against:
+          </div>
+          <div class="col-sm-6 col-md-3">
+            <ng-select [items]="fileCS.listKeys" name="fileCS.listKeys" bindLabel="name" [multiple]="false"
+              [(ngModel)]="bokSelected" (change)="loadComparison()">
+              <ng-template ng-optgroup-tmp let-item="item">
+                {{item}}
+              </ng-template>
+            </ng-select>
+          </div>
+
+        </div> -->
+
+        <div class="text-center" *ngIf="fileCS.loading">
+          <br>
+          <h5>Loading comparison ...</h5>
+
+          <app-loading-indicator style="margin: auto;"></app-loading-indicator>
+
         </div>
 
-      </div>
-
-      <div class="text-center" *ngIf="fileCS.loading && !isAnonymous">
         <br>
-        <h5>Loading comparison ...</h5>
+        <div class="">
+          <div class="row" *ngIf="!fileCS.loading">
 
-        <app-loading-indicator style="margin: auto;"></app-loading-indicator>
+            <div class="col-sm-12 col-md-4 offset-md-2 ">
+              <div class="card card-accent-secondary">
+                <h3 class="card-header">Current </h3>
+                <div class="card-body">
+                  <p>Total Concepts : {{fileCS.comparison.current.conceptsCount}}</p>
+                  <p>Total Skills : {{fileCS.comparison.current.skillsCount}}</p>
+                  <p>Total Relations : {{fileCS.comparison.current.relationsCount}}</p>
+                  <p>Total External Resouces : {{fileCS.comparison.current.externalresCount}}</p>
+                  <br>
+                  <br>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-sm-12 col-md-4">
+              <div class="card card-accent-secondary">
+                <div class="card-header">
+                  <ng-select [items]="fileCS.listKeys" name="fileCS.listKeys" bindLabel="name" [multiple]="false"
+                    [(ngModel)]="bokSelected" (change)="loadComparison()">
+                    <ng-template ng-optgroup-tmp let-item="item">
+                      {{item}}
+                    </ng-template>
+                  </ng-select>
+                </div>
+                <div class="card-body">
+
+                  <p>Total Concepts : {{fileCS.comparison.new.conceptsCount}} <span class="text-danger"
+                      *ngIf="fileCS.comparison.new.conceptsCount - fileCS.comparison.current.conceptsCount != 0"> (
+                      {{fileCS.comparison.new.conceptsCount - fileCS.comparison.current.conceptsCount > 0 ? '+' : ''}}
+                      {{fileCS.comparison.new.conceptsCount - fileCS.comparison.current.conceptsCount}}) </span> </p>
+                  <p>Total Skills : {{fileCS.comparison.new.skillsCount}} <span class="text-danger"
+                      *ngIf="fileCS.comparison.new.skillsCount - fileCS.comparison.current.skillsCount != 0"> (
+                      {{fileCS.comparison.new.skillsCount - fileCS.comparison.current.skillsCount > 0 ? '+' : ''}}
+                      {{fileCS.comparison.new.skillsCount - fileCS.comparison.current.skillsCount}}) </span> </p>
+                  <p>Total Relations : {{fileCS.comparison.new.relationsCount}} <span class="text-danger"
+                      *ngIf="fileCS.comparison.new.relationsCount - fileCS.comparison.current.relationsCount != 0"> (
+                      {{fileCS.comparison.new.relationsCount - fileCS.comparison.current.relationsCount > 0 ? '+' : ''}}
+                      {{fileCS.comparison.new.relationsCount - fileCS.comparison.current.relationsCount}}) </span> </p>
+                  <p>Total External Resouces : {{fileCS.comparison.new.externalresCount}} <span class="text-danger"
+                      *ngIf="fileCS.comparison.new.externalresCount - fileCS.comparison.current.externalresCount != 0">
+                      (
+                      {{fileCS.comparison.new.externalresCount - fileCS.comparison.current.externalresCount > 0 ? '+' :
+                      ''}}
+                      {{fileCS.comparison.new.externalresCount - fileCS.comparison.current.externalresCount}}) </span>
+                  </p>
+                  <div>
+                    <button type="button" class="btn btn-danger">Discard </button>
+                    <button type="button" class="btn btn-success float-right">Publish </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+
+          </div>
+        </div>
+
+        <div class="row" *ngIf="!fileCS.loading">
+          <div class="col-sm-12 col-md-8 offset-md-2">
+
+            <table class="table">
+              <thead>
+                <tr>
+                  <th scope="col">Concepts differences: <span
+                      tooltip="Concept name or concept code is different in both versions"
+                      class="badge badge-primary badge-pill">i</span> </th>
+                  <th scope="col">({{fileCS.comparison.addedConceptsIndex.length +
+                    fileCS.comparison.removedConceptsIndex.length}})
+                    <button type="button" class="float-right btn btn-link btn-xs"
+                      (click)="showCDS.classList.contains('hidden') ? showCDS.className = '' : showCDS.className = 'hidden' ">
+                      <i [tooltip]="showCDS.classList.contains('hidden')? 'Show' : 'Hide'"
+                        [ngClass]="showCDS.classList.contains('hidden')? 'fa fa-chevron-up' : 'fa fa-chevron-down'"></i>
+                    </button>
+                  </th>
+                </tr>
+              </thead>
+              <tbody #showCDS>
+                <tr *ngFor="let c of fileCS.comparison.removedConceptsIndex">
+                  <td>[{{fileCS.currentBoK.concepts[c].code}}] {{fileCS.currentBoK.concepts[c].name}}
+                    <span class="text-danger" *ngIf="fileCS.currentBoK.concepts[c].code == ' '">Warning: No code
+                      detected</span>
+                  </td>
+                  <td class="text-danger">(x)</td>
+                </tr>
+                <tr *ngFor="let c of fileCS.comparison.addedConceptsIndex">
+                  <td class="text-danger">(x)</td>
+                  <td>[{{fileCS.newBoK.concepts[c].code}}] {{fileCS.newBoK.concepts[c].name}}
+                    <span class="text-danger" *ngIf="fileCS.newBoK.concepts[c].code == ' '">Warning: No code
+                      detected</span>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+
+          </div>
+        </div>
+
+        <div class="row" *ngIf="!fileCS.loading && fileCS.comparison.new.loopingRelations.length > 0">
+          <div class="col-sm-12 col-md-8 offset-md-2">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th scope="col">Self referencing relations: <span
+                      tooltip="A relation that is pointing to the same concept which will be ignored"
+                      class="badge badge-primary badge-pill">i</span></th>
+                  <th scope="col">
+                  </th>
+                  <th>
+                    ({{fileCS.comparison.new.loopingRelations.length}})
+                    <button type="button" class="float-right btn btn-link btn-xs"
+                      (click)="showSRR.classList.contains('hidden') ? showSRR.className = '' : showSRR.className = 'hidden' ">
+                      <i [tooltip]="showSRR.classList.contains('hidden')? 'Show' : 'Hide'"
+                        [ngClass]="showSRR.classList.contains('hidden')? 'fa fa-chevron-up' : 'fa fa-chevron-down'"></i>
+                    </button>
+                  </th>
+                </tr>
+              </thead>
+              <tbody #showSRR>
+                <tr *ngFor="let rel of fileCS.comparison.new.loopingRelations">
+                  <td>[{{fileCS.newBoK.concepts[rel.source].code}}] {{fileCS.newBoK.concepts[rel.source].name}}
+                    <span class="text-danger" *ngIf="fileCS.newBoK.concepts[rel.source].code == ' '">Warning: No code
+                      detected</span>
+                  </td>
+                  <td>({{rel.relationName}})</td>
+                  <td>[{{fileCS.newBoK.concepts[rel.target].code}}] {{fileCS.newBoK.concepts[rel.target].name}}
+                    <span class="text-danger" *ngIf="fileCS.newBoK.concepts[rel.source].code == ' '">Warning: No code
+                      detected</span>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+
+          </div>
+        </div>
+
+        <div class="row" *ngIf="!fileCS.loading && fileCS.comparison.new.isolatedNodes.length > 0">
+          <div class="col-sm-12 col-md-8 offset-md-2">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th scope="col">Orphan concepts: <span
+                      tooltip="Concepts which are not connected to the root concept in the new version"
+                      class="badge badge-primary badge-pill">i</span></th>
+                  <th scope="col">({{fileCS.comparison.new.isolatedNodes.length}})
+                    <button type="button" class="float-right btn btn-link btn-xs"
+                      (click)="showOC.classList.contains('hidden') ? showOC.className = '' : showOC.className = 'hidden' ">
+                      <i [tooltip]="showOC.classList.contains('hidden')? 'Show' : 'Hide'"
+                        [ngClass]="showOC.classList.contains('hidden')? 'fa fa-chevron-up' : 'fa fa-chevron-down'"></i>
+                    </button>
+                  </th>
+                </tr>
+              </thead>
+              <tbody #showOC>
+                <tr *ngFor="let c of fileCS.comparison.new.isolatedNodes">
+                  <td>[{{c.code}}] {{c.name}}
+                    <span class="text-danger" *ngIf="c.code == ' '">Warning: No code
+                      detected</span>
+                  </td>
+                  <td></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="row" *ngIf="!fileCS.loading && fileCS.comparison.new.duplicatedCodes.length > 0">
+          <div class="col-sm-12 col-md-8 offset-md-2">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th scope="col">Duplicated codes: <span tooltip="Concept codes which are repeated in the new version"
+                      class="badge badge-primary badge-pill">i</span></th>
+                  <th scope="col">({{fileCS.comparison.new.duplicatedCodes.length}})
+                    <button type="button" class="float-right btn btn-link btn-xs"
+                      (click)="showDC.classList.contains('hidden') ? showDC.className = '' : showDC.className = 'hidden' ">
+                      <i [tooltip]="showDC.classList.contains('hidden')? 'Show' : 'Hide'"
+                        [ngClass]="showDC.classList.contains('hidden')? 'fa fa-chevron-up' : 'fa fa-chevron-down'"></i>
+                    </button>
+                  </th>
+                </tr>
+              </thead>
+              <tbody #showDC>
+                <tr *ngFor="let c of fileCS.comparison.new.duplicatedCodes">
+                  <td>[{{c}}]</td>
+                  <td></td>
+                </tr>
+              </tbody>
+            </table>
+
+          </div>
+        </div>
+
 
       </div>
-
-      <br>
-      <div class="row" *ngIf="!fileCS.loading && !isAnonymous">
-        <div class="col-sm-12 col-md-4 offset-md-2">
-          <h3>Current </h3>
-          <br>
-          <p>Total Concepts : {{fileCS.comparison.current.conceptsCount}}</p>
-          <p>Total Skills : {{fileCS.comparison.current.skillsCount}}</p>
-          <p>Total Relations : {{fileCS.comparison.current.relationsCount}}</p>
-          <p>Total External Resouces : {{fileCS.comparison.current.externalresCount}}</p>
-        </div>
-
-
-        <div class="col-sm-12 col-md-4">
-          <h3>New </h3>
-          <br>
-          <p>Total Concepts : {{fileCS.comparison.new.conceptsCount}} <span class="text-danger"
-              *ngIf="fileCS.comparison.new.conceptsCount - fileCS.comparison.current.conceptsCount != 0"> (
-              {{fileCS.comparison.new.conceptsCount - fileCS.comparison.current.conceptsCount > 0 ? '+' : ''}}
-              {{fileCS.comparison.new.conceptsCount - fileCS.comparison.current.conceptsCount}}) </span> </p>
-          <p>Total Skills : {{fileCS.comparison.new.skillsCount}} <span class="text-danger"
-              *ngIf="fileCS.comparison.new.skillsCount - fileCS.comparison.current.skillsCount != 0"> (
-              {{fileCS.comparison.new.skillsCount - fileCS.comparison.current.skillsCount > 0 ? '+' : ''}}
-              {{fileCS.comparison.new.skillsCount - fileCS.comparison.current.skillsCount}}) </span> </p>
-          <p>Total Relations : {{fileCS.comparison.new.relationsCount}} <span class="text-danger"
-              *ngIf="fileCS.comparison.new.relationsCount - fileCS.comparison.current.relationsCount != 0"> (
-              {{fileCS.comparison.new.relationsCount - fileCS.comparison.current.relationsCount > 0 ? '+' : ''}}
-              {{fileCS.comparison.new.relationsCount - fileCS.comparison.current.relationsCount}}) </span> </p>
-          <p>Total External Resouces : {{fileCS.comparison.new.externalresCount}} <span class="text-danger"
-              *ngIf="fileCS.comparison.new.externalresCount - fileCS.comparison.current.externalresCount != 0"> (
-              {{fileCS.comparison.new.externalresCount - fileCS.comparison.current.externalresCount > 0 ? '+' : ''}}
-              {{fileCS.comparison.new.externalresCount - fileCS.comparison.current.externalresCount}}) </span> </p>
-        </div>
-
-        <div class="col-sm-6 col-md-2">
-          <h3>Actions </h3>
-          <button type="button" class="btn btn-danger mr-4">Discard </button>
-          <button type="button" class="btn btn-success">Publish </button>
-        </div>
-      </div>
-
-      <div class="row" *ngIf="!fileCS.loading && !isAnonymous">
-        <div class="col-sm-12 col-md-8 offset-md-2">
-
-          <table class="table">
-            <thead>
-              <tr>
-                <th scope="col">Concepts differences: </th>
-                <th scope="col">({{fileCS.comparison.addedConceptsIndex.length +
-                  fileCS.comparison.removedConceptsIndex.length}})</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr *ngFor="let c of fileCS.comparison.removedConceptsIndex">
-                <td>[{{fileCS.currentBoK.concepts[c].code}}] {{fileCS.currentBoK.concepts[c].name}}
-                  <span class="text-danger" *ngIf="fileCS.currentBoK.concepts[c].code == ' '">Warning: No code
-                    detected</span>
-                </td>
-                <td class="text-danger">(x)</td>
-              </tr>
-              <tr *ngFor="let c of fileCS.comparison.addedConceptsIndex">
-                <td class="text-danger">(x)</td>
-                <td>[{{fileCS.newBoK.concepts[c].code}}] {{fileCS.newBoK.concepts[c].name}}
-                  <span class="text-danger" *ngIf="fileCS.newBoK.concepts[c].code == ' '">Warning: No code
-                    detected</span>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-
-        </div>
-      </div>
-
-      <div class="row" *ngIf="!fileCS.loading && fileCS.comparison.new.loopingRelations.length > 0 && !isAnonymous">
-        <div class="col-sm-12 col-md-8 offset-md-2">
-          <table class="table">
-            <thead>
-              <tr>
-                <th scope="col">Self referencing relations:</th>
-                <th scope="col">({{fileCS.comparison.new.loopingRelations.length}})</th>
-                <th></th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr *ngFor="let rel of fileCS.comparison.new.loopingRelations">
-                <td>[{{fileCS.newBoK.concepts[rel.source].code}}] {{fileCS.newBoK.concepts[rel.source].name}}
-                  <span class="text-danger" *ngIf="fileCS.newBoK.concepts[rel.source].code == ' '">Warning: No code
-                    detected</span>
-                </td>
-                <td>({{rel.relationName}})</td>
-                <td>[{{fileCS.newBoK.concepts[rel.target].code}}] {{fileCS.newBoK.concepts[rel.target].name}}
-                  <span class="text-danger" *ngIf="fileCS.newBoK.concepts[rel.source].code == ' '">Warning: No code
-                    detected</span>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-
-        </div>
-      </div>
-
-      <div class="row" *ngIf="!fileCS.loading && fileCS.comparison.new.isolatedNodes.length > 0 && !isAnonymous">
-        <div class="col-sm-12 col-md-8 offset-md-2">
-          <table class="table">
-            <thead>
-              <tr>
-                <th scope="col">Orphan concepts:</th>
-                <th scope="col">({{fileCS.comparison.new.isolatedNodes.length}})</th>
-                <th></th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr *ngFor="let c of fileCS.comparison.new.isolatedNodes">
-                <td>[{{c.code}}] {{c.name}}
-                  <span class="text-danger" *ngIf="c.code == ' '">Warning: No code
-                    detected</span>
-                </td>
-                <td></td>
-              </tr>
-            </tbody>
-          </table>
-
-        </div>
-      </div>
-
-      <div class="row" *ngIf="!fileCS.loading && fileCS.comparison.new.duplicatedCodes.length > 0 && !isAnonymous">
-        <div class="col-sm-12 col-md-8 offset-md-2">
-          <table class="table">
-            <thead>
-              <tr>
-                <th scope="col">Duplicated codes:</th>
-                <th scope="col">({{fileCS.comparison.new.duplicatedCodes.length}})</th>
-                <th></th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr *ngFor="let c of fileCS.comparison.new.duplicatedCodes">
-                <td>[{{c}}]</td>
-                <td></td>
-              </tr>
-            </tbody>
-          </table>
-
-        </div>
-      </div>
-
-
-
 
 
 

@@ -44,13 +44,13 @@ export const routes: Routes = [
     path: '',
     component: DefaultLayoutComponent,
     data: {
-      title: 'CUB'
+      title: 'BVMT'
     },
     children: [
       {
         path: 'manage',
         data: {
-          title: 'Manage BoK Versions'
+          title: 'BoK Version Management Tool'
         },
         component: UploadComponent
       },
