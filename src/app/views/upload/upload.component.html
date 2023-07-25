@@ -99,139 +99,145 @@
 
         <div class="row" *ngIf="!fileCS.loading">
           <div class="col-sm-12 col-md-8 offset-md-2">
-
-            <table class="table">
-              <thead>
-                <tr>
-                  <th scope="col">Concepts differences: <span
-                      tooltip="Concept name or concept code is different in both versions"
-                      class="badge badge-primary badge-pill">i</span> </th>
-                  <th scope="col">({{fileCS.comparison.addedConceptsIndex.length +
-                    fileCS.comparison.removedConceptsIndex.length}})
-                    <button type="button" class="float-right btn btn-link btn-xs"
-                      (click)="showCDS.classList.contains('hidden') ? showCDS.className = '' : showCDS.className = 'hidden' ">
-                      <i [tooltip]="showCDS.classList.contains('hidden')? 'Show' : 'Hide'"
-                        [ngClass]="showCDS.classList.contains('hidden')? 'fa fa-chevron-up' : 'fa fa-chevron-down'"></i>
-                    </button>
-                  </th>
-                </tr>
-              </thead>
-              <tbody #showCDS>
-                <tr *ngFor="let c of fileCS.comparison.removedConceptsIndex">
-                  <td>[{{fileCS.currentBoK.concepts[c].code}}] {{fileCS.currentBoK.concepts[c].name}}
-                    <span class="text-danger" *ngIf="fileCS.currentBoK.concepts[c].code == ' '">Warning: No code
-                      detected</span>
-                  </td>
-                  <td class="text-danger">(x)</td>
-                </tr>
-                <tr *ngFor="let c of fileCS.comparison.addedConceptsIndex">
-                  <td class="text-danger">(x)</td>
-                  <td>[{{fileCS.newBoK.concepts[c].code}}] {{fileCS.newBoK.concepts[c].name}}
-                    <span class="text-danger" *ngIf="fileCS.newBoK.concepts[c].code == ' '">Warning: No code
-                      detected</span>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-
+            <div class="card card-accent-secondary">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th scope="col">Concepts differences: <span
+                        tooltip="Concept name or concept code is different in both versions"
+                        class="badge badge-primary badge-pill">i</span> </th>
+                    <th scope="col">({{fileCS.comparison.addedConceptsIndex.length +
+                      fileCS.comparison.removedConceptsIndex.length}})
+                      <button type="button" class="float-right btn btn-link btn-xs"
+                        (click)="showCDS.classList.contains('hidden') ? showCDS.className = '' : showCDS.className = 'hidden' ">
+                        <i [tooltip]="showCDS.classList.contains('hidden')? 'Show' : 'Hide'"
+                          [ngClass]="showCDS.classList.contains('hidden')? 'fa fa-chevron-up' : 'fa fa-chevron-down'"></i>
+                      </button>
+                    </th>
+                  </tr>
+                </thead>
+                <tbody #showCDS>
+                  <tr *ngFor="let c of fileCS.comparison.removedConceptsIndex">
+                    <td>[{{fileCS.currentBoK.concepts[c].code}}] {{fileCS.currentBoK.concepts[c].name}}
+                      <span class="text-danger" *ngIf="fileCS.currentBoK.concepts[c].code == ' '">Warning: No code
+                        detected</span>
+                    </td>
+                    <td class="text-danger">(x)</td>
+                  </tr>
+                  <tr *ngFor="let c of fileCS.comparison.addedConceptsIndex">
+                    <td class="text-danger">(x)</td>
+                    <td>[{{fileCS.newBoK.concepts[c].code}}] {{fileCS.newBoK.concepts[c].name}}
+                      <span class="text-danger" *ngIf="fileCS.newBoK.concepts[c].code == ' '">Warning: No code
+                        detected</span>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
           </div>
         </div>
 
         <div class="row" *ngIf="!fileCS.loading && fileCS.comparison.new.loopingRelations.length > 0">
           <div class="col-sm-12 col-md-8 offset-md-2">
-            <table class="table">
-              <thead>
-                <tr>
-                  <th scope="col">Self referencing relations: <span
-                      tooltip="A relation that is pointing to the same concept which will be ignored"
-                      class="badge badge-primary badge-pill">i</span></th>
-                  <th scope="col">
-                  </th>
-                  <th>
-                    ({{fileCS.comparison.new.loopingRelations.length}})
-                    <button type="button" class="float-right btn btn-link btn-xs"
-                      (click)="showSRR.classList.contains('hidden') ? showSRR.className = '' : showSRR.className = 'hidden' ">
-                      <i [tooltip]="showSRR.classList.contains('hidden')? 'Show' : 'Hide'"
-                        [ngClass]="showSRR.classList.contains('hidden')? 'fa fa-chevron-up' : 'fa fa-chevron-down'"></i>
-                    </button>
-                  </th>
-                </tr>
-              </thead>
-              <tbody #showSRR>
-                <tr *ngFor="let rel of fileCS.comparison.new.loopingRelations">
-                  <td>[{{fileCS.newBoK.concepts[rel.source].code}}] {{fileCS.newBoK.concepts[rel.source].name}}
-                    <span class="text-danger" *ngIf="fileCS.newBoK.concepts[rel.source].code == ' '">Warning: No code
-                      detected</span>
-                  </td>
-                  <td>({{rel.relationName}})</td>
-                  <td>[{{fileCS.newBoK.concepts[rel.target].code}}] {{fileCS.newBoK.concepts[rel.target].name}}
-                    <span class="text-danger" *ngIf="fileCS.newBoK.concepts[rel.source].code == ' '">Warning: No code
-                      detected</span>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
+            <div class="card card-accent-secondary">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th scope="col">Self referencing relations: <span
+                        tooltip="A relation that is pointing to the same concept which will be ignored"
+                        class="badge badge-primary badge-pill">i</span></th>
+                    <th scope="col">
+                    </th>
+                    <th>
+                      ({{fileCS.comparison.new.loopingRelations.length}})
+                      <button type="button" class="float-right btn btn-link btn-xs"
+                        (click)="showSRR.classList.contains('hidden') ? showSRR.className = '' : showSRR.className = 'hidden' ">
+                        <i [tooltip]="showSRR.classList.contains('hidden')? 'Show' : 'Hide'"
+                          [ngClass]="showSRR.classList.contains('hidden')? 'fa fa-chevron-up' : 'fa fa-chevron-down'"></i>
+                      </button>
+                    </th>
+                  </tr>
+                </thead>
+                <tbody #showSRR>
+                  <tr *ngFor="let rel of fileCS.comparison.new.loopingRelations">
+                    <td>[{{fileCS.newBoK.concepts[rel.source].code}}] {{fileCS.newBoK.concepts[rel.source].name}}
+                      <span class="text-danger" *ngIf="fileCS.newBoK.concepts[rel.source].code == ' '">Warning: No code
+                        detected</span>
+                    </td>
+                    <td>({{rel.relationName}})</td>
+                    <td>[{{fileCS.newBoK.concepts[rel.target].code}}] {{fileCS.newBoK.concepts[rel.target].name}}
+                      <span class="text-danger" *ngIf="fileCS.newBoK.concepts[rel.source].code == ' '">Warning: No code
+                        detected</span>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
 
+            </div>
           </div>
         </div>
 
         <div class="row" *ngIf="!fileCS.loading && fileCS.comparison.new.isolatedNodes.length > 0">
           <div class="col-sm-12 col-md-8 offset-md-2">
-            <table class="table">
-              <thead>
-                <tr>
-                  <th scope="col">Orphan concepts: <span
-                      tooltip="Concepts which are not connected to the root concept in the new version"
-                      class="badge badge-primary badge-pill">i</span></th>
-                  <th scope="col">({{fileCS.comparison.new.isolatedNodes.length}})
-                    <button type="button" class="float-right btn btn-link btn-xs"
-                      (click)="showOC.classList.contains('hidden') ? showOC.className = '' : showOC.className = 'hidden' ">
-                      <i [tooltip]="showOC.classList.contains('hidden')? 'Show' : 'Hide'"
-                        [ngClass]="showOC.classList.contains('hidden')? 'fa fa-chevron-up' : 'fa fa-chevron-down'"></i>
-                    </button>
-                  </th>
-                </tr>
-              </thead>
-              <tbody #showOC>
-                <tr *ngFor="let c of fileCS.comparison.new.isolatedNodes">
-                  <td>[{{c.code}}] {{c.name}}
-                    <span class="text-danger" *ngIf="c.code == ' '">Warning: No code
-                      detected</span>
-                  </td>
-                  <td></td>
-                </tr>
-              </tbody>
-            </table>
+            <div class="card card-accent-secondary">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th scope="col">Orphan concepts: <span
+                        tooltip="Concepts which are not connected to the root concept in the new version"
+                        class="badge badge-primary badge-pill">i</span></th>
+                    <th scope="col">({{fileCS.comparison.new.isolatedNodes.length}})
+                      <button type="button" class="float-right btn btn-link btn-xs"
+                        (click)="showOC.classList.contains('hidden') ? showOC.className = '' : showOC.className = 'hidden' ">
+                        <i [tooltip]="showOC.classList.contains('hidden')? 'Show' : 'Hide'"
+                          [ngClass]="showOC.classList.contains('hidden')? 'fa fa-chevron-up' : 'fa fa-chevron-down'"></i>
+                      </button>
+                    </th>
+                  </tr>
+                </thead>
+                <tbody #showOC>
+                  <tr *ngFor="let c of fileCS.comparison.new.isolatedNodes">
+                    <td>[{{c.code}}] {{c.name}}
+                      <span class="text-danger" *ngIf="c.code == ' '">Warning: No code
+                        detected</span>
+                    </td>
+                    <td></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
           </div>
         </div>
 
         <div class="row" *ngIf="!fileCS.loading && fileCS.comparison.new.duplicatedCodes.length > 0">
           <div class="col-sm-12 col-md-8 offset-md-2">
-            <table class="table">
-              <thead>
-                <tr>
-                  <th scope="col">Duplicated codes: <span tooltip="Concept codes which are repeated in the new version"
-                      class="badge badge-primary badge-pill">i</span></th>
-                  <th scope="col">({{fileCS.comparison.new.duplicatedCodes.length}})
-                    <button type="button" class="float-right btn btn-link btn-xs"
-                      (click)="showDC.classList.contains('hidden') ? showDC.className = '' : showDC.className = 'hidden' ">
-                      <i [tooltip]="showDC.classList.contains('hidden')? 'Show' : 'Hide'"
-                        [ngClass]="showDC.classList.contains('hidden')? 'fa fa-chevron-up' : 'fa fa-chevron-down'"></i>
-                    </button>
-                  </th>
-                </tr>
-              </thead>
-              <tbody #showDC>
-                <tr *ngFor="let c of fileCS.comparison.new.duplicatedCodes">
-                  <td>[{{c}}]</td>
-                  <td></td>
-                </tr>
-              </tbody>
-            </table>
+            <div class="card card-accent-secondary">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th scope="col">Duplicated codes: <span
+                        tooltip="Concept codes which are repeated in the new version"
+                        class="badge badge-primary badge-pill">i</span></th>
+                    <th scope="col">({{fileCS.comparison.new.duplicatedCodes.length}})
+                      <button type="button" class="float-right btn btn-link btn-xs"
+                        (click)="showDC.classList.contains('hidden') ? showDC.className = '' : showDC.className = 'hidden' ">
+                        <i [tooltip]="showDC.classList.contains('hidden')? 'Show' : 'Hide'"
+                          [ngClass]="showDC.classList.contains('hidden')? 'fa fa-chevron-up' : 'fa fa-chevron-down'"></i>
+                      </button>
+                    </th>
+                  </tr>
+                </thead>
+                <tbody #showDC>
+                  <tr *ngFor="let c of fileCS.comparison.new.duplicatedCodes">
+                    <td>[{{c}}]</td>
+                    <td></td>
+                  </tr>
+                </tbody>
+              </table>
 
+            </div>
           </div>
         </div>
-
 
       </div>
 
