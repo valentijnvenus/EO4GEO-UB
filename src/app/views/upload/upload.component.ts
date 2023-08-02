@@ -1,10 +1,11 @@
-import { Component, OnInit, OnDestroy, Input, ViewChild } from '@angular/core';
+import { Component, OnInit, OnDestroy, Input, ViewChild, NgZone } from '@angular/core';
 import { FileUploadServiceService } from '../../services/fileUploadService.service';
 import { FileCompareService } from '../../services/fileCompareService.service';
 import { ModalDirective } from 'ngx-bootstrap/modal';
 import { AngularFireAuth } from '@angular/fire/auth';
 import { User, UserService } from '../../services/user.service';
 import { Organization, OrganizationService } from '../../services/organization.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-upload',
@@ -28,14 +29,20 @@ export class UploadComponent {
 
   bokSelected = '';
 
-  constructor(private fileUploadService: FileUploadServiceService, public fileCS: FileCompareService, public afAuth: AngularFireAuth, private userService: UserService) {
+  constructor(
+    private fileUploadService: FileUploadServiceService, 
+    public fileCS: FileCompareService, 
+    public afAuth: AngularFireAuth, 
+    private userService: UserService, 
+    private router: Router,
+    private ngZone: NgZone) {
     this.afAuth.auth.onAuthStateChanged(user => {
-      if (user && (user.uid === 'zdDeVbNrfJZIv71BnI4YthkqSzT2' || user.uid === '7QFB2A7OI8d9zrRdGFQ9B8WADkC2' )) {
+      if (user && (user.uid === 'zdDeVbNrfJZIv71BnI4YthkqSzT2' || user.uid === '7QFB2A7OI8d9zrRdGFQ9B8WADkC2')) {
         this.isAnonymous = user.isAnonymous;
         this.ownUsrId = user.uid;
         this.hasPermissions = true;
         this.fileCS.compareBoK();
-     
+
       } else {
         this.isAnonymous = true;
         this.ownUsrId = null;
@@ -49,12 +56,13 @@ export class UploadComponent {
 
   }
 
-  ngAfterViewInit () {
+  ngAfterViewInit() {
+    this.fileCS.resetComparison();
     setTimeout(() => {
       console.log(this.fileCS.listKeys);
       this.bokSelected = this.fileCS.listKeys[0];
     }, 4000);
- 
+
   }
 
   loadComparison() {
@@ -72,10 +80,10 @@ export class UploadComponent {
           this.afAuth.auth.currentUser.getIdToken(true).then((idToken) => {
             let newFile = this.convertFile(fileReader.result);
             newFile = this.cleanIsolatedNodes(newFile);
-            const newFileBoKAPI = this.convertFileBoKAPI(newFile);
+            //  const newFileBoKAPI = this.convertFileBoKAPI(newFile);
             if (!(newFile.hasOwnProperty('Error'))) {
               console.log(newFile);
-              fileService.uploadFile(newFile, idToken);
+              // fileService.uploadFile(newFile, idToken);
               this.errorUpload = true;
               this.successUpload = false;
             } else {
@@ -97,6 +105,26 @@ export class UploadComponent {
       this.errorText = e;
     }
   }
+
+  discardBoK() {
+    this.fileCS.discardBoKDraft();
+    setTimeout(() => {
+      console.log(this.fileCS.listKeys);
+      this.bokSelected = this.fileCS.listKeys[0];
+    }, 5000);
+  }
+
+  publishBoK() {
+    var newBok = this.fileCS.getNewBoKConverted();
+
+    this.afAuth.auth.currentUser.getIdToken(true).then((idToken) => {
+      var res = this.fileUploadService.uploadNewBoK(newBok, idToken);
+    // console.log(res);
+      this.ngZone.run(() => this.router.navigateByUrl('managecurrent')).then();
+    });
+
+  }
+
   convertFile(file: any): any {
     const fileToSave = { 'concepts': [], 'relations': [], 'references': [], 'skills': [], 'contributors': [] };
     const obj = JSON.parse(file);
@@ -104,26 +132,27 @@ export class UploadComponent {
     if (obj.hasOwnProperty('nodes')) {
       fileToSave.concepts[0] = {};
       Object.keys(obj['nodes']).forEach(k => {
-        if (obj['nodes'][k].label === '[GIST] Geographic Information Science and Technology' && obj['nodes'][k].numberOfLinks > 0) {
-          fileToSave.concepts[0] = {
-            'code': obj['nodes'][k].label.split(']', 1)[0].split('[', 2)[1],
-            'name': obj['nodes'][k].label.split(']')[1].trim(),
-            'description': obj['nodes'][k].description
-          };
-          gistNode = Number(k);
-        } else {
-          fileToSave.concepts.push({
-            'code': (obj['nodes'][k].label.split(']', 1)[0].split('[', 2)[1] != null &&
-              obj['nodes'][k].label.split(']', 1)[0].split('[', 2)[1].length > 0) ?
-              obj['nodes'][k].label.split(']', 1)[0].split('[', 2)[1] : ' ',
-            'name': (obj['nodes'][k].label.split(']')[1] != null && obj['nodes'][k].label.split(']')[1].length > 0) ?
-              obj['nodes'][k].label.split(']')[1].trim() : ' ',
-            'description': (obj['nodes'][k].description != null && obj['nodes'][k].description.length > 0) ?
-              obj['nodes'][k].description : ' ',
-            'selfAssesment': (obj['nodes'][k].status != null && obj['nodes'][k].status.length > 0) ?
-              obj['nodes'][k].status : ' '
-          });
-        }
+
+        gistNode = Number(k);
+
+        fileToSave.concepts.push({
+          'code': (obj['nodes'][k].label.split(']', 1)[0].split('[', 2)[1] != null &&
+            obj['nodes'][k].label.split(']', 1)[0].split('[', 2)[1].length > 0) ?
+            obj['nodes'][k].label.split(']', 1)[0].split('[', 2)[1] : ' ',
+          'name': (obj['nodes'][k].label.split(']')[1] != null && obj['nodes'][k].label.split(']')[1].length > 0) ?
+            obj['nodes'][k].label.split(']')[1].trim() : ' ',
+          'definition': (obj['nodes'][k].definition != null && obj['nodes'][k].definition.length > 0) ?
+            obj['nodes'][k].definition : ' ',
+          'explanation': (obj['nodes'][k].explanation != null && obj['nodes'][k].explanation.length > 0) ?
+            obj['nodes'][k].explanation : ' ',
+          'introduction': (obj['nodes'][k].introduction != null && obj['nodes'][k].introduction.length > 0) ?
+            obj['nodes'][k].introduction : ' ',
+          'description': (obj['nodes'][k].description != null && obj['nodes'][k].description.length > 0) ?
+            obj['nodes'][k].description : ' ',
+          'selfAssesment': (obj['nodes'][k].status != null && obj['nodes'][k].status.length > 0) ?
+            obj['nodes'][k].status : ' '
+        });
+
       });
     } else {
       return { 'Error': 'Invalid Format in concepts section' };
@@ -198,7 +227,7 @@ export class UploadComponent {
           });
           fileToSave.references.push({
             'concepts': nodeToAdd.length > 0 ? nodeToAdd : ' ',
-            'name': obj['external_resources'][k].title.length > 0 ? obj['external_resources'][k].title : ' ',
+            'name': obj['external_resources'][k].name.length > 0 ? obj['external_resources'][k].name : ' ',
             'description': obj['external_resources'][k].description.length > 0 ? obj['external_resources'][k].description : ' ',
             'url': (obj['external_resources'][k].url !== null && obj['external_resources'][k].url.length > 0) ?
               obj['external_resources'][k].url : ' '
@@ -208,11 +237,11 @@ export class UploadComponent {
     } else {
       return { 'Error': 'Invalid Format in external_resources section' };
     }
-    if (obj.hasOwnProperty('skills')) {
-      Object.keys(obj['skills']).forEach(k => {
+    if (obj.hasOwnProperty('learning_outcomes')) {
+      Object.keys(obj['learning_outcomes']).forEach(k => {
         const nodeToAdd = [];
-        if (obj['skills'][k].nodes.length > 0) {
-          obj['skills'][k].nodes.forEach(node => {
+        if (obj['learning_outcomes'][k].nodes.length > 0) {
+          obj['learning_outcomes'][k].nodes.forEach(node => {
             if (node < gistNode) {
               nodeToAdd.push(node + 1);
             } else if (node === gistNode) {
@@ -223,54 +252,54 @@ export class UploadComponent {
           });
           fileToSave.skills.push({
             'concepts': nodeToAdd.length > 0 ? nodeToAdd : ' ',
-            'name': obj['skills'][k].name.length > 0 ? obj['skills'][k].name : ' ',
+            'name': obj['learning_outcomes'][k].label.length > 0 ? obj['learning_outcomes'][k].label : ' ',
           });
         }
       });
     } else {
       return { 'Error': 'Invalid Format in learning_outcomes section' };
     }
-    if (obj.hasOwnProperty('contributors')) {
-      Object.keys(obj['contributors']).forEach(k => {
-        const nodeToAdd = [];
-        if (obj['contributors'][k].nodes.length > 0) {
-          obj['contributors'][k].nodes.forEach(node => {
-            if (node < gistNode) {
-              nodeToAdd.push(node + 1);
-            } else if (node === gistNode) {
-              nodeToAdd.push(0);
-            } else {
-              nodeToAdd.push(node);
+    /*     if (obj.hasOwnProperty('contributors')) {
+          Object.keys(obj['contributors']).forEach(k => {
+            const nodeToAdd = [];
+            if (obj['contributors'][k].nodes.length > 0) {
+              obj['contributors'][k].nodes.forEach(node => {
+                if (node < gistNode) {
+                  nodeToAdd.push(node + 1);
+                } else if (node === gistNode) {
+                  nodeToAdd.push(0);
+                } else {
+                  nodeToAdd.push(node);
+                }
+              });
+              fileToSave.contributors.push({
+                'concepts': nodeToAdd.length > 0 ? nodeToAdd : ' ',
+                'name': obj['contributors'][k].name.length > 0 ? obj['contributors'][k].name : ' ',
+                'description': obj['contributors'][k].description.length > 0 ? obj['contributors'][k].description : ' ',
+                'url': (obj['contributors'][k].url !== null && obj['contributors'][k].url.length > 0) ?
+                  obj['contributors'][k].url : ' '
+              });
             }
           });
-          fileToSave.contributors.push({
-            'concepts': nodeToAdd.length > 0 ? nodeToAdd : ' ',
-            'name': obj['contributors'][k].name.length > 0 ? obj['contributors'][k].name : ' ',
-            'description': obj['contributors'][k].description.length > 0 ? obj['contributors'][k].description : ' ',
-            'url': (obj['contributors'][k].url !== null && obj['contributors'][k].url.length > 0) ?
-              obj['contributors'][k].url : ' '
-          });
-        }
-      });
-    } else {
-      return { 'Error': 'Invalid Format in contributors section' };
-    }
+        } else {
+          return { 'Error': 'Invalid Format in contributors section' };
+        } */
     return fileToSave;
   }
 
-  convertBoKAPIPreviousVersion() {
-    this.fileUploadService.fullBoK().subscribe((fullBoK) => {
-
-      const allV = Object.keys(fullBoK);
-
-      allV.forEach(v => {
-        // codeNameHash = {};
-        const fileToSave = this.convertFileBoKAPI(fullBoK[v]);
-        this.fileUploadService.uploadBoKAPIFile(v, fileToSave);
+  /*   convertBoKAPIPreviousVersion() {
+      this.fileUploadService.fullBoK().subscribe((fullBoK) => {
+  
+        const allV = Object.keys(fullBoK);
+  
+        allV.forEach(v => {
+          // codeNameHash = {};
+          const fileToSave = this.convertFileBoKAPI(fullBoK[v]);
+          this.fileUploadService.uploadBoKAPIFile(v, fileToSave);
+        });
       });
-    });
-
-  }
+  
+    } */
 
 
   convertFileBoKAPI(version: any): any {
@@ -279,19 +308,19 @@ export class UploadComponent {
 
     const fileToSave = { 'concepts': {}, 'relations': [], 'references': [], 'skills': [], 'contributors': [] };
 
-/*     fileToSave['updateDate'] = version.updateDate;
-    fileToSave['version'] = version.version; */
+    /*     fileToSave['updateDate'] = version.updateDate;
+        fileToSave['version'] = version.version; */
 
-/*     fileToSave.concepts['GIST'] = {
-      name: 'Geographic Information Science and Technology',
-      id: 'GIST',
-      uri: this.BOK_BASE_URI + 'GIST',
-      relations: [],
-      references: [],
-      skills: [],
-      contributors: []
-    };
-    codeNameHash[0] = 'GIST'; */
+    /*     fileToSave.concepts['GIST'] = {
+          name: 'Geographic Information Science and Technology',
+          id: 'GIST',
+          uri: this.BOK_BASE_URI + 'GIST',
+          relations: [],
+          references: [],
+          skills: [],
+          contributors: []
+        };
+        codeNameHash[0] = 'GIST'; */
 
     version.concepts.forEach((c, k) => {
       if (c.code && c.code !== '') {
@@ -436,6 +465,6 @@ export class UploadComponent {
   }
 
   recoverv6() {
-  //  this.fileUploadService.recoverV6();
+    //  this.fileUploadService.recoverV6();
   }
 }

@@ -1,0 +1,83 @@
+<div class="animated fadeIn">
+  <div class="row">
+    <div class="col-sm-12 col-md-12">
+      <h1 class="title">
+        Manage BoK current versions
+      </h1>
+
+      <div class="text-center" [hidden]="!isAnonymous">
+        <h5>You need to <a href="#" routerLink="/login"> log in </a> to manage BoK versions. </h5>
+      </div>
+
+      <div *ngIf="!isAnonymous" class="card card-accent-primary">
+
+        <div class="text-center" *ngIf="fileCS.loading">
+          <br>
+          <h5>Loading current versions ...</h5>
+
+          <app-loading-indicator style="margin: auto;"></app-loading-indicator>
+
+        </div>
+
+        <br>
+        <div class="">
+          <div class="row" *ngIf="!fileCS.loading">
+
+            <div *ngFor="let v of fileCS.listKeysAll, index as i" class="col-sm-12 col-md-8 offset-md-2 ">
+              <div class="card card-accent-secondary">
+                <h3 class="card-header text-center"> {{v}} version - {{fileCS.allBoKs[v].updateDate}}</h3>
+                <div class="card-body">
+                  <div class="row">
+                    <div class="col-md-6">
+                      <p>Total Topics : {{fileCS.allBoKs[v].concepts.length}}</p>
+                      <p>Total Learning Objectives : {{fileCS.allBoKs[v].skills.length}}</p>
+                      <p>Total Relations : {{fileCS.allBoKs[v].relations.length}}</p>
+                      <p>Total References : {{fileCS.allBoKs[v].references.length}}</p>
+                      <p>Version number : {{fileCS.allBoKs[v].version}}</p>
+                      <p>Last Updated : {{fileCS.allBoKs[v].last_updated | date}}</p>
+                    </div>
+                    <div *ngIf="v == 'current'" class="col-md-6 text-center">
+                      <p>Warning! Deleting this version will make the previous version the current one.</p>
+                      <button type="button" class="btn btn-danger"
+                        [disabled]="fileCS.listKeysAll.length == 1" (click)="deleteModal.show()">Delete</button>
+                      <p *ngIf="fileCS.listKeysAll.length == 1">You cannot delete the only version.</p>
+                    </div>
+                  </div>
+
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+
+
+      <div bsModal #deleteModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-danger" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h4 class="modal-title">Are you sure you want to continue?</h4>
+              <button type="button" class="close" (click)="deleteModal.hide()" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              <p>You are about the delete the current online version of the BoK. This will irreversible delete this BoK
+                version, and
+                install the previous BoK version as current version. Are you sure you want to continue?</p>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-primary" (click)="deleteModal.hide()">Close</button>
+              <button type="button" class="btn btn-danger" (click)="deleteVersionBoK(); deleteModal.hide()">Delete
+                version</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>

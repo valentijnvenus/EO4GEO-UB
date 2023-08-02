@@ -142,10 +142,12 @@ h1 {
   font-family: 'Roboto Slab', serif;
   color: #333c4e;
 }
+
 .title {
   text-align: center;
   margin-bottom: 2rem;
 }
+
 p {
   font-family: 'Open Sans', sans-serif;
   color: $gray-body;
@@ -160,6 +162,7 @@ popover-container {
   min-width: max-content !important;
   max-width: none !important;
 }
+
 // ng-select from newsp, hide selected options inside the dropdown
 .ng-select.ng-select-multiple .ng-select-container .ng-value-container .ng-value {
   display: none !important;
@@ -170,3 +173,6 @@ popover-container {
   border: none !important;
 }
 
+a {
+  color: #2e96b4;
+}

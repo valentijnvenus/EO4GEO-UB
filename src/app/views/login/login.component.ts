@@ -40,7 +40,7 @@ export class LoginComponent implements OnInit {
 
   ngOnInit() {
     this.route.queryParams
-      .subscribe(params => this.return = params['return'] || '/manage');
+      .subscribe(params => this.return = params['return'] || '/managenew');
     if (this.afAuth.auth.currentUser) {
       // User is signed in.
       this.ngZone.run(() => this.router.navigateByUrl(this.return)).then();

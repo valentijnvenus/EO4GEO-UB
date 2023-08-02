@@ -22,7 +22,8 @@
           aria-label="Button group with nested dropdown">
 
           <a class="btn" href="#" routerLink="/user"> Hello {{username}}! </a>
-          <a class="btn" href="#" routerLink="/manage"><i class="icon-home"></i>&nbsp;Home</a >
+          <a class="btn" href="#" routerLink="/managenew"><i class="icon-tag"></i>&nbsp;Manage new version</a >
+          <a class="btn" href="#" routerLink="/managecurrent"><i class="icon-settings"></i>&nbsp;Manage current version</a >
           <a class="btn" href="#" routerLink="/login" (click)="logOut()"><i class="icon-logout"></i> <span [innerText]="isAnonymous ? '&nbsp;Login' : '&nbsp;Log Out'"></span></a>
         </div>
       </li>
