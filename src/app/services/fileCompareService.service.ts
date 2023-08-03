@@ -125,8 +125,13 @@ export class FileCompareService {
         this.loading = true;
         console.log("MANAGE CURRENT VERSIONS")
         if (allBoks) {
-            this.listKeysAll = Object.keys(allBoks);
             this.allBoKs = allBoks;
+
+            this.listKeysAll = Object.keys(allBoks);
+            // To have the versions in chronological descending order
+            this.listKeysAll.sort((a, b) => a.slice(1, a.length + 1).localeCompare(b.slice(1, a.length + 1), undefined, { numeric: true }))
+            this.listKeysAll.reverse();
+
             this.ngZone.run(() => {
                 this.loading = false;
 
@@ -135,6 +140,10 @@ export class FileCompareService {
             this.getCurrentVersions().subscribe((allBoK) => {
                 this.allBoKs = allBoK;
                 this.listKeysAll = Object.keys(allBoK);
+
+                // To have the versions in chronological descending order
+                this.listKeysAll.sort((a, b) => a.slice(1, a.length + 1).localeCompare(b.slice(1, a.length + 1), undefined, { numeric: true }))
+                this.listKeysAll.reverse();
 
                 this.ngZone.run(() => {
                     this.loading = false;
@@ -250,13 +259,11 @@ export class FileCompareService {
 
     }
 
-
-
-
     convertExportJSON(obj: any): any {
-        const fileToSave = { 'concepts': [], 'relations': [], 'references': [], 'skills': [], 'contributors': [], 'prior_knowledge': [], 'keywords': [], 'last_updated': null, 'date_created': null };
+        const fileToSave = { 'concepts': [], 'relations': [], 'references': [], 'skills': [], 'contributors': [], 'prior_knowledge': [], 'keywords': [], 'last_updated': null, 'date_created': null, 'date_published': null };
         fileToSave.last_updated = obj.lastUpdated ? obj.lastUpdated : '';
         fileToSave.date_created = obj.dateCreated ? obj.dateCreated : '';
+        fileToSave.date_published = obj.datePublished ? obj.datePublished : '';
         if (obj.hasOwnProperty('nodes')) {
             obj['nodes'].forEach(k => {
                 fileToSave.concepts.push({

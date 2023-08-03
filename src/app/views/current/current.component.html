@@ -25,7 +25,8 @@
 
             <div *ngFor="let v of fileCS.listKeysAll, index as i" class="col-sm-12 col-md-8 offset-md-2 ">
               <div class="card card-accent-secondary">
-                <h3 class="card-header text-center"> {{v}} version - {{fileCS.allBoKs[v].updateDate}}</h3>
+                <h3 class="card-header text-center"> {{v}} version - {{fileCS.allBoKs[v].last_updated | date:'short'}}
+                </h3>
                 <div class="card-body">
                   <div class="row">
                     <div class="col-md-6">
@@ -34,12 +35,12 @@
                       <p>Total Relations : {{fileCS.allBoKs[v].relations.length}}</p>
                       <p>Total References : {{fileCS.allBoKs[v].references.length}}</p>
                       <p>Version number : {{fileCS.allBoKs[v].version}}</p>
-                      <p>Last Updated : {{fileCS.allBoKs[v].last_updated | date}}</p>
+                      <p>Last Updated : {{fileCS.allBoKs[v].last_updated | date:'short'}}</p>
                     </div>
                     <div *ngIf="v == 'current'" class="col-md-6 text-center">
                       <p>Warning! Deleting this version will make the previous version the current one.</p>
-                      <button type="button" class="btn btn-danger"
-                        [disabled]="fileCS.listKeysAll.length == 1" (click)="deleteModal.show()">Delete</button>
+                      <button type="button" class="btn btn-danger" [disabled]="fileCS.listKeysAll.length == 1"
+                        (click)="deleteModal.show()">Delete</button>
                       <p *ngIf="fileCS.listKeysAll.length == 1">You cannot delete the only version.</p>
                     </div>
                   </div>
@@ -47,10 +48,8 @@
                 </div>
               </div>
             </div>
-
           </div>
         </div>
-
       </div>
 
 

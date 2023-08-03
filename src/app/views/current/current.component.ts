@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, NgZone, OnInit } from '@angular/core';
 import { AngularFireAuth } from '@angular/fire/auth';
 import { FileCompareService } from '../../services/fileCompareService.service';
 import { FileUploadServiceService } from '../../services/fileUploadService.service';
@@ -17,17 +17,17 @@ export class CurrentComponent implements OnInit {
   hasPermissions = null;
 
   constructor(
-    public fileCS: FileCompareService, 
-    public fileUS: FileUploadServiceService, 
-    public afAuth: AngularFireAuth, 
-    private userService: UserService) {
+    public fileCS: FileCompareService,
+    public fileUS: FileUploadServiceService,
+    public afAuth: AngularFireAuth,
+    private ngZone: NgZone) {
     this.afAuth.auth.onAuthStateChanged(user => {
       if (user && (user.uid === 'zdDeVbNrfJZIv71BnI4YthkqSzT2' || user.uid === '7QFB2A7OI8d9zrRdGFQ9B8WADkC2')) {
         this.isAnonymous = user.isAnonymous;
         this.ownUsrId = user.uid;
         this.hasPermissions = true;
-        console.log("MANAGE CURRENT VERSIONS")
-        console.log(this.fileUS.allBoKs)
+        // console.log("MANAGE CURRENT VERSIONS")
+        //  console.log(this.fileUS.allBoKs)
         this.fileCS.manageCurrentVersions(this.fileUS.allBoKs);
 
       } else {
@@ -40,10 +40,20 @@ export class CurrentComponent implements OnInit {
   ngOnInit() {
   }
 
-  deleteVersionBoK () {
-    
-  }
+  deleteVersionBoK() {
+    this.fileCS.loading = true
+    this.afAuth.auth.currentUser.getIdToken(true).then((idToken) => {
 
-  allBoKs
+      delete this.fileCS.allBoKs['current'];
+      this.fileCS.allBoKs['current'] = this.fileCS.allBoKs[this.fileCS.listKeysAll[1]];
+      delete this.fileCS.allBoKs[this.fileCS.listKeysAll[1]];
+
+      var res = this.fileUS.deleteCurrentVersion(this.fileCS.allBoKs, idToken);
+
+      this.fileCS.manageCurrentVersions(this.fileCS.allBoKs);
+      this.fileCS.loading = false;
+    })
+  };
+
 
 }

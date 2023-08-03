@@ -116,6 +116,7 @@
                   </p>
 
                   <p>Last Updated : {{fileCS.newBoK.last_updated | date:'short'}}</p>
+                  <p *ngIf="fileCS.newBoK.date_published">Date Pushed : {{fileCS.newBoK.date_published | date:'short'}}</p>
 
                 </div>
                 <div class="card-body">

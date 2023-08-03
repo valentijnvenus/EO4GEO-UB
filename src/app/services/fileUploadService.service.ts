@@ -137,6 +137,28 @@ export class FileUploadServiceService {
     })
   }
 
+  deleteCurrentVersion(allBoKs, token: any) {
+    // Remove current current the new version and move the current one to vNum
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json'
+      })
+    };
+
+    const currentFile = JSON.stringify(allBoKs);
+
+    const vUrl = this.URL_BASE + '.json?auth=' + token;
+    this.http.put(vUrl, currentFile, httpOptions).pipe(
+      catchError(this.handleError)
+    ).subscribe(
+      res => this.resp = res,
+      err => this.resp = err,
+    );
+  }
+
+
+
+
   /*   uploadBoKAPIFile(newVersion, file: any) {
       const httpOptions = {
         headers: new HttpHeaders({

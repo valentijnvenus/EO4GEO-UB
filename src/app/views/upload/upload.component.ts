@@ -115,12 +115,18 @@ export class UploadComponent {
   }
 
   publishBoK() {
+    this.fileCS.loading = true;
     var newBok = this.fileCS.getNewBoKConverted();
 
     this.afAuth.auth.currentUser.getIdToken(true).then((idToken) => {
       var res = this.fileUploadService.uploadNewBoK(newBok, idToken);
-    // console.log(res);
-      this.ngZone.run(() => this.router.navigateByUrl('managecurrent')).then();
+      setTimeout(() => {
+        this.ngZone.run(() => {
+          this.router.navigateByUrl('managecurrent').then();
+          this.fileCS.loading = false;
+        });
+      }, 2000);
+     
     });
 
   }
