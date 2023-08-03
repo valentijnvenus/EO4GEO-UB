@@ -25,7 +25,7 @@ export class UploadComponent {
 
   codeNameHash = {};
 
-  BOK_BASE_URI = 'https://ucgis-bok.web.app/';
+  BOK_BASE_URI = 'https://gistbok-bok.ucgis.org/';
 
   bokSelected = '';
 
