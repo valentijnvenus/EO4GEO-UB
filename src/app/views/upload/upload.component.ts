@@ -30,19 +30,18 @@ export class UploadComponent {
   bokSelected = '';
 
   constructor(
-    private fileUploadService: FileUploadServiceService, 
-    public fileCS: FileCompareService, 
-    public afAuth: AngularFireAuth, 
-    private userService: UserService, 
+    private fileUploadService: FileUploadServiceService,
+    public fileCS: FileCompareService,
+    public afAuth: AngularFireAuth,
+    private userService: UserService,
     private router: Router,
     private ngZone: NgZone) {
+    this.fileCS.loading = true;
     this.afAuth.auth.onAuthStateChanged(user => {
       if (user && (user.uid === 'zdDeVbNrfJZIv71BnI4YthkqSzT2' || user.uid === '7QFB2A7OI8d9zrRdGFQ9B8WADkC2')) {
         this.isAnonymous = user.isAnonymous;
         this.ownUsrId = user.uid;
         this.hasPermissions = true;
-        this.fileCS.compareBoK();
-
       } else {
         this.isAnonymous = true;
         this.ownUsrId = null;
@@ -57,7 +56,8 @@ export class UploadComponent {
   }
 
   ngAfterViewInit() {
-    this.fileCS.resetComparison();
+    this.fileCS.loading = true;
+    this.loadComparison();
     setTimeout(() => {
       console.log(this.fileCS.listKeys);
       this.bokSelected = this.fileCS.listKeys[0];
@@ -126,7 +126,7 @@ export class UploadComponent {
           this.fileCS.loading = false;
         });
       }, 2000);
-     
+
     });
 
   }
@@ -470,7 +470,4 @@ export class UploadComponent {
     }
   }
 
-  recoverv6() {
-    //  this.fileUploadService.recoverV6();
-  }
 }

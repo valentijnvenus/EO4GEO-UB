@@ -123,7 +123,8 @@ export class FileCompareService {
 
     manageCurrentVersions(allBoks = null) {
         this.loading = true;
-        console.log("MANAGE CURRENT VERSIONS")
+        console.log("MANAGE CURRENT VERSIONS CS")
+        console.log(allBoks)
         if (allBoks) {
             this.allBoKs = allBoks;
 

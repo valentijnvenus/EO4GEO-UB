@@ -4,6 +4,8 @@ import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { HttpHeaders } from '@angular/common/http';
 import { catchError } from 'rxjs/operators';
 import { formatDate } from '@angular/common';
+import * as v1 from '../../assets/json/ucgis-v1.json';
+
 
 @Injectable({
   providedIn: 'root'
@@ -193,6 +195,29 @@ export class FileUploadServiceService {
 
   handleError(error: Error) {
     return throwError(error);
+  }
+
+  recoverV1() {
+    this.allBoKs = v1['default'];
+
+    console.log("thos.allBoks US")
+    console.log(this.allBoKs)
+
+    const currentFile = JSON.stringify((v1 as any).default);
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json'
+      })
+    };
+
+    console.log('recover v1');
+
+    this.http.put(this.URL_BASE + '.json', currentFile, httpOptions).pipe(
+      catchError(this.handleError)
+    ).subscribe(
+      res => this.resp = res,
+      err => this.resp = err,
+    );
   }
 
 

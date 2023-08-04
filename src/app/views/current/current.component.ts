@@ -26,7 +26,7 @@ export class CurrentComponent implements OnInit {
         this.isAnonymous = user.isAnonymous;
         this.ownUsrId = user.uid;
         this.hasPermissions = true;
-        // console.log("MANAGE CURRENT VERSIONS")
+         console.log("MANAGE CURRENT VERSIONS from constructor")
         //  console.log(this.fileUS.allBoKs)
         this.fileCS.manageCurrentVersions(this.fileUS.allBoKs);
 
@@ -41,7 +41,7 @@ export class CurrentComponent implements OnInit {
   }
 
   deleteVersionBoK() {
-    this.fileCS.loading = true
+    this.fileCS.loading = true;
     this.afAuth.auth.currentUser.getIdToken(true).then((idToken) => {
 
       delete this.fileCS.allBoKs['current'];
@@ -53,7 +53,18 @@ export class CurrentComponent implements OnInit {
       this.fileCS.manageCurrentVersions(this.fileCS.allBoKs);
       this.fileCS.loading = false;
     })
-  };
+  }
+
+  recoverv1() {
+    this.fileCS.loading = true;
+    this.fileUS.recoverV1();
+    setTimeout(() => {
+      console.log("this.fileUs.allBoKs")
+      console.log(this.fileUS.allBoKs)
+      this.fileCS.manageCurrentVersions(this.fileUS.allBoKs);
+    }, 1000);
+
+  }
 
 
 }
