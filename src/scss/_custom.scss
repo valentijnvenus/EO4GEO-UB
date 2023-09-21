@@ -3,56 +3,63 @@
 // Bok Concepts colors
 
 .bok-AM {
-  background-color: #1f77b4 !important;
-  color: #faf9f8;
+  background-color: #9999F8;
+  color: #23282c;
 }
-.bok-CF {
-  background-color: #2ca02c !important;
-  color: #faf9f8;
+
+.bok-CP {
+  background-color: #AEB9C8;
+  color: #23282c;
 }
+
 .bok-CV {
-  background-color: #d62728 !important;
-  color: #faf9f8;
+  background-color: #F19E70;
+  color: #23282c;
 }
+
 .bok-DA {
-  background-color: #8c564b !important;
-  color: #faf9f8;
+  background-color: #4EAEEA;
+  color: #23282c;
 }
+
+.bok-DC {
+  background-color: #FBE7A3;
+  color: #23282c;
+}
+
 .bok-DM {
-  background-color: #bcbd22 !important;
-  color: #faf9f8;
+  background-color: #B1CF95;
+  color: #23282c;
 }
-.bok-DN {
-  background-color: #8c564b !important;
-  color: #faf9f8;
+
+.bok-FC {
+  background-color: #F19E9C;
+  color: #23282c;
 }
-.bok-GC {
-  background-color: #17becf !important;
-  color: #faf9f8;
-}
-.bok-GD {
-  background-color: #ff7f0e !important;
-  color: #faf9f8;
-}
-.bok-GI {
-  background-color: #7f7f7f !important;
-  color: #faf9f8;
-}
+
 .bok-GS {
-  background-color: #e377c2 !important;
-  color: #faf9f8;
+  background-color: #439798;
+  color: #23282c;
 }
-.bok-OI {
-  background-color: #9467bd !important;
-  color: #faf9f8;
+
+.bok-KE {
+  background-color: #E4EEDC;
+  color: #23282c;
 }
-.bok-WB {
-  background-color: #7f7f7f !important;
-  color: #faf9f8;
+
+.bok-PD {
+  background-color: #A3C1E3;
+  color: #23282c;
 }
+
+.bok-UC {
+  background-color: #e4e4e4;
+  color: #23282c;
+}
+
 .bok-no {
-  background-color: #7f7f7f !important;
-  color: #faf9f8;
+  background-color: #e4e4e4 !important;
+  color: #23282c;
 }
 
 /*
@@ -133,10 +140,12 @@ h1 {
   font-family: 'Roboto Slab', serif;
   color: #333c4e;
 }
+
 .title {
   text-align: center;
   margin-bottom: 2rem;
 }
+
 p {
   font-family: 'Open Sans', sans-serif;
   color: $gray-body;
@@ -151,6 +160,7 @@ popover-container {
   min-width: max-content !important;
   max-width: none !important;
 }
+
 // ng-select from newsp, hide selected options inside the dropdown
 .ng-select.ng-select-multiple .ng-select-container .ng-value-container .ng-value {
   display: none !important;
@@ -161,3 +171,6 @@ popover-container {
   border: none !important;
 }
 
+a {
+  color: #2e96b4;
+}

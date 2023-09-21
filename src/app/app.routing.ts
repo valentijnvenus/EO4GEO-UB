@@ -9,6 +9,7 @@ import { P500Component } from './views/error/500.component';
 import { LoginComponent } from './views/login/login.component';
 
 import { UploadComponent } from './views/upload/upload.component';
+import { CurrentComponent } from './views/current/current.component';
 
 import { AngularFireAuthGuard } from '@angular/fire/auth-guard';
 import { UserComponent } from './views/user/user.component';
@@ -16,7 +17,7 @@ import { UserComponent } from './views/user/user.component';
 export const routes: Routes = [
   {
     path: '',
-    redirectTo: 'upload',
+    redirectTo: 'managenew',
     pathMatch: 'full'
   },
   {
@@ -44,15 +45,22 @@ export const routes: Routes = [
     path: '',
     component: DefaultLayoutComponent,
     data: {
-      title: 'UB'
+      title: 'BVMT'
     },
     children: [
       {
-        path: 'upload',
+        path: 'managenew',
         data: {
-          title: 'Upload'
+          title: 'BoK Version Management Tool'
         },
         component: UploadComponent
+      },
+      {
+        path: 'managecurrent',
+        data: {
+          title: 'BoK Version Management Tool'
+        },
+        component: CurrentComponent
       },
       {
         path: 'user',

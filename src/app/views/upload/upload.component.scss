@@ -1,7 +1,7 @@
 .no-padding {
-    padding-left: 0;
-    padding-right: 0;
-  }
+  padding-left: 0;
+  padding-right: 0;
+}
 
 .text-level {
   color: #1a80b6;
@@ -9,4 +9,21 @@
   font-weight: bold;
   padding-left: 1em;
   font-size: smaller;
+}
+
+.table th,
+.table td {
+  border-top: none;
+}
+
+.table thead th {
+  font-size: large;
+}
+
+.table {
+  color: #6b7379;
+}
+
+.hidden {
+  display: none;
 }

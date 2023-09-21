@@ -1,9 +1,9 @@
 {
   "name": "upload-bok",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "contributors": [],
-  "homepage": "http://eo4geo.uji.es/ub",
-  "copyright": "Copyright 2019",
+  "homepage": "http://ucgis-tools.web.app",
+  "copyright": "Copyright 2023",
   "license": "MIT",
   "scripts": {
     "ng": "ng",

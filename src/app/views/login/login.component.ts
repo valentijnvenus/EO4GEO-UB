@@ -40,7 +40,7 @@ export class LoginComponent implements OnInit {
 
   ngOnInit() {
     this.route.queryParams
-      .subscribe(params => this.return = params['return'] || '/upload');
+      .subscribe(params => this.return = params['return'] || '/managenew');
     if (this.afAuth.auth.currentUser) {
       // User is signed in.
       this.ngZone.run(() => this.router.navigateByUrl(this.return)).then();
@@ -98,7 +98,7 @@ export class LoginComponent implements OnInit {
 
   forgotPwd() {
     const actionCodeSettings = {
-      url: 'https://eo4geo-cdt.web.app/#/login', // the domain has to be added to firebase console whitelist
+      url: 'https://ucgis-tools-cdt.web.app/#/login', // the domain has to be added to firebase console whitelist
       handleCodeInApp: false
     };
 
