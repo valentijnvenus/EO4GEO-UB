@@ -25,7 +25,7 @@ export class UploadComponent {
 
   codeNameHash = {};
 
-  BOK_BASE_URI = 'https://gistbok-bok.ucgis.org/';
+  BOK_BASE_URI = 'http://bok.eo4geo.eu/';
 
   bokSelected = '';
 
@@ -38,7 +38,7 @@ export class UploadComponent {
     private ngZone: NgZone) {
     this.fileCS.loading = true;
     this.afAuth.auth.onAuthStateChanged(user => {
-      if (user && (user.uid === 'zdDeVbNrfJZIv71BnI4YthkqSzT2' || user.uid === '7QFB2A7OI8d9zrRdGFQ9B8WADkC2')) {
+      if (user && (user.uid === 'k3otaNhyTMYg0lvph0TP0EPE3pV2')) {
         this.isAnonymous = user.isAnonymous;
         this.ownUsrId = user.uid;
         this.hasPermissions = true;

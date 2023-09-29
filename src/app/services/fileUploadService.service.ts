@@ -4,7 +4,7 @@ import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { HttpHeaders } from '@angular/common/http';
 import { catchError } from 'rxjs/operators';
 import { formatDate } from '@angular/common';
-import * as v1 from '../../assets/json/ucgis-v1.json';
+import * as v7 from '../../assets/json/eo4geo-v7.json';
 
 
 @Injectable({
@@ -14,7 +14,7 @@ export class FileUploadServiceService {
   constructor(private http: HttpClient) { }
 
 
-  public URL_BASE = 'https://ucgis-bok-default-rtdb.firebaseio.com/';
+  public URL_BASE = 'https://eo4geo-uji.firebaseio.com/';
   /*   public URL_BASE_BOKAPI = 'https://eo4geo-bok.firebaseio.com/';
     public URL_BASE_BACKUP1 = 'https://findinbok.firebaseio.com/';
     public URL_BASE_BACKUP2 = 'https://eo4geo-uji-backup.firebaseio.com/';
@@ -197,20 +197,19 @@ export class FileUploadServiceService {
     return throwError(error);
   }
 
-  recoverV1() {
-    this.allBoKs = v1['default'];
+  recoverV7() {
+    this.allBoKs = v7['default'];
 
-    console.log("thos.allBoks US")
     console.log(this.allBoKs)
 
-    const currentFile = JSON.stringify((v1 as any).default);
+    const currentFile = JSON.stringify((v7 as any).default);
     const httpOptions = {
       headers: new HttpHeaders({
         'Content-Type': 'application/json'
       })
     };
 
-    console.log('recover v1');
+    console.log('recover v7');
 
     this.http.put(this.URL_BASE + '.json', currentFile, httpOptions).pipe(
       catchError(this.handleError)

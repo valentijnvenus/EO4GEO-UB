@@ -47,7 +47,7 @@ export class UserComponent implements OnInit {
   recoverPwd() {
 
     const actionCodeSettings = {
-      url: 'https://ucgis-tools-cdt.web.app/#/user', // the domain has to be added to firebase console whitelist
+      url: 'https://eo4geo-cdt.web.app/#/user', // the domain has to be added to firebase console whitelist
       handleCodeInApp: false
     };
 

@@ -22,11 +22,11 @@ export class CurrentComponent implements OnInit {
     public afAuth: AngularFireAuth,
     private ngZone: NgZone) {
     this.afAuth.auth.onAuthStateChanged(user => {
-      if (user && (user.uid === 'zdDeVbNrfJZIv71BnI4YthkqSzT2' || user.uid === '7QFB2A7OI8d9zrRdGFQ9B8WADkC2')) {
+      if (user && (user.uid === 'k3otaNhyTMYg0lvph0TP0EPE3pV2')) {
         this.isAnonymous = user.isAnonymous;
         this.ownUsrId = user.uid;
         this.hasPermissions = true;
-         console.log("MANAGE CURRENT VERSIONS from constructor")
+        console.log("MANAGE CURRENT VERSIONS from constructor")
         //  console.log(this.fileUS.allBoKs)
         this.fileCS.manageCurrentVersions(this.fileUS.allBoKs);
 
@@ -55,9 +55,9 @@ export class CurrentComponent implements OnInit {
     })
   }
 
-  recoverv1() {
+  recoverV7() {
     this.fileCS.loading = true;
-    this.fileUS.recoverV1();
+    this.fileUS.recoverV7();
     setTimeout(() => {
       console.log("this.fileUs.allBoKs")
       console.log(this.fileUS.allBoKs)

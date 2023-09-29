@@ -11,10 +11,15 @@ import { formatDate } from '@angular/common';
 export class FileCompareService {
     constructor(private http: HttpClient, private ngZone: NgZone) { }
 
-    public URL_BASE = 'https://ucgis-bok-default-rtdb.firebaseio.com/';
-    public URL_BASE_BOKAPI = 'https://ucgis-api-default-rtdb.firebaseio.com/';
-    public URL_BASE_BACKUP1 = 'https://ucgis-bok-backup-default-rtdb.firebaseio.com/';
-    public URL_BASE_LTB_EXPORT = 'https://ucgis-bok-import-default-rtdb.firebaseio.com/';
+    public URL_BASE = 'https://eo4geo-uji.firebaseio.com/';
+    public URL_BASE_BOKAPI = 'https://eo4geo-bok.firebaseio.com/';
+
+    public URL_BASE_BACKUP1 = 'https://findinbok.firebaseio.com/';
+    public URL_BASE_BACKUP2 = 'https://eo4geo-uji-backup.firebaseio.com/';
+    public URL_BASE_BACKUP3 = 'https://eo4geo-uji-backup2-default-rtdb.europe-west1.firebasedatabase.app/'
+
+    public URL_BASE_LTB_EXPORT = 'https://eo4geo-bok-import-default-rtdb.europe-west1.firebasedatabase.app/';
+
 
     public loading = true;
     public hasError = false;
@@ -319,12 +324,13 @@ export class FileCompareService {
         }
         if (obj.hasOwnProperty('externalResources')) {
             obj['externalResources'].forEach(k => {
-                fileToSave.references.push({
-                    'concepts': k.nodes.length > 0 ? k.nodes : [],
-                    'name': k.title.length > 0 ? k.title : ' ',
-                    'description': k.description.length > 0 ? k.description : ' ',
-                    'url': (k.url !== null && k.url.length > 0) ? k.url : ' '
-                });
+                if (k.nodes)
+                    fileToSave.references.push({
+                        'concepts': k.nodes.length > 0 ? k.nodes : [],
+                        'name': k.title.length > 0 ? k.title : ' ',
+                        'description': k.description.length > 0 ? k.description : ' ',
+                        'url': (k.url !== null && k.url.length > 0) ? k.url : ' '
+                    });
             });
 
         } else {
@@ -332,13 +338,13 @@ export class FileCompareService {
         }
         if (obj.hasOwnProperty('learningOutcomes')) {
             obj['learningOutcomes'].forEach(k => {
-                fileToSave.skills.push({
-                    'concepts': k.nodes.length > 0 ? k.nodes : [],
-                    'name': k.name.length > 0 ? k.name : ' ',
-                    'content': k.content.length > 0 ? k.content : ' ',
-                    'number': k.number != null ? k.number : ' '
-                });
-
+                if (k.nodes)
+                    fileToSave.skills.push({
+                        'concepts': k.nodes.length > 0 ? k.nodes : [],
+                        'name': k.name.length > 0 ? k.name : ' ',
+                        'content': k.content.length > 0 ? k.content : ' ',
+                        'number': k.number != null ? k.number : ' '
+                    });
             });
 
         } else {

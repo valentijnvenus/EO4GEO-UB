@@ -98,7 +98,7 @@ export class LoginComponent implements OnInit {
 
   forgotPwd() {
     const actionCodeSettings = {
-      url: 'https://ucgis-tools-cdt.web.app/#/login', // the domain has to be added to firebase console whitelist
+      url: 'https://eo4geo-cdt.web.app/#/login', // the domain has to be added to firebase console whitelist
       handleCodeInApp: false
     };
 
