@@ -38,10 +38,19 @@
       <div>
         <br><br>
         <h5>
-         Click this button to recover until v6 in the BoK
+         Click this button to recover until v7 in the BoK
         </h5>
 
-        <input class="btn btn-primary" type="button" value="Recover v6" (click)="recoverv6()" [disabled]="!hasPermissions">
+        <input class="btn btn-primary" type="button" value="Recover v7" (click)="recoverv7()" [disabled]="!hasPermissions">
+
+      </div>
+      <div>
+        <br><br>
+        <h5>
+         Click this button to force the creation of the full BoK API 
+        </h5>
+
+        <input class="btn btn-primary" type="button" value="Force API creation" (click)="forceBoKAPICreation()" [disabled]="!hasPermissions">
 
       </div>
     </div>

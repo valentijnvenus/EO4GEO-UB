@@ -39,9 +39,11 @@ export class UploadComponent {
 
     // Only first time to load all existing versions
 
-    //this.convertBoKAPIPreviousVersion();
+    //  this.convertBoKAPIPreviousVersion();
 
   }
+
+
 
   uploadFile(jsonInput: any) {
     try {
@@ -164,11 +166,11 @@ export class UploadComponent {
     } else {
       return { 'Error': 'Invalid Format in relations section' };
     }
-    if (obj.hasOwnProperty('external_resources')) {
-      Object.keys(obj['external_resources']).forEach(k => {
+    if (obj.hasOwnProperty('externalResources')) {
+      Object.keys(obj['externalResources']).forEach(k => {
         const nodeToAdd = [];
-        if (obj['external_resources'][k].nodes.length > 0) {
-          obj['external_resources'][k].nodes.forEach(node => {
+        if (obj['externalResources'][k].nodes.length > 0) {
+          obj['externalResources'][k].nodes.forEach(node => {
             if (node < gistNode) {
               nodeToAdd.push(node + 1);
             } else if (node === gistNode) {
@@ -179,21 +181,21 @@ export class UploadComponent {
           });
           fileToSave.references.push({
             'concepts': nodeToAdd.length > 0 ? nodeToAdd : ' ',
-            'name': obj['external_resources'][k].title.length > 0 ? obj['external_resources'][k].title : ' ',
-            'description': obj['external_resources'][k].description.length > 0 ? obj['external_resources'][k].description : ' ',
-            'url': (obj['external_resources'][k].url !== null && obj['external_resources'][k].url.length > 0) ?
-              obj['external_resources'][k].url : ' '
+            'name': obj['externalResources'][k].title.length > 0 ? obj['externalResources'][k].title : ' ',
+            'description': obj['externalResources'][k].description.length > 0 ? obj['externalResources'][k].description : ' ',
+            'url': (obj['externalResources'][k].url !== null && obj['externalResources'][k].url.length > 0) ?
+              obj['externalResources'][k].url : ' '
           });
         }
       });
     } else {
       return { 'Error': 'Invalid Format in external_resources section' };
     }
-    if (obj.hasOwnProperty('skills')) {
-      Object.keys(obj['skills']).forEach(k => {
+    if (obj.hasOwnProperty('learningOutcomes')) {
+      Object.keys(obj['learningOutcomes']).forEach(k => {
         const nodeToAdd = [];
-        if (obj['skills'][k].nodes.length > 0) {
-          obj['skills'][k].nodes.forEach(node => {
+        if (obj['learningOutcomes'][k].nodes.length > 0) {
+          obj['learningOutcomes'][k].nodes.forEach(node => {
             if (node < gistNode) {
               nodeToAdd.push(node + 1);
             } else if (node === gistNode) {
@@ -204,7 +206,7 @@ export class UploadComponent {
           });
           fileToSave.skills.push({
             'concepts': nodeToAdd.length > 0 ? nodeToAdd : ' ',
-            'name': obj['skills'][k].name.length > 0 ? obj['skills'][k].name : ' ',
+            'name': obj['learningOutcomes'][k].name.length > 0 ? obj['learningOutcomes'][k].name : ' ',
           });
         }
       });
@@ -253,6 +255,9 @@ export class UploadComponent {
 
   }
 
+  forceBoKAPICreation() {
+    this.convertBoKAPIPreviousVersion();
+  }
 
   convertFileBoKAPI(version: any): any {
 
@@ -416,7 +421,7 @@ export class UploadComponent {
     }
   }
 
-  recoverv6() {
-    this.fileUploadService.recoverV6();
+  recoverv7() {
+    this.fileUploadService.recoverV7();
   }
 }
