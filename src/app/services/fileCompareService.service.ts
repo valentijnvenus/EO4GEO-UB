@@ -12,11 +12,6 @@ export class FileCompareService {
     constructor(private http: HttpClient, private ngZone: NgZone) { }
 
     public URL_BASE = 'https://eo4geo-uji.firebaseio.com/';
-    public URL_BASE_BOKAPI = 'https://eo4geo-bok.firebaseio.com/';
-
-    public URL_BASE_BACKUP1 = 'https://findinbok.firebaseio.com/';
-    public URL_BASE_BACKUP2 = 'https://eo4geo-uji-backup.firebaseio.com/';
-    public URL_BASE_BACKUP3 = 'https://eo4geo-uji-backup2-default-rtdb.europe-west1.firebasedatabase.app/'
 
     public URL_BASE_LTB_EXPORT = 'https://eo4geo-bok-import-default-rtdb.europe-west1.firebasedatabase.app/';
 
