@@ -4,6 +4,7 @@ import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { HttpHeaders } from '@angular/common/http';
 import { catchError } from 'rxjs/operators';
 import { formatDate } from '@angular/common';
+import { environment } from '../../environments/environment';
 
 @Injectable({
     providedIn: 'root'
@@ -11,9 +12,9 @@ import { formatDate } from '@angular/common';
 export class FileCompareService {
     constructor(private http: HttpClient, private ngZone: NgZone) { }
 
-    public URL_BASE = 'https://eo4geo-uji.firebaseio.com/';
+    public URL_BASE = environment.URL_BASE;
 
-    public URL_BASE_LTB_EXPORT = 'https://eo4geo-bok-import-default-rtdb.europe-west1.firebasedatabase.app/';
+    public URL_BASE_LTB_EXPORT = environment.URL_BASE_LTB_EXPORT;
 
 
     public loading = true;

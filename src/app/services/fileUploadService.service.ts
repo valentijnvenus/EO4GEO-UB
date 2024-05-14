@@ -5,7 +5,7 @@ import { HttpHeaders } from '@angular/common/http';
 import { catchError } from 'rxjs/operators';
 import { formatDate } from '@angular/common';
 import * as v7 from '../../assets/json/eo4geo-v7.json';
-
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
@@ -14,7 +14,7 @@ export class FileUploadServiceService {
   constructor(private http: HttpClient) { }
 
 
-  public URL_BASE = 'https://eo4geo-uji.firebaseio.com/';
+  public URL_BASE = environment.URL_BASE;
 
   public allBoKs = null;
   public resp = {};
