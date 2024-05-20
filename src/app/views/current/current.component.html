@@ -52,12 +52,12 @@
             <div class="col-sm-12 col-md-8 offset-md-2 text-center">
               <br><br>
               <h5>
-                Click this button to restore version v7 of the BoK. Warning! This will irreversible delete all other
+                Click this button to restore the BoK version from the backup. Warning! This will irreversibly delete all other
                 versions of the
                 BoK!
               </h5>
 
-              <input class="btn btn-primary" type="button" value="Recover v7" (click)="restoreModal.show()"
+              <input class="btn btn-primary" type="button" value="Recover from backup" (click)="restoreModal.show()"
                 [disabled]="!hasPermissions">
               <br><br>
             </div>
@@ -109,7 +109,7 @@
             </div>
             <div class="modal-footer">
               <button type="button" class="btn btn-primary" (click)="restoreModal.hide()">Close</button>
-              <button type="button" class="btn btn-danger" (click)="recoverV7(); restoreModal.hide()">Restore
+              <button type="button" class="btn btn-danger" (click)="recoverFromBackup(); restoreModal.hide()">Restore
                 v1</button>
             </div>
           </div>

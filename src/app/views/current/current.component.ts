@@ -55,15 +55,16 @@ export class CurrentComponent implements OnInit {
     })
   }
 
-  recoverV7() {
+  recoverFromBackup() {
     this.fileCS.loading = true;
-    this.fileUS.recoverV7();
-    setTimeout(() => {
-      console.log("this.fileUs.allBoKs")
-      console.log(this.fileUS.allBoKs)
-      this.fileCS.manageCurrentVersions(this.fileUS.allBoKs);
-    }, 1000);
-
+    this.afAuth.auth.currentUser.getIdToken(true).then((idToken) => {
+      this.fileUS.recoverFromBackup(idToken);
+      setTimeout(() => {
+        console.log("this.fileUs.allBoKs")
+        console.log(this.fileUS.allBoKs)
+        this.fileCS.manageCurrentVersions(this.fileUS.allBoKs);
+      }, 1000);
+    });
   }
 
 

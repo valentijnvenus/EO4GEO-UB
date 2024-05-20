@@ -4,7 +4,6 @@ import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { HttpHeaders } from '@angular/common/http';
 import { catchError } from 'rxjs/operators';
 import { formatDate } from '@angular/common';
-import * as v7 from '../../assets/json/eo4geo-v7.json';
 import { environment } from '../../environments/environment';
 
 @Injectable({
@@ -15,6 +14,7 @@ export class FileUploadServiceService {
 
 
   public URL_BASE = environment.URL_BASE;
+  public URL_BACKUP = environment.URL_BACKUP;
 
   public allBoKs = null;
   public resp = {};
@@ -96,21 +96,19 @@ export class FileUploadServiceService {
     return throwError(error);
   }
 
-  recoverV7() {
-    this.allBoKs = v7['default'];
+  recoverFromBackup(token: any) {
+    this.allBoKs = this.http.get(this.URL_BACKUP + '.json')
 
-    console.log(this.allBoKs)
-
-    const currentFile = JSON.stringify((v7 as any).default);
+    const currentFile = JSON.stringify(this.allBoKs);
     const httpOptions = {
       headers: new HttpHeaders({
         'Content-Type': 'application/json'
       })
     };
 
-    console.log('recover v7');
+    console.log('Recover from backup');
 
-    this.http.put(this.URL_BASE + '.json', currentFile, httpOptions).pipe(
+    this.http.put(this.URL_BASE + '.json?auth=' + token, currentFile, httpOptions).pipe(
       catchError(this.handleError)
     ).subscribe(
       res => {
