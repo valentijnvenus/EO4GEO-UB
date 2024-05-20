@@ -2,7 +2,7 @@
   <div class="row">
     <div class="col-sm-12 col-md-12">
       <h1 class="title">
-        Manage BoK current versions
+        Manage BoK versions
       </h1>
 
       <div class="text-center" [hidden]="!isAnonymous">
@@ -25,7 +25,7 @@
 
             <div *ngFor="let v of fileCS.listKeysAll, index as i" class="col-sm-12 col-md-8 offset-md-2 ">
               <div class="card card-accent-secondary">
-                <h3 class="card-header text-center"> {{v}} version - {{fileCS.allBoKs[v].last_updated | date:'short'}}
+                <h3 class="card-header text-center"> {{v}} version - {{fileCS.allBoKs[v].creationYear}}
                 </h3>
                 <div class="card-body">
                   <div class="row">
@@ -34,8 +34,8 @@
                       <p>Total Learning Objectives : {{fileCS.allBoKs[v].skills.length}}</p>
                       <p>Total Relations : {{fileCS.allBoKs[v].relations.length}}</p>
                       <p>Total References : {{fileCS.allBoKs[v].references.length}}</p>
-                      <p>Version number : {{fileCS.allBoKs[v].version}}</p>
-                      <p>Last Updated : {{fileCS.allBoKs[v].last_updated | date:'short'}}</p>
+                      <p>Version number : {{v === 'current' ? fileCS.allBoKs[v].version : v.substring(1)}}</p>
+                      <p>Last Updated : {{v === 'current' ? (fileCS.allBoKs[v].updateDate | date:'short') : fileCS.allBoKs[v].creationYear}}</p>
                     </div>
                     <div *ngIf="v == 'current'" class="col-md-6 text-center">
                       <p>Warning! Deleting this version will make the previous version the current one.</p>

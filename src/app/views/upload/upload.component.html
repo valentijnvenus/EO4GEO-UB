@@ -2,7 +2,7 @@
   <div class="row">
     <div class="col-sm-12 col-md-12">
       <h1 class="title">
-        Compare BoK versions
+        Manage new BoK versions
       </h1>
 
 
@@ -41,26 +41,24 @@
           <div class="row" *ngIf="!fileCS.loading">
 
             <div class="col-sm-12 col-md-4 offset-md-2 ">
-              <div class="card card-accent-secondary">
+              <div class="card card-accent-secondary mt-3">
                 <div class="card-header mb-3">
-                  <h3>Current BoK version </h3>
-                  <a href="https://bok.eo4geo.eu" target="_blank" rel="noopener noreferrer">Link to current
-                    version</a>
+                  <h3>Current online BoK</h3>
+                  <a href="https://bok.eo4geo.eu" target="_blank" rel="noopener noreferrer">Current Version : v{{fileCS.currentBoK.version}}</a>
                 </div>
                 <div class="card-body">
                   <p>Total Topics : {{fileCS.comparison.current.conceptsCount}}</p>
                   <p>Total Learning Objectives : {{fileCS.comparison.current.skillsCount}}</p>
                   <p>Total Relations : {{fileCS.comparison.current.relationsCount}}</p>
                   <p>Total References : {{fileCS.comparison.current.externalresCount}}</p>
-                  <p>Version number : {{fileCS.currentBoK.version}}</p>
-                  <p style="margin-bottom: 90px;">Last Updated : {{fileCS.currentBoK.last_updated | date:'short'}}</p>
+                  <p style="margin-bottom: 90px;">Last Updated : {{fileCS.currentBoK.updateDate | date:'short'}}</p>
 
                 </div>
               </div>
             </div>
 
             <div class="col-sm-12 col-md-4">
-              <div class="card card-accent-secondary">
+              <div class="card card-accent-secondary mt-3">
                 <div class="card-header">
                   <h3>Draft BoK version </h3>
                   <ng-select [items]="fileCS.listKeys" name="fileCS.listKeys" bindLabel="name" [multiple]="false"
