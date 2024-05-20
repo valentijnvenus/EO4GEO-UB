@@ -46,7 +46,10 @@ export class FileUploadServiceService {
       this.http.put(vUrl, currentFile, httpOptions).pipe(
         catchError(this.handleError)
       ).subscribe(
-        res => this.resp = res,
+        res => {
+          this.resp = res;
+          this.updateBackups();
+        },
         err => this.resp = err,
       );
     })
@@ -66,7 +69,10 @@ export class FileUploadServiceService {
     this.http.put(vUrl, currentFile, httpOptions).pipe(
       catchError(this.handleError)
     ).subscribe(
-      res => this.resp = res,
+      res => {
+        this.resp = res;
+        this.updateBackups();
+      },
       err => this.resp = err,
     );
   }
@@ -107,10 +113,25 @@ export class FileUploadServiceService {
     this.http.put(this.URL_BASE + '.json', currentFile, httpOptions).pipe(
       catchError(this.handleError)
     ).subscribe(
-      res => this.resp = res,
+      res => {
+        this.resp = res;
+        this.updateBackups();
+      },
       err => this.resp = err,
     );
   }
+
+  private async updateBackups() {
+    try{
+      const response = await fetch('https://eo4geo-update-bok-backups.onrender.com/update-backups', { method: 'PUT'});
+	    if (!response.ok) {
+        const problem = await response.text();
+        console.log('Error updating backups: ' + problem);
+      } 
+    } catch (error) {
+      console.log('Error updating backups: ' + error);
+    }
+	}
 
 
 }
