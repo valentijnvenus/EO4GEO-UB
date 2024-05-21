@@ -69,19 +69,14 @@ export class FileUploadServiceService {
 
     const vUrl = this.URL_BASE + '.json?auth=' + token;
     const httpOptions = {
-      method: 'PUT',
-      headers: {
+      headers: new HttpHeaders({
         'Content-Type': 'application/json'
-      },
-      body: currentFile,
+      }),
     };
     try {
-      const response = await fetch(vUrl, httpOptions);
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-      const res = await response.json();
-      this.resp = res;
+      const response = await this.http.put(vUrl, currentFile, httpOptions).toPromise();
+      if (!response) throw new Error('No response received');
+      this.resp = response;
       this.updateBackups();
     } catch (error) {
       this.resp = error;
@@ -131,44 +126,59 @@ export class FileUploadServiceService {
   }
 
   async recoverFromBackup(token: any) {
-    const response = await fetch(this.URL_BACKUP + '.json');
-    if (!response.ok) {
-      const problem = await response.text();
-      console.log('Error updating backups: ' + problem);
-      throw new Error('Error updating backups: ' + problem);
+    try {
+      const response = await this.http.get(this.URL_BACKUP + '.json').toPromise();
+      if (!response) throw new Error('No response received');
+      this.allBoKs = response;
+      const currentFile = JSON.stringify(this.allBoKs);
+      const httpOptions = {
+        headers: new HttpHeaders({
+          'Content-Type': 'application/json'
+        })
+      };
+
+      console.log('Recover from backup');
+
+      this.http.put(this.URL_BASE + '.json?auth=' + token, currentFile, httpOptions).pipe(
+        catchError(this.handleError)
+      ).subscribe(
+        res => {
+          this.resp = res;
+          this.updateBackups();
+        },
+        err => this.resp = err,
+      );
+    } catch (error) {
+      console.error('Error updating backups: ' + error);
+      throw new Error('Error updating backups: ' + error);
     }
-    this.allBoKs = await response.json();
-    const currentFile = JSON.stringify(this.allBoKs);
-    const httpOptions = {
-      headers: new HttpHeaders({
-        'Content-Type': 'application/json'
-      })
-    };
-
-    console.log('Recover from backup');
-
-    this.http.put(this.URL_BASE + '.json?auth=' + token, currentFile, httpOptions).pipe(
-      catchError(this.handleError)
-    ).subscribe(
-      res => {
-        this.resp = res;
-        this.updateBackups();
-      },
-      err => this.resp = err,
-    );
   }
 
-  private async updateBackups() {
-    try{
-      const response = await fetch('https://eo4geo-update-bok-backups.onrender.com/update-backups', { method: 'PUT'});
-	    if (!response.ok) {
-        const problem = await response.text();
-        console.log('Error updating backups: ' + problem);
-      } 
-    } catch (error) {
-      console.log('Error updating backups: ' + error);
-    }
-	}
+  private updateBackups(): void {
+    this.http.put(
+      'https://eo4geo-update-bok-backups.onrender.com/update-backups', 
+      {},
+      {
+        headers: {
+          'Content-Type': 'application/json',
+          'Access-Control-Allow-Origin': '*'
+        },
+        observe: 'response',
+        responseType: 'text'
+      }
+    ).subscribe({
+      next: response => {
+        if (response.status !== 200) {
+          console.log('Error updating backups: ' + response.statusText);
+        } else {
+          console.log('Backups updated successfully');
+        }
+      },
+      error: error => {
+        console.log('Error updating backups: ' + error.message);
+      }
+    });
+  }
 
 
 }
