@@ -167,15 +167,11 @@ export class FileUploadServiceService {
         responseType: 'text'
       }
     ).subscribe({
-      next: response => {
-        if (response.status !== 200) {
-          console.log('Error updating backups: ' + response.statusText);
-        } else {
-          console.log('Backups updated successfully');
-        }
+      next: () => {
+        console.log('Backups updated successfully');
       },
       error: error => {
-        console.log('Error updating backups: ' + error.message);
+        console.log('Error updating backups: ' + error.message + '\n' + error.error);
       }
     });
   }
