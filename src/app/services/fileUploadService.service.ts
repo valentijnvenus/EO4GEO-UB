@@ -55,6 +55,40 @@ export class FileUploadServiceService {
     })
   }
 
+  async replaceCurrentBok (file: any, token: any) {
+    const cversions = {};
+    file.creationYear = new Date().getFullYear();
+    file.version = '1';
+    file.updateDate = formatDate(new Date(), 'yyyy/MM/dd', 'en');
+
+    cversions['current'] = file;
+
+    this.allBoKs = cversions;
+
+    const currentFile = JSON.stringify(cversions);
+
+    const vUrl = this.URL_BASE + '.json?auth=' + token;
+    const httpOptions = {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: currentFile,
+    };
+    try {
+      const response = await fetch(vUrl, httpOptions);
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      const res = await response.json();
+      this.resp = res;
+      this.updateBackups();
+    } catch (error) {
+      this.resp = error;
+      console.error('There was an error!', error);
+    }
+  }
+
   deleteCurrentVersion(allBoKs, token: any) {
     // Remove current current the new version and move the current one to vNum
     const httpOptions = {
@@ -96,9 +130,14 @@ export class FileUploadServiceService {
     return throwError(error);
   }
 
-  recoverFromBackup(token: any) {
-    this.allBoKs = this.http.get(this.URL_BACKUP + '.json')
-
+  async recoverFromBackup(token: any) {
+    const response = await fetch(this.URL_BACKUP + '.json');
+    if (!response.ok) {
+      const problem = await response.text();
+      console.log('Error updating backups: ' + problem);
+      throw new Error('Error updating backups: ' + problem);
+    }
+    this.allBoKs = await response.json();
     const currentFile = JSON.stringify(this.allBoKs);
     const httpOptions = {
       headers: new HttpHeaders({

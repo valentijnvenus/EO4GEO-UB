@@ -38,10 +38,23 @@
                       <p>Last Updated : {{v === 'current' ? (fileCS.allBoKs[v].updateDate | date:'short') : fileCS.allBoKs[v].creationYear}}</p>
                     </div>
                     <div *ngIf="v == 'current'" class="col-md-6 text-center">
-                      <p>Warning! Deleting this version will make the previous version the current one.</p>
-                      <button type="button" class="btn btn-danger" [disabled]="fileCS.listKeysAll.length == 1"
+                      <p>
+                        Warning! {{fileCS.listKeysAll.length !== 1 ? 
+                        'Deleting this version will make the previous version the current one.' : 
+                        'Replacing this version will make the new version the current one.'}} 
+                      </p>
+                      <button type="button" class="btn btn-danger" *ngIf="fileCS.listKeysAll.length !== 1"
                         (click)="deleteModal.show()">Delete</button>
-                      <p *ngIf="fileCS.listKeysAll.length == 1">You cannot delete the only version.</p>
+                      <div class="mb-3" *ngIf="fileCS.listKeysAll.length == 1">
+                        <ng-select [items]="newBokKeys" name="newBokKeys" bindLabel="name" [multiple]="false"
+                          [(ngModel)]="newBokItem">
+                          <ng-template ng-optgroup-tmp let-item="item">
+                            {{item}}
+                          </ng-template>
+                        </ng-select>
+                      </div>
+                      <button type="button" class="btn btn-danger" *ngIf="fileCS.listKeysAll.length == 1"
+                        (click)="replaceModal.show()">Replace</button>
                     </div>
                   </div>
 
@@ -52,12 +65,12 @@
             <div class="col-sm-12 col-md-8 offset-md-2 text-center">
               <br><br>
               <h5>
-                Click this button to restore the BoK version from the backup. Warning! This will irreversibly delete all other
+                Click this button to restore the previous BoK version from the backup. Warning! This will irreversibly delete all other
                 versions of the
                 BoK!
               </h5>
 
-              <input class="btn btn-primary" type="button" value="Recover from backup" (click)="restoreModal.show()"
+              <input class="btn btn-primary" type="button" value="Recover previous version" (click)="restoreModal.show()"
                 [disabled]="!hasPermissions">
               <br><br>
             </div>
@@ -92,6 +105,30 @@
         </div>
       </div>
 
+      <div bsModal #replaceModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-danger" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h4 class="modal-title">Are you sure you want to continue?</h4>
+              <button type="button" class="close" (click)="replaceModal.hide()" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              <p>You are about the replace the current online version of the BoK. This will irreversibly delete this BoK
+                version, and
+                install the new BoK version as current version. Are you sure you want to continue?</p>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-primary" (click)="replaceModal.hide()">Close</button>
+              <button type="button" class="btn btn-danger" (click)="replaceCurrentBok(); replaceModal.hide()">Replace
+                version</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
       <div bsModal #restoreModal="bs-modal" class="modal fade" tabindex="-1" role="dialog"
         aria-labelledby="myModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-danger" role="document">
@@ -103,14 +140,13 @@
               </button>
             </div>
             <div class="modal-body">
-              <p>You are about to irreversibly delete all BoK versions, and restore the first BoK version (v1). Are you
+              <p>You are about to irreversibly delete all BoK versions, and restore the backup BoK version. Are you
                 sure you want to
                 continue?</p>
             </div>
             <div class="modal-footer">
               <button type="button" class="btn btn-primary" (click)="restoreModal.hide()">Close</button>
-              <button type="button" class="btn btn-danger" (click)="recoverFromBackup(); restoreModal.hide()">Restore
-                v1</button>
+              <button type="button" class="btn btn-danger" (click)="recoverFromBackup(); restoreModal.hide()">Restore</button>
             </div>
           </div>
         </div>
