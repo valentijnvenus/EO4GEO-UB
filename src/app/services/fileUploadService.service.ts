@@ -154,7 +154,7 @@ export class FileUploadServiceService {
     }
   }
 
-  updateBackups(idToken: string, projects?: string[]): Observable<boolean> {
+  updateBackups(idToken: string, projects?: string[]): Observable<any> {
     const headers = {
       'Content-Type': 'application/json',
       'Access-Control-Allow-Origin': '*',
@@ -163,22 +163,13 @@ export class FileUploadServiceService {
     const body = projects ? { 'projects': projects } : {};
 
     return this.http.put(
-        'https://eo4geo-update-bok-backups.onrender.com/update-backups',
-        body,
-        {
-          headers,
-          observe: 'response',
-          responseType: 'text'
-        }
-      ).pipe(
-      map(() => {
-        console.log('Backups updated successfully');
-        return true;
-      }),
-      catchError(error => {
-        console.log('Error updating backups: ' + error.message + '\n' + error.error);
-        return of(false);
-      })
+      'https://eo4geo-update-bok-backups.onrender.com/update-backups',
+      body,
+      {
+        headers,
+        observe: 'response',
+        responseType: 'text'
+      }
     );
   }
 
@@ -189,20 +180,12 @@ export class FileUploadServiceService {
       'Authorization': `Bearer ${idToken}`,
     };
     return this.http.get(
-        'https://eo4geo-update-bok-backups.onrender.com/backups-state',
-        {
-          headers,
-          observe: 'response',
-          responseType: 'json'
-        }
-      ).pipe(
-      map(response => {
-        return response.body;
-      }),
-      catchError(error => {
-        console.log('Error getting backups state: ' + error.message + '\n' + error.error);
-        return of({});
-      })
+      'https://eo4geo-update-bok-backups.onrender.com/backups-state',
+      {
+        headers,
+        observe: 'response',
+        responseType: 'json'
+      }
     );
   }
 

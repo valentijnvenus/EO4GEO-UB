@@ -32,12 +32,12 @@ export class BackupStateComponent implements OnInit {
   syncBackup(backupId: string): void {
     this.fileCS.loading = true;
     this.afAuth.auth.currentUser.getIdToken(true).then((idToken) => {
-      this.fileUS.updateBackups(idToken, [backupId]).subscribe((value) => {
-        if(value) {
-          console.log('Funciona');
-        } else {
-          console.log('Falla');
-        }
+      this.fileUS.updateBackups(idToken, [backupId]).subscribe(
+        (data) => {
+          //Called when success
+        },
+       (error) => {
+          //Called when error
       });
     });
   }
