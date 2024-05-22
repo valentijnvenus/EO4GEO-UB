@@ -48,7 +48,7 @@ export class FileUploadServiceService {
       ).subscribe(
         res => {
           this.resp = res;
-          this.updateBackups();
+          this.updateBackups(token);
         },
         err => this.resp = err,
       );
@@ -77,7 +77,7 @@ export class FileUploadServiceService {
       const response = await this.http.put(vUrl, currentFile, httpOptions).toPromise();
       if (!response) throw new Error('No response received');
       this.resp = response;
-      this.updateBackups();
+      this.updateBackups(token);
     } catch (error) {
       this.resp = error;
       console.error('There was an error!', error);
@@ -100,7 +100,7 @@ export class FileUploadServiceService {
     ).subscribe(
       res => {
         this.resp = res;
-        this.updateBackups();
+        this.updateBackups(token);
       },
       err => this.resp = err,
     );
@@ -144,7 +144,7 @@ export class FileUploadServiceService {
       ).subscribe(
         res => {
           this.resp = res;
-          this.updateBackups();
+          this.updateBackups(token);
         },
         err => this.resp = err,
       );
@@ -154,14 +154,15 @@ export class FileUploadServiceService {
     }
   }
 
-  private updateBackups(): void {
+  private updateBackups(idToken: any): void {
     this.http.put(
       'https://eo4geo-update-bok-backups.onrender.com/update-backups', 
       {},
       {
         headers: {
           'Content-Type': 'application/json',
-          'Access-Control-Allow-Origin': '*'
+          'Access-Control-Allow-Origin': '*',
+          'Authorization': `Bearer ${idToken}`,
         },
         observe: 'response',
         responseType: 'text'
