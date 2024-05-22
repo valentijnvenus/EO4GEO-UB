@@ -1,0 +1,26 @@
+<div class="animated fadeIn">
+  <div class="row">
+    <div class="col-sm-12 col-md-12">
+      <h1 class="title">
+        Manage new BoK versions
+      </h1>
+
+      <div class="text-center" [hidden]="!isAnonymous">
+        <h5>You need to <a href="#" routerLink="/login"> log in </a> to manage BoK versions. </h5>
+      </div>
+
+      <div *ngIf="!isAnonymous" class="card card-accent-primary">
+
+        <div class="text-center" *ngIf="fileCS.loading">
+          <br>
+          <h5>Loading backups state ...</h5>
+          <app-loading-indicator style="margin: auto;"></app-loading-indicator>
+        </div>
+
+        TODO
+
+      </div>
+
+    </div>
+  </div>
+</div>

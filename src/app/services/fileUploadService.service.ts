@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
-import { Observable, throwError } from 'rxjs';
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { Observable, of, throwError } from 'rxjs';
+import { HttpClient } from '@angular/common/http';
 import { HttpHeaders } from '@angular/common/http';
-import { catchError } from 'rxjs/operators';
+import { catchError, map } from 'rxjs/operators';
 import { formatDate } from '@angular/common';
 import { environment } from '../../environments/environment';
 
@@ -154,27 +154,56 @@ export class FileUploadServiceService {
     }
   }
 
-  private updateBackups(idToken: any): void {
-    this.http.put(
-      'https://eo4geo-update-bok-backups.onrender.com/update-backups', 
-      {},
-      {
-        headers: {
-          'Content-Type': 'application/json',
-          'Access-Control-Allow-Origin': '*',
-          'Authorization': `Bearer ${idToken}`,
-        },
-        observe: 'response',
-        responseType: 'text'
-      }
-    ).subscribe({
-      next: () => {
+  updateBackups(idToken: string, projects?: string[]): Observable<boolean> {
+    const headers = {
+      'Content-Type': 'application/json',
+      'Access-Control-Allow-Origin': '*',
+      'Authorization': `Bearer ${idToken}`,
+    };
+    const body = projects ? { 'projects': projects } : {};
+
+    return this.http.put(
+        'https://eo4geo-update-bok-backups.onrender.com/update-backups',
+        body,
+        {
+          headers,
+          observe: 'response',
+          responseType: 'text'
+        }
+      ).pipe(
+      map(() => {
         console.log('Backups updated successfully');
-      },
-      error: error => {
+        return true;
+      }),
+      catchError(error => {
         console.log('Error updating backups: ' + error.message + '\n' + error.error);
-      }
-    });
+        return of(false);
+      })
+    );
+  }
+
+  getBackupsState(idToken: string): Observable<any> {
+    const headers = {
+      'Content-Type': 'application/json',
+      'Access-Control-Allow-Origin': '*',
+      'Authorization': `Bearer ${idToken}`,
+    };
+    return this.http.get(
+        'https://eo4geo-update-bok-backups.onrender.com/backups-state',
+        {
+          headers,
+          observe: 'response',
+          responseType: 'json'
+        }
+      ).pipe(
+      map(response => {
+        return response.body;
+      }),
+      catchError(error => {
+        console.log('Error getting backups state: ' + error.message + '\n' + error.error);
+        return of({});
+      })
+    );
   }
 
 

@@ -13,6 +13,7 @@ import { CurrentComponent } from './views/current/current.component';
 
 import { AngularFireAuthGuard } from '@angular/fire/auth-guard';
 import { UserComponent } from './views/user/user.component';
+import { BackupStateComponent } from './views/backupState/backupState.component';
 
 export const routes: Routes = [
   {
@@ -61,6 +62,13 @@ export const routes: Routes = [
           title: 'BoK Version Management Tool'
         },
         component: CurrentComponent
+      },
+      {
+        path: 'managebackups',
+        data: {
+          title: 'BoK Version Management Tool'
+        },
+        component: BackupStateComponent
       },
       {
         path: 'user',
