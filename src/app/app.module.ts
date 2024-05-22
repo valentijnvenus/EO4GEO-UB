@@ -70,6 +70,7 @@ import { AccordionModule } from 'ngx-bootstrap/accordion';
 import { Eo4geoFooterComponent } from './components/eo4geo-footer/eo4geo-footer.component';
 import { Eo4geoHeaderComponent } from './components/eo4geo-header/eo4geo-header.component';
 import { CurrentComponent } from './views/current/current.component';
+import { RegisterComponent } from './views/register/register.component';
 
 
 @NgModule({
@@ -114,7 +115,8 @@ import { CurrentComponent } from './views/current/current.component';
     FilterPipe,
     Eo4geoFooterComponent,
     Eo4geoHeaderComponent,
-    CurrentComponent
+    CurrentComponent,
+    RegisterComponent
   ],
   providers: [
     {
