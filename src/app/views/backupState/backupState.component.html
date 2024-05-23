@@ -2,7 +2,7 @@
   <div class="row">
     <div class="col-sm-12 col-md-12">
       <h1 class="title">
-        Manage new BoK versions
+        Manage BoK Backups
       </h1>
 
       <div class="text-center" [hidden]="!isAnonymous">
@@ -11,16 +11,25 @@
 
       <div *ngIf="!isAnonymous" class="card card-accent-primary">
 
-        <div class="text-center" *ngIf="fileCS.loading">
+        <div class="text-center" *ngIf="isLoading">
           <br>
           <h5>Loading backups state ...</h5>
           <app-loading-indicator style="margin: auto;"></app-loading-indicator>
         </div>
 
-        TODO
-
+        <div class="container my-4 d-flex justify-content-center" *ngIf="!isLoading && loaded">
+          <div class="card card-accent-{{getColor(backup)}} my-2 mx-2" *ngFor="let backup of backupsData" [id]="'card' + backup.project">
+            <div class="card-body">
+              <h3 class="card-title text-center">{{ backup.project }}</h3>
+              <div class="d-flex flex-column justify-content-between align-items-center mt-3">
+                <img [src]="'../../assets/' + getColor(backup) + 'DatabaseIcon.png'" class="img-fluid" style="max-width: 50%; height: auto;">
+                <p class="font-weight-bold text-{{getColor(backup)}} text-center">{{ getStatus(backup) }}</p>
+                <button class="btn btn-danger" [disabled]="backup.blocked || backup.sync">Synchronize</button>
+              </div>
+            </div>
+          </div>
+        </div>                   
       </div>
-
     </div>
   </div>
 </div>
