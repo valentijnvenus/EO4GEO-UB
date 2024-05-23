@@ -41,10 +41,18 @@ export class BackupStateComponent implements OnInit {
     this.afAuth.auth.currentUser.getIdToken(true).then((idToken) => {
       this.fileUS.updateBackups(idToken, [backupId]).subscribe(
         (data) => {
+          this.backupsData.forEach((backup: BackupState) => {
+            if(backup.project === backupId) {
+              backup.sync = true;
+            }
+          });
           this.isLoading = false;
+          this.ref.detectChanges();
         },
         (error) => {
           this.isLoading = false;
+          // TODO - Error message
+          this.ref.detectChanges();
         }
       );
     });
@@ -52,16 +60,18 @@ export class BackupStateComponent implements OnInit {
 
   getBackupsState() {
     this.isLoading = true;
+    this.loaded = false;
     this.afAuth.auth.currentUser.getIdToken(true).then((idToken) => {
       this.fileUS.getBackupsState(idToken).subscribe(
         (data) => {
-          this.isLoading = false;
-          this.loaded = true;
           this.backupsData = data.body;
+          this.loaded = true;
+          this.isLoading = false;
           this.ref.detectChanges();
         },
         (error) => {
           this.isLoading = false;
+          // TODO - Error message
           this.ref.detectChanges();
         },
       );
