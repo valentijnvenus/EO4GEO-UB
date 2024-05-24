@@ -8,7 +8,6 @@ import { BackupState } from "../../model/backupsState";
   selector: 'app-backup-state',
   templateUrl: './backupState.component.html'
 })
-
 export class BackupStateComponent implements OnInit {
 
   isAnonymous = null;
@@ -16,12 +15,12 @@ export class BackupStateComponent implements OnInit {
   hasPermissions = null;
   isLoading = false;
   loaded = false;
+  alert = false;
   backupsData: BackupState[];
 
   constructor(private readonly afAuth: AngularFireAuth, private readonly fileUS: FileUploadServiceService, private readonly fileCS: FileCompareService, private readonly ref: ChangeDetectorRef) {}
 
   ngOnInit(): void {
-    this.isLoading = true;
     this.afAuth.auth.onAuthStateChanged(user => {
       if (user && (user.uid === 'k3otaNhyTMYg0lvph0TP0EPE3pV2')) {
         this.isAnonymous = user.isAnonymous;
@@ -36,8 +35,9 @@ export class BackupStateComponent implements OnInit {
     });
   }
 
-  syncBackup(backupId: string): void {
+  syncBackup(backupId: string) {
     this.isLoading = true;
+    this.ref.detectChanges();
     this.afAuth.auth.currentUser.getIdToken(true).then((idToken) => {
       this.fileUS.updateBackups(idToken, [backupId]).subscribe(
         (data) => {
@@ -51,7 +51,7 @@ export class BackupStateComponent implements OnInit {
         },
         (error) => {
           this.isLoading = false;
-          // TODO - Error message
+          this.showAlert();
           this.ref.detectChanges();
         }
       );
@@ -71,7 +71,7 @@ export class BackupStateComponent implements OnInit {
         },
         (error) => {
           this.isLoading = false;
-          // TODO - Error message
+          this.showAlert();
           this.ref.detectChanges();
         },
       );
@@ -79,23 +79,33 @@ export class BackupStateComponent implements OnInit {
   }
 
   getStatus(backup: BackupState): string {
-    if (backup.blocked) {
-      return 'Blocked';
-    } else if (backup.sync) {
-      return 'Updated';
-    } else {
-      return 'Outdated';
-    }
+    if (backup.blocked) return 'Blocked';
+    if (backup.sync) return 'Synchronized';
+    return 'Desynchronized';
+    
   }
 
   getColor(backup: BackupState): string {
-    if (backup.blocked) {
-      return 'danger';
-    } else if (backup.sync) {
-      return 'success';
-    } else {
-      return 'warning';
-    }
+    if (backup.blocked) return 'danger';
+    if (backup.sync) return 'success';
+    return 'warning'; 
+  }
+
+  getErrorMessage() {
+    if (!this.loaded && !this.isLoading) return "Something went wrong while loading the data. Try again later."
+    return "Something went wrong while synchronizing the backup. Try again later."
+  }
+
+  showAlert() {
+    this.alert = true;
+    setTimeout(function(){
+      this.alert = false;
+    },3000);
+  }
+
+  getLoadingMessage() {
+    if(this.loaded) return "Synchronizing backups ..."
+    return "Loading backups state ..."
   }
   
 }
