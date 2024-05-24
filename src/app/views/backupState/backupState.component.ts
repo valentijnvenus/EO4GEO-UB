@@ -98,8 +98,10 @@ export class BackupStateComponent implements OnInit {
 
   showAlert() {
     this.alert = true;
+    this.ref.detectChanges();
     setTimeout(function(){
       this.alert = false;
+      this.ref.detectChanges();
     },3000);
   }
 
