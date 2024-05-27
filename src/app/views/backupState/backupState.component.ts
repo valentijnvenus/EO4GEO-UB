@@ -18,7 +18,8 @@ export class BackupStateComponent implements OnInit {
   hasPermissions = null;
   isLoading = false;
   loaded = false;
-  alert = false;
+  warningAlert = false;
+  dangerAlert = false;
   replicasData: ReplicaState[] = [];
   currentBokData: BokData = new BokData();;
   backupBokData: BokData = new BokData();;
@@ -41,8 +42,12 @@ export class BackupStateComponent implements OnInit {
   }
   
   loadData() {
-    this.isLoading = true;
+    this.isLoading = true;  
     this.ref.detectChanges();
+
+    setTimeout(() => {
+        if (this.isLoading) this.showWarningAlert();
+    }, 3000);
   
     this.afAuth.auth.currentUser.getIdToken(true).then((idToken) => {
       const backupsState$ = this.getReplicasState(idToken);
@@ -52,11 +57,13 @@ export class BackupStateComponent implements OnInit {
         ([backupsState, bokInfo]) => {
           this.isLoading = false;
           this.loaded = true;
+          this.warningAlert = false;
           this.ref.detectChanges();
         },
         (error) => {
           this.isLoading = false;
-          this.showAlert();
+          this.warningAlert = false;
+          this.showDangerAlert();
           this.ref.detectChanges();
         }
       );
@@ -113,7 +120,7 @@ export class BackupStateComponent implements OnInit {
         },
         (error) => {
           this.isLoading = false;
-          this.showAlert();
+          this.showDangerAlert();
           this.ref.detectChanges();
         }
       );
@@ -131,7 +138,7 @@ export class BackupStateComponent implements OnInit {
         },
         (error) => {
           this.isLoading = false;
-          this.showAlert();
+          this.showDangerAlert();
           this.ref.detectChanges();
         }
       );
@@ -154,16 +161,25 @@ export class BackupStateComponent implements OnInit {
 
   getErrorMessage() {
     if (!this.loaded && !this.isLoading) return "Something went wrong while loading the data. Try again later."
-    return "Something went wrong while synchronizing the backup. Try again later."
+    return "Something went wrong. Try again later."
   }
 
-  showAlert() {
-    this.alert = true;
+  showDangerAlert() {
+    this.dangerAlert = true;
     this.ref.detectChanges();
-    setTimeout(function(){
-      this.alert = false;
+    setTimeout(() =>{
+      this.dangerAlert = false;
       this.ref.detectChanges();
-    },3000);
+    },10000);
+  }
+
+  showWarningAlert() {
+    this.warningAlert = true;
+    this.ref.detectChanges();
+    setTimeout(() =>{
+      this.warningAlert = false;
+      this.ref.detectChanges();
+    },10000);
   }
 
   getLoadingMessage() {

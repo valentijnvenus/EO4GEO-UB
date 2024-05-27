@@ -74,15 +74,18 @@
                       'Warning! Only update your backup if you know that the current version is final and bug-free.'}}
                   </p>
                   <button class="btn btn-danger" [disabled]="backupBokData.version === currentBokData.version"
-                    (click)="deleteModal.show()">Update</button>
+                    (click)="updateModal.show()">Update</button>
                 </div>
               </div>
             </div>
           </div>
         </div>
-        <div class="alert alert-danger" role="alert" *ngIf="alert">
-          {{getErrorMessage()}}}
-        </div>                   
+        <div class="alert alert-danger container d-flex justify-content-center" role="alert" *ngIf="dangerAlert">
+          {{getErrorMessage()}}
+        </div>  
+        <div class="alert alert-warning container d-flex justify-content-center" role="alert" *ngIf="warningAlert">
+          This process could take some time. Hang tight for just a moment. Thanks for your patience!
+        </div>                  
       </div>
       <div bsModal #updateModal="bs-modal" class="modal fade" tabindex="-1" role="dialog"
         aria-labelledby="myModalLabel" aria-hidden="true">
