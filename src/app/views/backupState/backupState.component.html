@@ -35,10 +35,9 @@
               </div>
               <div class="col-md-8 text-center">
                 <div class="container mt-4 d-flex justify-content-center" *ngIf="!isLoading && loaded">
-                  <div class="card card-accent-{{getColor(replica)}} mx-2" *ngFor="let replica of replicasData" [id]="'card' + replica.project">
+                  <div class="card card-accent-{{getColor(replica)}} mx-2" *ngFor="let replica of replicasData; index as i" [id]="'card' + replica.project">
                     <div class="card-body">
-                      <h3 class="card-title text-center">Replica DB</h3>
-                      <p class="text-center">{{ replica.project }}</p>
+                      <h3 class="card-title text-center">Replica nº{{ i + 1 }}</h3>
                       <div class="d-flex flex-column justify-content-between align-items-center mt-3">
                         <img [src]="'../../assets/' + getColor(replica) + 'DatabaseIcon.png'" class="img-fluid" style="max-width: 50%; height: auto;">
                         <p class="font-weight-bold text-{{getColor(replica)}} text-center">{{ getStatus(replica) }}</p>
