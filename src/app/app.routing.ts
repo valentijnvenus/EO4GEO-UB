@@ -64,7 +64,7 @@ export const routes: Routes = [
         component: CurrentComponent
       },
       {
-        path: 'managebackups',
+        path: 'managebackup',
         data: {
           title: 'BoK Version Management Tool'
         },

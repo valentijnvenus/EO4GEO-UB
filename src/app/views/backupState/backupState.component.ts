@@ -2,7 +2,10 @@ import { ChangeDetectorRef, Component, OnInit } from "@angular/core";
 import { AngularFireAuth } from "@angular/fire/auth";
 import { FileUploadServiceService } from "../../services/fileUploadService.service";
 import { FileCompareService } from "../../services/fileCompareService.service";
-import { BackupState } from "../../model/backupsState";
+import { ReplicaState } from "../../model/replicaState";
+import { BokData } from "../../model/bokData";
+import { forkJoin, Observable } from "rxjs";
+import { tap } from "rxjs/operators";
 
 @Component({
   selector: 'app-backup-state',
@@ -16,7 +19,9 @@ export class BackupStateComponent implements OnInit {
   isLoading = false;
   loaded = false;
   alert = false;
-  backupsData: BackupState[];
+  replicasData: ReplicaState[] = [];
+  currentBokData: BokData = new BokData();;
+  backupBokData: BokData = new BokData();;
 
   constructor(private readonly afAuth: AngularFireAuth, private readonly fileUS: FileUploadServiceService, private readonly fileCS: FileCompareService, private readonly ref: ChangeDetectorRef) {}
 
@@ -26,7 +31,7 @@ export class BackupStateComponent implements OnInit {
         this.isAnonymous = user.isAnonymous;
         this.ownUsrId = user.uid;
         this.hasPermissions = true;
-        this.getBackupsState();
+        this.loadData();
       } else {
         this.isAnonymous = true;
         this.ownUsrId = null;
@@ -34,16 +39,73 @@ export class BackupStateComponent implements OnInit {
       }
     });
   }
+  
+  loadData() {
+    this.isLoading = true;
+    this.ref.detectChanges();
+  
+    this.afAuth.auth.currentUser.getIdToken(true).then((idToken) => {
+      const backupsState$ = this.getReplicasState(idToken);
+      const bokInfo$ = this.loadBokInfo();
+  
+      forkJoin([backupsState$, bokInfo$]).subscribe(
+        ([backupsState, bokInfo]) => {
+          this.isLoading = false;
+          this.loaded = true;
+          this.ref.detectChanges();
+        },
+        (error) => {
+          this.isLoading = false;
+          this.showAlert();
+          this.ref.detectChanges();
+        }
+      );
+    });
+  }
+  
+  getReplicasState(idToken: string): Observable<any> {
+    return this.fileUS.getReplicasState(idToken).pipe(
+      tap((data) => {
+        this.replicasData = data.body;
+      })
+    );
+  }
+  
+  loadBokInfo(): Observable<any> {
+    const getCurrentBoK$ = this.fileCS.getCurrentBoK().pipe(
+      tap((currentBoK) => {
+        this.currentBokData.version = currentBoK.version ? currentBoK.version : "";
+        this.currentBokData.updateDate = currentBoK.updateDate ? currentBoK.updateDate : "";
+        this.currentBokData.conceptsCount = currentBoK.concepts ? currentBoK.concepts.length : 0;
+        this.currentBokData.skillsCount = currentBoK.skills ? currentBoK.skills.length : 0;
+        this.currentBokData.relationsCount = currentBoK.relations ? currentBoK.relations.length : 0;
+        this.currentBokData.externalresCount = currentBoK.references ? currentBoK.references.length : 0;
+      })
+    );
+  
+    const getBackupBok$ = this.fileCS.getBackupBok().pipe(
+      tap((backupBok) => {
+        this.backupBokData.version = backupBok.version ? backupBok.version : "";
+        this.backupBokData.updateDate = backupBok.updateDate ? backupBok.updateDate : "";
+        this.backupBokData.conceptsCount = backupBok.concepts ? backupBok.concepts.length : 0;
+        this.backupBokData.skillsCount = backupBok.skills ? backupBok.skills.length : 0;
+        this.backupBokData.relationsCount = backupBok.relations ? backupBok.relations.length : 0;
+        this.backupBokData.externalresCount = backupBok.references ? backupBok.references.length : 0;
+      })
+    );
+  
+    return forkJoin([getCurrentBoK$, getBackupBok$]);
+  }
 
-  syncBackup(backupId: string) {
+  syncReplica(replicaId: string) {
     this.isLoading = true;
     this.ref.detectChanges();
     this.afAuth.auth.currentUser.getIdToken(true).then((idToken) => {
-      this.fileUS.updateBackups(idToken, [backupId]).subscribe(
+      this.fileUS.updateReplicas(idToken, [replicaId]).subscribe(
         (data) => {
-          this.backupsData.forEach((backup: BackupState) => {
-            if(backup.project === backupId) {
-              backup.sync = true;
+          this.replicasData.forEach((replica: ReplicaState) => {
+            if(replica.project === replicaId) {
+              replica.sync = true;
             }
           });
           this.isLoading = false;
@@ -58,14 +120,12 @@ export class BackupStateComponent implements OnInit {
     });
   }
 
-  getBackupsState() {
+  updateBackup() {
     this.isLoading = true;
-    this.loaded = false;
+    this.ref.detectChanges();
     this.afAuth.auth.currentUser.getIdToken(true).then((idToken) => {
-      this.fileUS.getBackupsState(idToken).subscribe(
+      this.fileUS.updatebackup(idToken).subscribe(
         (data) => {
-          this.backupsData = data.body;
-          this.loaded = true;
           this.isLoading = false;
           this.ref.detectChanges();
         },
@@ -73,21 +133,22 @@ export class BackupStateComponent implements OnInit {
           this.isLoading = false;
           this.showAlert();
           this.ref.detectChanges();
-        },
+        }
       );
     });
   }
 
-  getStatus(backup: BackupState): string {
-    if (backup.blocked) return 'Blocked';
-    if (backup.sync) return 'Synchronized';
+  getStatus(replica: ReplicaState
+  ): string {
+    if (replica.blocked) return 'Blocked';
+    if (replica.sync) return 'Synchronized';
     return 'Desynchronized';
     
   }
 
-  getColor(backup: BackupState): string {
-    if (backup.blocked) return 'danger';
-    if (backup.sync) return 'success';
+  getColor(replica: ReplicaState): string {
+    if (replica.blocked) return 'danger';
+    if (replica.sync) return 'success';
     return 'warning'; 
   }
 
@@ -107,7 +168,7 @@ export class BackupStateComponent implements OnInit {
 
   getLoadingMessage() {
     if(this.loaded) return "Synchronizing backups ..."
-    return "Loading backups state ..."
+    return "Loading database state ..."
   }
   
 }

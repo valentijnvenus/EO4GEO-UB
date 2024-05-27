@@ -2,7 +2,7 @@
   <div class="row">
     <div class="col-sm-12 col-md-12">
       <h1 class="title">
-        Manage BoK Backups
+        Manage BoK Backup
       </h1>
 
       <div class="text-center" [hidden]="!isAnonymous">
@@ -17,14 +17,65 @@
           <app-loading-indicator style="margin: auto;"></app-loading-indicator>
         </div>
 
-        <div class="container my-4 d-flex justify-content-center" *ngIf="!isLoading && loaded">
-          <div class="card card-accent-{{getColor(backup)}} my-2 mx-2" *ngFor="let backup of backupsData" [id]="'card' + backup.project">
+        <div class="container my-2 mt-4 justify-content-center" *ngIf="!isLoading">
+          <div class="card card-accent-secondary">
+            <div class="row">
+              <div class="col-md-4">
+                <div class="card-header">
+                  <h3>Current Online BoK</h3>
+                  <a href="https://bok.eo4geo.eu" target="_blank" rel="noopener noreferrer">Current Version : v{{currentBokData.version}}</a>
+                </div>
+                <div class="card-body">
+                  <p>Total Topics : {{currentBokData.conceptsCount}}</p>
+                  <p>Total Learning Objectives : {{currentBokData.skillsCount}}</p>
+                  <p>Total Relations : {{currentBokData.relationsCount}}</p>
+                  <p>Total References : {{currentBokData.externalresCount}}</p>
+                  <p>Last Updated : {{currentBokData.updateDate | date:'short'}}</p>
+                </div>
+              </div>
+              <div class="col-md-8 text-center">
+                <div class="container mt-4 d-flex justify-content-center" *ngIf="!isLoading && loaded">
+                  <div class="card card-accent-{{getColor(replica)}} mx-2" *ngFor="let replica of replicasData" [id]="'card' + replica.project">
+                    <div class="card-body">
+                      <h3 class="card-title text-center">Replica DB</h3>
+                      <p class="text-center">{{ replica.project }}</p>
+                      <div class="d-flex flex-column justify-content-between align-items-center mt-3">
+                        <img [src]="'../../assets/' + getColor(replica) + 'DatabaseIcon.png'" class="img-fluid" style="max-width: 50%; height: auto;">
+                        <p class="font-weight-bold text-{{getColor(replica)}} text-center">{{ getStatus(replica) }}</p>
+                        <button class="btn btn-danger" [disabled]="replica.blocked || replica.sync" (click)="syncReplica(replica.project)">Synchronize</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="container my-2 justify-content-center" *ngIf="!isLoading">
+          <div class="card card-accent-secondary">
+            <div class="card-header">
+              <h3>BoK Backup</h3>
+              <a>Backup Version : v{{backupBokData.version}}</a>
+            </div>
             <div class="card-body">
-              <h3 class="card-title text-center">{{ backup.project }}</h3>
-              <div class="d-flex flex-column justify-content-between align-items-center mt-3">
-                <img [src]="'../../assets/' + getColor(backup) + 'DatabaseIcon.png'" class="img-fluid" style="max-width: 50%; height: auto;">
-                <p class="font-weight-bold text-{{getColor(backup)}} text-center">{{ getStatus(backup) }}</p>
-                <button class="btn btn-danger" [disabled]="backup.blocked || backup.sync" (click)="syncBackup(backup.project)">Synchronize</button>
+              <div class="row">
+                <div class="col-md-6">
+                  <p>Total Topics : {{backupBokData.conceptsCount}}</p>
+                  <p>Total Learning Objectives : {{backupBokData.skillsCount}}</p>
+                  <p>Total Relations : {{backupBokData.relationsCount}}</p>
+                  <p>Total References : {{backupBokData.externalresCount}}</p>
+                  <p>Last Updated : {{backupBokData.updateDate | date:'short'}}</p>
+                </div>
+                <div class="col-md-6 text-center">
+                  <p>
+                    {{
+                      backupBokData.version === currentBokData.version ?
+                      'The backup is up to date!' :
+                      'Warning! Only update your backup if you know that the current version is final and bug-free.'}}
+                  </p>
+                  <button class="btn btn-danger" [disabled]="backupBokData.version === currentBokData.version"
+                    (click)="deleteModal.show()">Update</button>
+                </div>
               </div>
             </div>
           </div>
@@ -32,6 +83,28 @@
         <div class="alert alert-danger" role="alert" *ngIf="alert">
           {{getErrorMessage()}}}
         </div>                   
+      </div>
+      <div bsModal #updateModal="bs-modal" class="modal fade" tabindex="-1" role="dialog"
+        aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-danger" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h4 class="modal-title">Are you sure you want to continue?</h4>
+              <button type="button" class="close" (click)="updateModal.hide()" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              <p>You are about to irreversibly update backup BoK version. Are you
+                sure you want to
+                continue?</p>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-primary" (click)="updateModal.hide()">Close</button>
+              <button type="button" class="btn btn-danger" (click)="updateBackup(); updateModal.hide()">Update</button>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </div>

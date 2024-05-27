@@ -16,6 +16,8 @@ export class FileCompareService {
 
     public URL_BASE_LTB_EXPORT = environment.URL_BASE_LTB_EXPORT;
 
+    public URL_BACKUP = environment.URL_BACKUP;
+
 
     public loading = true;
     public hasError = false;
@@ -53,6 +55,10 @@ export class FileCompareService {
 
     getCurrentBoK(): Observable<any> {
         return this.http.get(this.URL_BASE + 'current.json');
+    }
+
+    getBackupBok(): Observable<any> {
+        return this.http.get(this.URL_BACKUP + 'current.json');
     }
 
     getCurrentVersions(): Observable<any> {

@@ -48,7 +48,7 @@ export class FileUploadServiceService {
       ).subscribe(
         res => {
           this.resp = res;
-          this.updateBackups(token);
+          this.updateReplicas(token);
         },
         err => this.resp = err,
       );
@@ -77,7 +77,7 @@ export class FileUploadServiceService {
       const response = await this.http.put(vUrl, currentFile, httpOptions).toPromise();
       if (!response) throw new Error('No response received');
       this.resp = response;
-      this.updateBackups(token);
+      this.updateReplicas(token);
     } catch (error) {
       this.resp = error;
       console.error('There was an error!', error);
@@ -100,7 +100,7 @@ export class FileUploadServiceService {
     ).subscribe(
       res => {
         this.resp = res;
-        this.updateBackups(token);
+        this.updateReplicas(token);
       },
       err => this.resp = err,
     );
@@ -144,7 +144,7 @@ export class FileUploadServiceService {
       ).subscribe(
         res => {
           this.resp = res;
-          this.updateBackups(token);
+          this.updateReplicas(token);
         },
         err => this.resp = err,
       );
@@ -154,7 +154,7 @@ export class FileUploadServiceService {
     }
   }
 
-  updateBackups(idToken: string, projects?: string[]): Observable<any> {
+  updateReplicas(idToken: string, projects?: string[]): Observable<any> {
     const headers = {
       'Content-Type': 'application/json',
       'Access-Control-Allow-Origin': '*',
@@ -173,7 +173,25 @@ export class FileUploadServiceService {
     );
   }
 
-  getBackupsState(idToken: string): Observable<any> {
+  updatebackup(idToken: string): Observable<any> {
+    const headers = {
+      'Content-Type': 'application/json',
+      'Access-Control-Allow-Origin': '*',
+      'Authorization': `Bearer ${idToken}`,
+    };
+
+    return this.http.put(
+      'https://eo4geo-update-bok-backups.onrender.com/update-findinbok',
+      {},
+      {
+        headers,
+        observe: 'response',
+        responseType: 'text'
+      }
+    );
+  }
+
+  getReplicasState(idToken: string): Observable<any> {
     const headers = {
       'Content-Type': 'application/json',
       'Access-Control-Allow-Origin': '*',
