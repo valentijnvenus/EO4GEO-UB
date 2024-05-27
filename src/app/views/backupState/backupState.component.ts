@@ -131,7 +131,7 @@ export class BackupStateComponent implements OnInit {
     this.isLoading = true;
     this.ref.detectChanges();
     this.afAuth.auth.currentUser.getIdToken(true).then((idToken) => {
-      this.fileUS.updatebackup(idToken).subscribe(
+      this.fileUS.updateBackup(idToken).subscribe(
         (data) => {
           this.isLoading = false;
           this.ref.detectChanges();

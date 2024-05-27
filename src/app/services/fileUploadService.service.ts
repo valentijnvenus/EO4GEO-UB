@@ -173,16 +173,17 @@ export class FileUploadServiceService {
     );
   }
 
-  updatebackup(idToken: string): Observable<any> {
+  updateBackup(idToken: string): Observable<any> {
     const headers = {
       'Content-Type': 'application/json',
       'Access-Control-Allow-Origin': '*',
       'Authorization': `Bearer ${idToken}`,
     };
+    const body = { 'projects': ['findinbok'] };
 
     return this.http.put(
-      'https://eo4geo-update-bok-backups.onrender.com/update-findinbok',
-      {},
+      'https://eo4geo-update-bok-backups.onrender.com/update-backups',
+      body,
       {
         headers,
         observe: 'response',
