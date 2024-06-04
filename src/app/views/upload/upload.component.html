@@ -39,7 +39,6 @@
         <br>
         <div class="">
           <div class="row" *ngIf="!fileCS.loading">
-
             <div class="col-sm-12 col-md-4 offset-md-2 ">
               <div class="card card-accent-secondary mt-3">
                 <div class="card-header mb-3">
@@ -51,8 +50,7 @@
                   <p>Total Learning Objectives : {{fileCS.comparison.current.skillsCount}}</p>
                   <p>Total Relations : {{fileCS.comparison.current.relationsCount}}</p>
                   <p>Total References : {{fileCS.comparison.current.externalresCount}}</p>
-                  <p style="margin-bottom: 90px;">Last Updated : {{fileCS.currentBoK.updateDate | date:'short'}}</p>
-
+                  <p>Last Updated : {{fileCS.currentBoK.updateDate | date:'short'}}</p>
                 </div>
               </div>
             </div>
@@ -68,60 +66,64 @@
                     </ng-template>
                   </ng-select>
                 </div>
-                <div *ngIf="fileCS.newBoK" class="card-body">
-
-                  <p>Total Topics : {{fileCS.comparison.new.conceptsCount}}
-                    <span class="text-success"
-                      *ngIf="(fileCS.comparison.new.conceptsCount - fileCS.comparison.current.conceptsCount) > 0"> (
-                      {{fileCS.comparison.new.conceptsCount - fileCS.comparison.current.conceptsCount > 0 ? '+' : ''}}
-                      {{fileCS.comparison.new.conceptsCount - fileCS.comparison.current.conceptsCount}}) </span>
-                    <span class="text-danger"
-                      *ngIf="(fileCS.comparison.new.conceptsCount - fileCS.comparison.current.conceptsCount) < 0"> (
-                      {{fileCS.comparison.new.conceptsCount - fileCS.comparison.current.conceptsCount > 0 ? '+' : ''}}
-                      {{fileCS.comparison.new.conceptsCount - fileCS.comparison.current.conceptsCount}}) </span>
-                  </p>
-                  <p>Total Learning Objectives : {{fileCS.comparison.new.skillsCount}}
-                    <span class="text-success"
-                      *ngIf="(fileCS.comparison.new.skillsCount - fileCS.comparison.current.skillsCount) > 0"> (
-                      {{fileCS.comparison.new.skillsCount - fileCS.comparison.current.skillsCount > 0 ? '+' : ''}}
-                      {{fileCS.comparison.new.skillsCount - fileCS.comparison.current.skillsCount}}) </span>
-                    <span class="text-danger"
-                      *ngIf="(fileCS.comparison.new.skillsCount - fileCS.comparison.current.skillsCount) < 0"> (
-                      {{fileCS.comparison.new.skillsCount - fileCS.comparison.current.skillsCount > 0 ? '+' : ''}}
-                      {{fileCS.comparison.new.skillsCount - fileCS.comparison.current.skillsCount}}) </span>
-                  </p>
-                  <p>Total Relations : {{fileCS.comparison.new.relationsCount}}
-                    <span class="text-success"
-                      *ngIf="(fileCS.comparison.new.relationsCount - fileCS.comparison.current.relationsCount) > 0"> (
-                      {{fileCS.comparison.new.relationsCount - fileCS.comparison.current.relationsCount > 0 ? '+' : ''}}
-                      {{fileCS.comparison.new.relationsCount - fileCS.comparison.current.relationsCount}}) </span>
-                    <span class="text-danger"
-                      *ngIf="(fileCS.comparison.new.relationsCount - fileCS.comparison.current.relationsCount) < 0"> (
-                      {{fileCS.comparison.new.relationsCount - fileCS.comparison.current.relationsCount > 0 ? '+' : ''}}
-                      {{fileCS.comparison.new.relationsCount - fileCS.comparison.current.relationsCount}}) </span>
-                  </p>
-                  <p>Total References : {{fileCS.comparison.new.externalresCount}}
-                    <span class="text-danger"
-                      *ngIf="(fileCS.comparison.new.externalresCount - fileCS.comparison.current.externalresCount) < 0">
-                      ({{fileCS.comparison.new.externalresCount - fileCS.comparison.current.externalresCount > 0 ? '+' :
-                      ''}}
-                      {{fileCS.comparison.new.externalresCount - fileCS.comparison.current.externalresCount}}) </span>
-                    <span class="text-success"
-                      *ngIf="(fileCS.comparison.new.externalresCount - fileCS.comparison.current.externalresCount) > 0">
-                      ({{fileCS.comparison.new.externalresCount - fileCS.comparison.current.externalresCount > 0 ? '+' :
-                      ''}}
-                      {{fileCS.comparison.new.externalresCount - fileCS.comparison.current.externalresCount}}) </span>
-                  </p>
-
-                  <p>Last Updated : {{fileCS.newBoK.last_updated | date:'short'}}</p>
-                  <p *ngIf="fileCS.newBoK.date_published">Date Pushed : {{fileCS.newBoK.date_published | date:'short'}}</p>
-
-                </div>
-                <div class="card-body">
-                  <button (click)="dangerModal.show()" type="button" class="btn btn-danger"
-                    [disabled]="fileCS.listKeys.length == 0">Discard </button>
-                  <button (click)="publishModal.show()" type="button" class="btn btn-success float-right"
-                    [disabled]="fileCS.hasError">Publish </button>
+                <div *ngIf="fileCS.newBoK" class="card-body container">
+                  <div class="row align-items-end">
+                    <div class="col">
+                      <p>Total Topics : {{fileCS.comparison.new.conceptsCount}}
+                        <span class="text-success"
+                          *ngIf="(fileCS.comparison.new.conceptsCount - fileCS.comparison.current.conceptsCount) > 0"> (
+                          {{fileCS.comparison.new.conceptsCount - fileCS.comparison.current.conceptsCount > 0 ? '+' : ''}}
+                          {{fileCS.comparison.new.conceptsCount - fileCS.comparison.current.conceptsCount}}) </span>
+                        <span class="text-danger"
+                          *ngIf="(fileCS.comparison.new.conceptsCount - fileCS.comparison.current.conceptsCount) < 0"> (
+                          {{fileCS.comparison.new.conceptsCount - fileCS.comparison.current.conceptsCount > 0 ? '+' : ''}}
+                          {{fileCS.comparison.new.conceptsCount - fileCS.comparison.current.conceptsCount}}) </span>
+                      </p>
+                      <p>Total Learning Objectives : {{fileCS.comparison.new.skillsCount}}
+                        <span class="text-success"
+                          *ngIf="(fileCS.comparison.new.skillsCount - fileCS.comparison.current.skillsCount) > 0"> (
+                          {{fileCS.comparison.new.skillsCount - fileCS.comparison.current.skillsCount > 0 ? '+' : ''}}
+                          {{fileCS.comparison.new.skillsCount - fileCS.comparison.current.skillsCount}}) </span>
+                        <span class="text-danger"
+                          *ngIf="(fileCS.comparison.new.skillsCount - fileCS.comparison.current.skillsCount) < 0"> (
+                          {{fileCS.comparison.new.skillsCount - fileCS.comparison.current.skillsCount > 0 ? '+' : ''}}
+                          {{fileCS.comparison.new.skillsCount - fileCS.comparison.current.skillsCount}}) </span>
+                      </p>
+                      <p>Total Relations : {{fileCS.comparison.new.relationsCount}}
+                        <span class="text-success"
+                          *ngIf="(fileCS.comparison.new.relationsCount - fileCS.comparison.current.relationsCount) > 0"> (
+                          {{fileCS.comparison.new.relationsCount - fileCS.comparison.current.relationsCount > 0 ? '+' : ''}}
+                          {{fileCS.comparison.new.relationsCount - fileCS.comparison.current.relationsCount}}) </span>
+                        <span class="text-danger"
+                          *ngIf="(fileCS.comparison.new.relationsCount - fileCS.comparison.current.relationsCount) < 0"> (
+                          {{fileCS.comparison.new.relationsCount - fileCS.comparison.current.relationsCount > 0 ? '+' : ''}}
+                          {{fileCS.comparison.new.relationsCount - fileCS.comparison.current.relationsCount}}) </span>
+                      </p>
+                      <p>Total References : {{fileCS.comparison.new.externalresCount}}
+                        <span class="text-danger"
+                          *ngIf="(fileCS.comparison.new.externalresCount - fileCS.comparison.current.externalresCount) < 0">
+                          ({{fileCS.comparison.new.externalresCount - fileCS.comparison.current.externalresCount > 0 ? '+' :
+                          ''}}
+                          {{fileCS.comparison.new.externalresCount - fileCS.comparison.current.externalresCount}}) </span>
+                        <span class="text-success"
+                          *ngIf="(fileCS.comparison.new.externalresCount - fileCS.comparison.current.externalresCount) > 0">
+                          ({{fileCS.comparison.new.externalresCount - fileCS.comparison.current.externalresCount > 0 ? '+' :
+                          ''}}
+                          {{fileCS.comparison.new.externalresCount - fileCS.comparison.current.externalresCount}}) </span>
+                      </p>
+                    <div class="row">
+                      <div class="col">
+                        <p>Last Updated : {{fileCS.newBoK.last_updated | date:'short'}}</p>
+                        <p *ngIf="fileCS.newBoK.date_published">Date Pushed : {{fileCS.newBoK.date_published | date:'short'}}</p>
+                      </div> 
+                      <div class="col">
+                        <button (click)="dangerModal.show()" type="button" class="btn btn-danger float-right ml-2"
+                          [disabled]="fileCS.listKeys.length == 0">Discard </button>
+                        <button (click)="publishModal.show()" type="button" class="btn btn-success float-right"
+                          [disabled]="fileCS.hasError">Publish </button>
+                      </div>
+                    </div> 
+                  </div>
                 </div>
               </div>
             </div>
