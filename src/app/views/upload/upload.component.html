@@ -171,16 +171,18 @@
                 <table class="table">
                   <thead>
                     <tr>
-                      <th scope="col">Topics differences: <span
-                          tooltip="Topic name or topic code is different in both versions"
-                          class="badge badge-primary badge-pill">i</span> </th>
-                      <th scope="col">({{fileCS.comparison.addedConceptsIndex.length +
-                        fileCS.comparison.removedConceptsIndex.length}})
-                        <button type="button" class="float-right btn btn-link btn-xs"
-                          (click)="showCDS.classList.contains('hidden') ? showCDS.className = '' : showCDS.className = 'hidden' ">
-                          <i [tooltip]="showCDS.classList.contains('hidden')? 'Show' : 'Hide'"
-                            [ngClass]="showCDS.classList.contains('hidden')? 'fa fa-chevron-up' : 'fa fa-chevron-down'"></i>
-                        </button>
+                      <th scope="col" colspan="2">
+                        Topics differences:
+                        <span tooltip="Topic name or topic code is different in both versions" 
+                          class="badge badge-primary badge-pill">i</span>
+                        <div class="float-right">
+                          ({{fileCS.comparison.addedConceptsIndex.length + fileCS.comparison.removedConceptsIndex.length}})
+                          <button type="button" class="btn btn-link btn-xs" 
+                            (click)="showCDS.classList.contains('hidden') ? showCDS.className = '' : showCDS.className = 'hidden' ">
+                            <i [tooltip]="showCDS.classList.contains('hidden')? 'Show' : 'Hide'"
+                              [ngClass]="showCDS.classList.contains('hidden')? 'fa fa-chevron-up' : 'fa fa-chevron-down'"></i>
+                          </button>
+                        </div>
                       </th>
                     </tr>
                   </thead>
@@ -211,15 +213,18 @@
                 <table class="table">
                   <thead>
                     <tr>
-                      <th scope="col">Modified codes: <span
-                          tooltip="Topics that have changed from the previous version of the BoK"
-                          class="badge badge-primary badge-pill">i</span></th>
-                      <th scope="col">({{fileCS.comparison.changedConceptsIndex.length}})
-                        <button type="button" class="float-right btn btn-link btn-xs"
-                          (click)="showMC.classList.contains('hidden') ? showMC.className = '' : showMC.className = 'hidden' ">
-                          <i [tooltip]="showMC.classList.contains('hidden')? 'Show' : 'Hide'"
-                            [ngClass]="showMC.classList.contains('hidden')? 'fa fa-chevron-up' : 'fa fa-chevron-down'"></i>
-                        </button>
+                      <th scope="col" colspan="2">
+                        Modified topics: 
+                        <span tooltip="Topics that have changed from the previous version of the BoK"
+                          class="badge badge-primary badge-pill">i</span>
+                        <div class="float-right">
+                          ({{fileCS.comparison.changedConceptsIndex.length}})
+                          <button type="button" class="float-right btn btn-link btn-xs"
+                            (click)="showMC.classList.contains('hidden') ? showMC.className = '' : showMC.className = 'hidden' ">
+                            <i [tooltip]="showMC.classList.contains('hidden')? 'Show' : 'Hide'"
+                              [ngClass]="showMC.classList.contains('hidden')? 'fa fa-chevron-up' : 'fa fa-chevron-down'"></i>
+                          </button>
+                        </div>                      
                       </th>
                     </tr>
                   </thead>
@@ -243,15 +248,18 @@
                 <table class="table">
                   <thead>
                     <tr>
-                      <th scope="col">Topics with no code: <span
-                          tooltip="Topic code is empty"
-                          class="badge badge-primary badge-pill">i</span> </th>
-                      <th scope="col">({{fileCS.comparison.noCodeConceptsIndex.length}})
-                        <button type="button" class="float-right btn btn-link btn-xs"
-                          (click)="showNOC.classList.contains('hidden') ? showNOC.className = '' : showNOC.className = 'hidden' ">
-                          <i [tooltip]="showNOC.classList.contains('hidden')? 'Show' : 'Hide'"
-                            [ngClass]="showNOC.classList.contains('hidden')? 'fa fa-chevron-up' : 'fa fa-chevron-down'"></i>
-                        </button>
+                      <th scope="col" colspan="2">
+                        Topics with no code: 
+                        <span tooltip="Topic code is empty"
+                          class="badge badge-primary badge-pill">i</span>
+                        <div class="float-right">
+                          ({{fileCS.comparison.noCodeConceptsIndex.length}})
+                          <button type="button" class="float-right btn btn-link btn-xs"
+                            (click)="showNOC.classList.contains('hidden') ? showNOC.className = '' : showNOC.className = 'hidden' ">
+                            <i [tooltip]="showNOC.classList.contains('hidden')? 'Show' : 'Hide'"
+                              [ngClass]="showNOC.classList.contains('hidden')? 'fa fa-chevron-up' : 'fa fa-chevron-down'"></i>
+                          </button>
+                      </div>
                       </th>
                     </tr>
                   </thead>
@@ -274,15 +282,18 @@
                 <table class="table">
                   <thead>
                     <tr>
-                      <th scope="col">Old codes: <span
-                          tooltip="Topic codes which are found in older versions of the BoK"
-                          class="badge badge-primary badge-pill">i</span></th>
-                      <th scope="col">({{fileCS.comparison.oldConceptsIndex.length}})
-                        <button type="button" class="float-right btn btn-link btn-xs"
-                          (click)="showOBC.classList.contains('hidden') ? showOBC.className = '' : showOBC.className = 'hidden' ">
-                          <i [tooltip]="showOBC.classList.contains('hidden')? 'Show' : 'Hide'"
-                            [ngClass]="showOBC.classList.contains('hidden')? 'fa fa-chevron-up' : 'fa fa-chevron-down'"></i>
-                        </button>
+                      <th scope="col" colspan="2">
+                        Old topics: 
+                        <span tooltip="Topic codes which are found in older versions of the BoK"
+                          class="badge badge-primary badge-pill">i</span>
+                        <div class="float-right">
+                          ({{fileCS.comparison.oldConceptsIndex.length}})
+                          <button type="button" class="float-right btn btn-link btn-xs"
+                            (click)="showOBC.classList.contains('hidden') ? showOBC.className = '' : showOBC.className = 'hidden' ">
+                            <i [tooltip]="showOBC.classList.contains('hidden')? 'Show' : 'Hide'"
+                              [ngClass]="showOBC.classList.contains('hidden')? 'fa fa-chevron-up' : 'fa fa-chevron-down'"></i>
+                          </button>
+                        </div>
                       </th>
                     </tr>
                   </thead>
@@ -306,18 +317,18 @@
                 <table class="table">
                   <thead>
                     <tr>
-                      <th scope="col">Self referencing relations: <span
-                          tooltip="A relation that has the same source and target. Such a relationship will be ignored when publishing the BoK"
-                          class="badge badge-primary badge-pill">i</span></th>
-                      <th scope="col">
-                      </th>
-                      <th>
-                        ({{fileCS.comparison.new.loopingRelations.length}})
-                        <button type="button" class="float-right btn btn-link btn-xs"
-                          (click)="showSRR.classList.contains('hidden') ? showSRR.className = '' : showSRR.className = 'hidden' ">
-                          <i [tooltip]="showSRR.classList.contains('hidden')? 'Show' : 'Hide'"
-                            [ngClass]="showSRR.classList.contains('hidden')? 'fa fa-chevron-up' : 'fa fa-chevron-down'"></i>
-                        </button>
+                      <th scope="col" colspan="2">
+                        Self referencing relations: 
+                        <span tooltip="A relation that has the same source and target. Such a relationship will be ignored when publishing the BoK"
+                          class="badge badge-primary badge-pill">i</span>
+                        <div class="float-right">
+                          ({{fileCS.comparison.new.loopingRelations.length}})
+                          <button type="button" class="float-right btn btn-link btn-xs"
+                            (click)="showSRR.classList.contains('hidden') ? showSRR.className = '' : showSRR.className = 'hidden' ">
+                            <i [tooltip]="showSRR.classList.contains('hidden')? 'Show' : 'Hide'"
+                              [ngClass]="showSRR.classList.contains('hidden')? 'fa fa-chevron-up' : 'fa fa-chevron-down'"></i>
+                          </button>
+                        </div>
                       </th>
                     </tr>
                   </thead>
@@ -348,15 +359,18 @@
                 <table class="table">
                   <thead>
                     <tr>
-                      <th scope="col">Orphan topics: <span
-                          tooltip="Topics which are not connected to the root topic of the BoK. Orphan topics are ignored when publishing the BoK"
-                          class="badge badge-primary badge-pill">i</span></th>
-                      <th scope="col">({{fileCS.comparison.new.isolatedNodes.length}})
-                        <button type="button" class="float-right btn btn-link btn-xs"
-                          (click)="showOC.classList.contains('hidden') ? showOC.className = '' : showOC.className = 'hidden' ">
-                          <i [tooltip]="showOC.classList.contains('hidden')? 'Show' : 'Hide'"
-                            [ngClass]="showOC.classList.contains('hidden')? 'fa fa-chevron-up' : 'fa fa-chevron-down'"></i>
-                        </button>
+                      <th scope="col" colspan="2">
+                        Orphan topics: 
+                        <span tooltip="Topics which are not connected to the root topic of the BoK. Orphan topics are ignored when publishing the BoK"
+                          class="badge badge-primary badge-pill">i</span>
+                        <div class="float-right">
+                          ({{fileCS.comparison.new.isolatedNodes.length}})
+                          <button type="button" class="float-right btn btn-link btn-xs"
+                            (click)="showOC.classList.contains('hidden') ? showOC.className = '' : showOC.className = 'hidden' ">
+                            <i [tooltip]="showOC.classList.contains('hidden')? 'Show' : 'Hide'"
+                              [ngClass]="showOC.classList.contains('hidden')? 'fa fa-chevron-up' : 'fa fa-chevron-down'"></i>
+                          </button>
+                        </div>
                       </th>
                     </tr>
                   </thead>
@@ -380,15 +394,18 @@
                 <table class="table">
                   <thead>
                     <tr>
-                      <th scope="col">Duplicated codes: <span
-                          tooltip="Topic codes which are repeated in the draft version"
-                          class="badge badge-primary badge-pill">i</span></th>
-                      <th scope="col">({{fileCS.comparison.new.duplicatedCodes.length}})
-                        <button type="button" class="float-right btn btn-link btn-xs"
-                          (click)="showDC.classList.contains('hidden') ? showDC.className = '' : showDC.className = 'hidden' ">
-                          <i [tooltip]="showDC.classList.contains('hidden')? 'Show' : 'Hide'"
-                            [ngClass]="showDC.classList.contains('hidden')? 'fa fa-chevron-up' : 'fa fa-chevron-down'"></i>
-                        </button>
+                      <th scope="col" colspan="2">
+                        Duplicated codes: 
+                        <span tooltip="Topic codes which are repeated in the draft version"
+                          class="badge badge-primary badge-pill">i</span>
+                        <div class="float-right">
+                          ({{fileCS.comparison.new.duplicatedCodes.length}})
+                          <button type="button" class="float-right btn btn-link btn-xs"
+                            (click)="showDC.classList.contains('hidden') ? showDC.className = '' : showDC.className = 'hidden' ">
+                            <i [tooltip]="showDC.classList.contains('hidden')? 'Show' : 'Hide'"
+                              [ngClass]="showDC.classList.contains('hidden')? 'fa fa-chevron-up' : 'fa fa-chevron-down'"></i>
+                          </button>
+                        </div>
                       </th>
                     </tr>
                   </thead>
