@@ -30,7 +30,8 @@ export class FileCompareService {
         removedConceptsIndex: [],
         addedConceptsIndex: [],
         noCodeConceptsIndex: [],
-        oldConceptsIndex: []
+        oldConceptsIndex: [],
+        changedConceptsIndex: []
 
     };
 
@@ -124,7 +125,8 @@ export class FileCompareService {
             removedConceptsIndex: [],
             addedConceptsIndex: [],
             noCodeConceptsIndex: [],
-            oldConceptsIndex: []
+            oldConceptsIndex: [],
+            changedConceptsIndex: []
         };
     }
 
@@ -208,12 +210,9 @@ export class FileCompareService {
                         });
 
                         let allCurrentConcepts = [];
-                        this.currentBoK.concepts.forEach(concept => {
+                        this.currentBoK.concepts.forEach((concept, i) => {
                             allCurrentConcepts.push(concept.code);
-                        });
-
-                        allCurrentConcepts.forEach((c, i) => {
-                            if (!allNewConcepts.includes(c)) {
+                            if (!allNewConcepts.includes(concept.code)) {
                                 this.comparison.removedConceptsIndex.push(i);
                             }
                         });
@@ -221,6 +220,8 @@ export class FileCompareService {
                         allNewConcepts.forEach((c, i) => {
                             if (!allCurrentConcepts.includes(c)) {
                                 this.comparison.addedConceptsIndex.push(i);
+                            } else if (this.compareConcept(this.newBoK.concepts[i], this.currentBoK.concepts[i])){
+                                this.comparison.changedConceptsIndex.push(i);
                             }
                             if (c == '' || c == ' ') {
                                 this.comparison.noCodeConceptsIndex.push(i);
@@ -280,6 +281,19 @@ export class FileCompareService {
             });
         });
 
+    }
+
+    compareConcept(obj1: any, obj2: any): boolean {
+        const keys1 = Object.keys(obj1);
+        const keys2 = Object.keys(obj2);
+
+        if (keys1.length !== keys2.length) return false;
+
+        for (let key of keys1) {
+            if (obj1[key] !== obj2[key]) return false;
+        }
+
+        return true;
     }
 
     convertExportJSON(obj: any): any {

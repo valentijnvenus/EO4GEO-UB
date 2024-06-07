@@ -205,6 +205,38 @@
             </div>
           </div>
 
+          <div class="row" *ngIf="!fileCS.loading && fileCS.comparison.changedConceptsIndex.length > 0">
+            <div class="col-sm-12 col-md-8 offset-md-2">
+              <div class="card card-accent-secondary">
+                <table class="table">
+                  <thead>
+                    <tr>
+                      <th scope="col">Modified codes: <span
+                          tooltip="Topics that have changed from the previous version of the BoK"
+                          class="badge badge-primary badge-pill">i</span></th>
+                      <th scope="col">({{fileCS.comparison.changedConceptsIndex.length}})
+                        <button type="button" class="float-right btn btn-link btn-xs"
+                          (click)="showMC.classList.contains('hidden') ? showMC.className = '' : showMC.className = 'hidden' ">
+                          <i [tooltip]="showMC.classList.contains('hidden')? 'Show' : 'Hide'"
+                            [ngClass]="showMC.classList.contains('hidden')? 'fa fa-chevron-up' : 'fa fa-chevron-down'"></i>
+                        </button>
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody #showMC>
+                    <tr class="text-center" *ngFor="let c of fileCS.comparison.changedConceptsIndex">
+                      <td>[{{fileCS.newBoK.concepts[c].code}}] {{fileCS.newBoK.concepts[c].name}}
+                        <span class="text-danger" *ngIf="fileCS.newBoK.concepts[c].code == ' '">Warning: No code
+                          detected</span>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+
+              </div>
+            </div>
+          </div>
+
           <div class="row" *ngIf="!fileCS.loading && fileCS.comparison.noCodeConceptsIndex.length > 0">
             <div class="col-sm-12 col-md-8 offset-md-2">
               <div class="card card-accent-secondary">
@@ -329,7 +361,7 @@
                     </tr>
                   </thead>
                   <tbody #showOC>
-                    <tr *ngFor="let c of fileCS.comparison.new.isolatedNodes">
+                    <tr class="text-center" *ngFor="let c of fileCS.comparison.new.isolatedNodes">
                       <td>[{{c.code}}] {{c.name}}
                         <span class="text-danger" *ngIf="c.code == ' '">Warning: No code
                           detected</span>
