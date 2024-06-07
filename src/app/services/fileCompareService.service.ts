@@ -201,26 +201,26 @@ export class FileCompareService {
                         this.comparison.new.relationsCount = newBoK.relations ? newBoK.relations.length : 0;
                         this.comparison.new.externalresCount = newBoK.references ? newBoK.references.length : 0;
 
-                        let allNewConcepts = [];
-                        newBoK.concepts.forEach(concept => {
-                            if (allNewConcepts.includes(concept.code) && concept.code != ' ' && concept.code != '') {
+                        let allNewConcepts = new Map();
+                        newBoK.concepts.forEach((concept, i) => {
+                            if (allNewConcepts.has(concept.code) && concept.code != ' ' && concept.code != '') {
                                 this.comparison.new.duplicatedCodes.push(concept.code);
                             }
-                            allNewConcepts.push(concept.code);
+                            allNewConcepts.set(concept.code, i);
                         });
 
-                        let allCurrentConcepts = [];
+                        let allCurrentConcepts = new Map();
                         this.currentBoK.concepts.forEach((concept, i) => {
-                            allCurrentConcepts.push(concept.code);
-                            if (!allNewConcepts.includes(concept.code)) {
+                            allCurrentConcepts.set(concept.code, i);
+                            if (!allNewConcepts.has(concept.code)) {
                                 this.comparison.removedConceptsIndex.push(i);
                             }
                         });
 
-                        allNewConcepts.forEach((c, i) => {
-                            if (!allCurrentConcepts.includes(c)) {
+                        allNewConcepts.forEach((i, c) => {
+                            if (!allCurrentConcepts.has(c)) {
                                 this.comparison.addedConceptsIndex.push(i);
-                            } else if (this.compareConcept(this.newBoK.concepts[i], this.currentBoK.concepts[i])){
+                            } else if (this.compareConcept(this.newBoK.concepts[i], this.currentBoK.concepts[allCurrentConcepts.get(c)])){
                                 this.comparison.changedConceptsIndex.push(i);
                             }
                             if (c == '' || c == ' ') {
@@ -284,16 +284,13 @@ export class FileCompareService {
     }
 
     compareConcept(obj1: any, obj2: any): boolean {
-        const keys1 = Object.keys(obj1);
-        const keys2 = Object.keys(obj2);
-
-        if (keys1.length !== keys2.length) return false;
-
-        for (let key of keys1) {
-            if (obj1[key] !== obj2[key]) return false;
+        const keys = Object.keys(obj2);
+    
+        for (let key of keys) {
+            if (obj1[key] !== obj2[key]) return true;
         }
-
-        return true;
+    
+        return false;
     }
 
     convertExportJSON(obj: any): any {
