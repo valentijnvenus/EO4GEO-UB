@@ -186,7 +186,7 @@
                       </th>
                     </tr>
                   </thead>
-                  <tbody #showCDS>
+                  <tbody #showCDS class="hidden">
                     <tr class="text-center" *ngFor="let c of fileCS.comparison.removedConceptsIndex">
                       <td>[{{fileCS.currentBoK.concepts[c].code}}] {{fileCS.currentBoK.concepts[c].name}}
                        <!--  <span class="text-danger" *ngIf="fileCS.currentBoK.concepts[c].code == ' '">Warning: No code
@@ -228,7 +228,7 @@
                       </th>
                     </tr>
                   </thead>
-                  <tbody #showMC>
+                  <tbody #showMC class="hidden">
                     <tr class="text-center" *ngFor="let c of fileCS.comparison.changedConceptsIndex">
                       <td>[{{fileCS.newBoK.concepts[c].code}}] {{fileCS.newBoK.concepts[c].name}}
                         <span class="text-danger" *ngIf="fileCS.newBoK.concepts[c].code == ' '">Warning: No code
@@ -263,7 +263,7 @@
                       </th>
                     </tr>
                   </thead>
-                  <tbody #showNOC>
+                  <tbody #showNOC class="hidden">
                     <tr class="text-center" *ngFor="let c of fileCS.comparison.noCodeConceptsIndex">
                       <td>[{{fileCS.newBoK.concepts[c].code}}] {{fileCS.newBoK.concepts[c].name}}
                         <span class="text-danger" *ngIf="fileCS.newBoK.concepts[c].code == ' '">Warning: No code
@@ -297,7 +297,7 @@
                       </th>
                     </tr>
                   </thead>
-                  <tbody #showOBC>
+                  <tbody #showOBC class="hidden">
                     <tr class="text-center" *ngFor="let c of fileCS.comparison.oldConceptsIndex">
                       <td>[{{fileCS.newBoK.concepts[c].code}}] {{fileCS.newBoK.concepts[c].name}}
                         <span class="text-danger" *ngIf="fileCS.newBoK.concepts[c].code == ' '">Warning: No code
@@ -332,7 +332,7 @@
                       </th>
                     </tr>
                   </thead>
-                  <tbody #showSRR>
+                  <tbody #showSRR class="hidden">
                     <tr *ngFor="let rel of fileCS.comparison.new.loopingRelations">
                       <td>[{{fileCS.newBoK.concepts[rel.source].code}}] {{fileCS.newBoK.concepts[rel.source].name}}
                         <span class="text-danger" *ngIf="fileCS.newBoK.concepts[rel.source].code == ' '">Warning: No
@@ -374,7 +374,7 @@
                       </th>
                     </tr>
                   </thead>
-                  <tbody #showOC>
+                  <tbody #showOC class="hidden">
                     <tr class="text-center" *ngFor="let c of fileCS.comparison.new.isolatedNodes">
                       <td>[{{c.code}}] {{c.name}}
                         <span class="text-danger" *ngIf="c.code == ' '">Warning: No code
@@ -409,7 +409,7 @@
                       </th>
                     </tr>
                   </thead>
-                  <tbody #showDC>
+                  <tbody #showDC class="hidden">
                     <tr *ngFor="let c of fileCS.comparison.new.duplicatedCodes">
                       <td>[{{c}}]</td>
                       <td></td>
