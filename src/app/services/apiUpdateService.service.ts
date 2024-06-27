@@ -14,7 +14,7 @@ export class ApiUpdateService {
 
   constructor(private http: HttpClient, private fileUploadService: FileUploadServiceService) {}
 
-  private uploadBoKAPIFile(newVersion, file) {
+  private uploadBoKAPIFile(newVersion: string, file: any): void {
     const httpOptions = {
       headers: new HttpHeaders({
         'Content-Type': 'application/json'
