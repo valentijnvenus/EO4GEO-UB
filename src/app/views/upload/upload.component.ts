@@ -25,8 +25,6 @@ export class UploadComponent {
 
   codeNameHash = {};
 
-  BOK_BASE_URI = 'http://bok.eo4geo.eu/';
-
   bokSelected = '';
 
   constructor(
@@ -80,7 +78,6 @@ export class UploadComponent {
           this.afAuth.auth.currentUser.getIdToken(true).then((idToken) => {
             let newFile = this.convertFile(fileReader.result);
             newFile = this.cleanIsolatedNodes(newFile);
-            //  const newFileBoKAPI = this.convertFileBoKAPI(newFile);
             if (!(newFile.hasOwnProperty('Error'))) {
               console.log(newFile);
               // fileService.uploadFile(newFile, idToken);
@@ -264,168 +261,6 @@ export class UploadComponent {
       });
     } else {
       return { 'Error': 'Invalid Format in learning_outcomes section' };
-    }
-    /*     if (obj.hasOwnProperty('contributors')) {
-          Object.keys(obj['contributors']).forEach(k => {
-            const nodeToAdd = [];
-            if (obj['contributors'][k].nodes.length > 0) {
-              obj['contributors'][k].nodes.forEach(node => {
-                if (node < gistNode) {
-                  nodeToAdd.push(node + 1);
-                } else if (node === gistNode) {
-                  nodeToAdd.push(0);
-                } else {
-                  nodeToAdd.push(node);
-                }
-              });
-              fileToSave.contributors.push({
-                'concepts': nodeToAdd.length > 0 ? nodeToAdd : ' ',
-                'name': obj['contributors'][k].name.length > 0 ? obj['contributors'][k].name : ' ',
-                'description': obj['contributors'][k].description.length > 0 ? obj['contributors'][k].description : ' ',
-                'url': (obj['contributors'][k].url !== null && obj['contributors'][k].url.length > 0) ?
-                  obj['contributors'][k].url : ' '
-              });
-            }
-          });
-        } else {
-          return { 'Error': 'Invalid Format in contributors section' };
-        } */
-    return fileToSave;
-  }
-
-  /*   convertBoKAPIPreviousVersion() {
-      this.fileUploadService.fullBoK().subscribe((fullBoK) => {
-  
-        const allV = Object.keys(fullBoK);
-  
-        allV.forEach(v => {
-          // codeNameHash = {};
-          const fileToSave = this.convertFileBoKAPI(fullBoK[v]);
-          this.fileUploadService.uploadBoKAPIFile(v, fileToSave);
-        });
-      });
-  
-    } */
-
-
-  convertFileBoKAPI(version: any): any {
-
-    const codeNameHash = {};
-
-    const fileToSave = { 'concepts': {}, 'relations': [], 'references': [], 'skills': [], 'contributors': [] };
-
-    /*     fileToSave['updateDate'] = version.updateDate;
-        fileToSave['version'] = version.version; */
-
-    /*     fileToSave.concepts['GIST'] = {
-          name: 'Geographic Information Science and Technology',
-          id: 'GIST',
-          uri: this.BOK_BASE_URI + 'GIST',
-          relations: [],
-          references: [],
-          skills: [],
-          contributors: []
-        };
-        codeNameHash[0] = 'GIST'; */
-
-    version.concepts.forEach((c, k) => {
-      if (c.code && c.code !== '') {
-        fileToSave.concepts[c.code] = {
-          name: c.name,
-          id: c.code,
-          uri: this.BOK_BASE_URI + c.code,
-          relations: [],
-          references: [],
-          skills: [],
-          contributors: []
-        };
-      }
-      codeNameHash[k] = c.code;
-    });
-
-    if (version.references) {
-      version.references.forEach(r => {
-        fileToSave.references.push({
-          name: r.name,
-          url: r.url,
-          description: r.description,
-          concepts: []
-        });
-
-        r.concepts.forEach(c => {
-          if (codeNameHash[c] && codeNameHash[c] !== '') {
-            fileToSave.concepts[codeNameHash[c]].references.push({
-              url: r.url,
-              description: r.description,
-              name: r.name
-            });
-            fileToSave.references[fileToSave.references.length - 1].concepts.push(codeNameHash[c]);
-          }
-        });
-      });
-    }
-
-    if (version.contributors) {
-      version.contributors.forEach(r => {
-        fileToSave.contributors.push({
-          name: r.name,
-          url: r.url,
-          description: r.description,
-          concepts: []
-        });
-
-        r.concepts.forEach(c => {
-          if (codeNameHash[c] && codeNameHash[c] !== '') {
-            fileToSave.concepts[codeNameHash[c]].contributors.push({
-              url: r.url,
-              description: r.description,
-              name: r.name
-            });
-            fileToSave.contributors[fileToSave.contributors.length - 1].concepts.push(codeNameHash[c]);
-          }
-        });
-      });
-    }
-    if (version.skills) {
-      version.skills.forEach(r => {
-        fileToSave.skills.push({
-          name: r.name,
-          concepts: []
-        });
-
-        r.concepts.forEach(c => {
-          if (codeNameHash[c] && codeNameHash[c] !== '') {
-            fileToSave.concepts[codeNameHash[c]].skills.push(r.name);
-            fileToSave.skills[fileToSave.skills.length - 1].concepts.push(codeNameHash[c]);
-          }
-        });
-      });
-    }
-    if (version.relations) {
-      version.relations.forEach(r => {
-
-        if (codeNameHash[r.source] && codeNameHash[r.target]) {
-          fileToSave.relations.push({
-            name: r.name,
-            source: codeNameHash[r.source],
-            target: codeNameHash[r.target]
-          });
-          fileToSave.concepts[codeNameHash[r.source]].relations.push({
-            name: r.name,
-            source: codeNameHash[r.source],
-            target: codeNameHash[r.target]
-          });
-          fileToSave.concepts[codeNameHash[r.target]].relations.push({
-            name: r.name,
-            source: codeNameHash[r.source],
-            target: codeNameHash[r.target]
-          });
-        } else {
-          console.log('fail source ' + r.source)
-          console.log('fail target ' + r.target)
-        }
-
-      });
     }
     return fileToSave;
   }
