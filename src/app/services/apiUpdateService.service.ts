@@ -31,9 +31,10 @@ export class ApiUpdateService {
   convertBoKAPIPreviousVersion() {
     this.fileUploadService.fullBoK().subscribe((fullBoK) => {
       const allV = Object.keys(fullBoK);
-
+      const currVersion = fullBoK.current.version;
       allV.forEach(v => {
         const fileToSave = this.convertFileBoKAPI(fullBoK[v]);
+        if (v === 'current') fileToSave.version = currVersion;
         this.uploadBoKAPIFile(v, fileToSave);
       });
     });
