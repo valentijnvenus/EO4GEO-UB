@@ -157,14 +157,14 @@ export class BackupStateComponent implements OnInit {
     this.afAuth.auth.currentUser.getIdToken(true).then((idToken) => {
       this.apiUpdateService.convertBoKAPIPreviousVersion(idToken).subscribe(
         (data) => {
-          if (data) {
-            this.isLoading = false;
-          } else {
-            this.isLoading = false;
-            this.showDangerAlert();
-          }
+          this.isLoading = false;
           this.ref.detectChanges();
         },
+        (error) => {
+          this.isLoading = false;
+          this.showDangerAlert();
+          this.ref.detectChanges();
+        }
       );
     });
   }
@@ -199,7 +199,7 @@ export class BackupStateComponent implements OnInit {
   }
 
   getLoadingMessage() {
-    if(this.loaded) return "Synchronizing backups ..."
+    if(this.loaded) return "Updating data ..."
     return "Loading database state ..."
   }
   
