@@ -79,6 +79,35 @@
             </div>
           </div>
         </div>
+        <div class="container my-2 justify-content-center" *ngIf="!isLoading">
+          <div class="card card-accent-secondary">
+            <div class="card-header">
+              <h3>BoK API</h3>
+              <a>API Version : v2</a>
+            </div>
+            <div class="card-body">
+              <div class="row">
+                <div class="col-md-6">
+                  <p>BoK version: v{{apiVersion}}</p>
+                  <p>Total Topics : {{currentBokData.conceptsCount}}</p>
+                  <p>Total Learning Objectives : {{currentBokData.skillsCount}}</p>
+                  <p>Total Relations : {{currentBokData.relationsCount}}</p>
+                  <p>Total References : {{currentBokData.externalresCount}}</p>
+                </div>
+                <div class="col-md-6 text-center">
+                  <p>
+                    {{
+                      apiVersion === currentBokData.version ?
+                      'The API is up to date!' :
+                      'Warning! Only update your API if you know that the current version is final and bug-free.'}}
+                  </p>
+                  <button class="btn btn-danger" [disabled]="apiVersion === currentBokData.version"
+                    (click)="updateAPIModal.show()">Update</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
         <div class="alert alert-danger container d-flex justify-content-center" role="alert" *ngIf="dangerAlert">
           {{getErrorMessage()}}
         </div>  
@@ -104,6 +133,28 @@
             <div class="modal-footer">
               <button type="button" class="btn btn-primary" (click)="updateModal.hide()">Close</button>
               <button type="button" class="btn btn-danger" (click)="updateBackup(); updateModal.hide()">Update</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div bsModal #updateAPIModal="bs-modal" class="modal fade" tabindex="-1" role="dialog"
+        aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-danger" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h4 class="modal-title">Are you sure you want to continue?</h4>
+              <button type="button" class="close" (click)="updateAPIModal.hide()" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              <p>You are about to irreversibly update API version. Are you
+                sure you want to
+                continue?</p>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-primary" (click)="updateAPIModal.hide()">Close</button>
+              <button type="button" class="btn btn-danger" (click)="updateAPI(); updateAPIModal.hide()">Update</button>
             </div>
           </div>
         </div>

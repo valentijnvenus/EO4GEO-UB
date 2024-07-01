@@ -15,6 +15,7 @@ export class FileUploadServiceService {
 
   public URL_BASE = environment.URL_BASE;
   public URL_BACKUP = environment.URL_BACKUP;
+  private URL_UPDATE_SERVICE = environment.URL_UPDATE_SERVICE;
 
   public allBoKs = null;
   public resp = {};
@@ -163,7 +164,7 @@ export class FileUploadServiceService {
     const body = projects ? { 'projects': projects } : {};
 
     return this.http.put(
-      'https://eo4geo-update-bok-backups.onrender.com/update-backups',
+      this.URL_UPDATE_SERVICE + 'update-backups',
       body,
       {
         headers,
@@ -182,7 +183,7 @@ export class FileUploadServiceService {
     const body = { 'projects': ['findinbok'] };
 
     return this.http.put(
-      'https://eo4geo-update-bok-backups.onrender.com/update-backups',
+      this.URL_UPDATE_SERVICE + 'update-backups',
       body,
       {
         headers,
@@ -199,7 +200,7 @@ export class FileUploadServiceService {
       'Authorization': `Bearer ${idToken}`,
     };
     return this.http.get(
-      'https://eo4geo-update-bok-backups.onrender.com/backups-state',
+      this.URL_UPDATE_SERVICE + 'backups-state',
       {
         headers,
         observe: 'response',

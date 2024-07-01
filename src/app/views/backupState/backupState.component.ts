@@ -6,6 +6,7 @@ import { ReplicaState } from "../../model/replicaState";
 import { BokData } from "../../model/bokData";
 import { forkJoin, Observable } from "rxjs";
 import { tap } from "rxjs/operators";
+import { ApiUpdateService } from "../../services/apiUpdateService.service";
 
 @Component({
   selector: 'app-backup-state',
@@ -23,8 +24,11 @@ export class BackupStateComponent implements OnInit {
   replicasData: ReplicaState[] = [];
   currentBokData: BokData = new BokData();;
   backupBokData: BokData = new BokData();;
+  apiVersion = "";
 
-  constructor(private readonly afAuth: AngularFireAuth, private readonly fileUS: FileUploadServiceService, private readonly fileCS: FileCompareService, private readonly ref: ChangeDetectorRef) {}
+  constructor(private readonly afAuth: AngularFireAuth, private readonly fileUS: FileUploadServiceService, 
+              private readonly fileCS: FileCompareService, private readonly ref: ChangeDetectorRef,
+              private readonly apiUpdateService: ApiUpdateService) {}
 
   ngOnInit(): void {
     this.afAuth.auth.onAuthStateChanged(user => {
@@ -52,9 +56,11 @@ export class BackupStateComponent implements OnInit {
     this.afAuth.auth.currentUser.getIdToken(true).then((idToken) => {
       const backupsState$ = this.getReplicasState(idToken);
       const bokInfo$ = this.loadBokInfo();
+      const apiVersion$ = this.apiUpdateService.getAPIVersion();
   
-      forkJoin([backupsState$, bokInfo$]).subscribe(
-        ([backupsState, bokInfo]) => {
+      forkJoin([backupsState$, bokInfo$, apiVersion$]).subscribe(
+        ([backupsState, bokInfo, apiVersion]) => {
+          this.apiVersion = apiVersion;
           this.isLoading = false;
           this.loaded = true;
           this.warningAlert = false;
@@ -145,6 +151,24 @@ export class BackupStateComponent implements OnInit {
     });
   }
 
+  updateAPI() {
+    this.isLoading = true;
+    this.ref.detectChanges();
+    this.afAuth.auth.currentUser.getIdToken(true).then((idToken) => {
+      this.apiUpdateService.convertBoKAPIPreviousVersion(idToken).subscribe(
+        (data) => {
+          if (data) {
+            this.isLoading = false;
+          } else {
+            this.isLoading = false;
+            this.showDangerAlert();
+          }
+          this.ref.detectChanges();
+        },
+      );
+    });
+  }
+
   getStatus(replica: ReplicaState
   ): string {
     if (replica.blocked) return 'Blocked';
@@ -167,19 +191,11 @@ export class BackupStateComponent implements OnInit {
   showDangerAlert() {
     this.dangerAlert = true;
     this.ref.detectChanges();
-    setTimeout(() =>{
-      this.dangerAlert = false;
-      this.ref.detectChanges();
-    },10000);
   }
 
   showWarningAlert() {
     this.warningAlert = true;
     this.ref.detectChanges();
-    setTimeout(() =>{
-      this.warningAlert = false;
-      this.ref.detectChanges();
-    },10000);
   }
 
   getLoadingMessage() {
