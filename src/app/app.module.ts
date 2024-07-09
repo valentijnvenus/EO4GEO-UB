@@ -69,9 +69,9 @@ import { AccordionModule } from 'ngx-bootstrap/accordion';
 
 import { Eo4geoFooterComponent } from './components/eo4geo-footer/eo4geo-footer.component';
 import { Eo4geoHeaderComponent } from './components/eo4geo-header/eo4geo-header.component';
-import { CurrentComponent } from './views/current/current.component';
+import { VersionsComponent } from './views/versions/versions.component';
 import { RegisterComponent } from './views/register/register.component';
-import { BackupStateComponent } from './views/backupState/backupState.component';
+import { CurrentVersionComponent } from './views/currentVersion/currentVersion.component';
 
 
 @NgModule({
@@ -116,9 +116,9 @@ import { BackupStateComponent } from './views/backupState/backupState.component'
     FilterPipe,
     Eo4geoFooterComponent,
     Eo4geoHeaderComponent,
-    CurrentComponent,
+    VersionsComponent,
     RegisterComponent,
-    BackupStateComponent
+    CurrentVersionComponent
   ],
   providers: [
     {

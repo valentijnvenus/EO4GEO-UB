@@ -5,11 +5,11 @@ import { FileUploadServiceService } from '../../services/fileUploadService.servi
 import { User, UserService } from '../../services/user.service';
 
 @Component({
-  selector: 'app-current',
-  templateUrl: './current.component.html',
-  styleUrls: ['./current.component.scss']
+  selector: 'app-versions',
+  templateUrl: './versions.component.html',
+  styleUrls: ['./versions.component.scss']
 })
-export class CurrentComponent implements OnInit {
+export class VersionsComponent implements OnInit {
 
   isAnonymous = null;
   ownUsrId = null;

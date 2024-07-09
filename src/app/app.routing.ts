@@ -9,11 +9,11 @@ import { P500Component } from './views/error/500.component';
 import { LoginComponent } from './views/login/login.component';
 
 import { UploadComponent } from './views/upload/upload.component';
-import { CurrentComponent } from './views/current/current.component';
+import { VersionsComponent } from './views/versions/versions.component';
 
 import { AngularFireAuthGuard } from '@angular/fire/auth-guard';
 import { UserComponent } from './views/user/user.component';
-import { BackupStateComponent } from './views/backupState/backupState.component';
+import { CurrentVersionComponent } from './views/currentVersion/currentVersion.component';
 
 export const routes: Routes = [
   {
@@ -57,18 +57,18 @@ export const routes: Routes = [
         component: UploadComponent
       },
       {
+        path: 'manageversion',
+        data: {
+          title: 'BoK Version Management Tool'
+        },
+        component: VersionsComponent
+      },
+      {
         path: 'managecurrent',
         data: {
           title: 'BoK Version Management Tool'
         },
-        component: CurrentComponent
-      },
-      {
-        path: 'managebackup',
-        data: {
-          title: 'BoK Version Management Tool'
-        },
-        component: BackupStateComponent
+        component: CurrentVersionComponent
       },
       {
         path: 'user',

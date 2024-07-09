@@ -9,10 +9,10 @@ import { tap } from "rxjs/operators";
 import { ApiUpdateService } from "../../services/apiUpdateService.service";
 
 @Component({
-  selector: 'app-backup-state',
-  templateUrl: './backupState.component.html'
+  selector: 'app-current-version',
+  templateUrl: './currentVersion.component.html'
 })
-export class BackupStateComponent implements OnInit {
+export class CurrentVersionComponent implements OnInit {
 
   isAnonymous = null;
   ownUsrId = null;
