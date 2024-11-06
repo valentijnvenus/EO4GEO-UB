@@ -5,12 +5,13 @@ import { HttpHeaders } from '@angular/common/http';
 import { catchError, map } from 'rxjs/operators';
 import { formatDate } from '@angular/common';
 import { environment } from '../../environments/environment';
+import { ApiUpdateService } from './apiUpdateService.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class FileUploadServiceService {
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient, private apiUpdateService: ApiUpdateService) { }
 
 
   public URL_BASE = environment.URL_BASE;
@@ -50,6 +51,7 @@ export class FileUploadServiceService {
         res => {
           this.resp = res;
           this.updateReplicas(token);
+          this.apiUpdateService.convertBoKAPIPreviousVersion(token);
         },
         err => this.resp = err,
       );
@@ -79,6 +81,7 @@ export class FileUploadServiceService {
       if (!response) throw new Error('No response received');
       this.resp = response;
       this.updateReplicas(token);
+      this.apiUpdateService.convertBoKAPIPreviousVersion(token);
     } catch (error) {
       this.resp = error;
       console.error('There was an error!', error);
@@ -102,6 +105,7 @@ export class FileUploadServiceService {
       res => {
         this.resp = res;
         this.updateReplicas(token);
+        this.apiUpdateService.convertBoKAPIPreviousVersion(token);
       },
       err => this.resp = err,
     );
@@ -146,6 +150,7 @@ export class FileUploadServiceService {
         res => {
           this.resp = res;
           this.updateReplicas(token);
+          this.apiUpdateService.convertBoKAPIPreviousVersion(token);
         },
         err => this.resp = err,
       );
