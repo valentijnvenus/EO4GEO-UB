@@ -52,18 +52,11 @@
         </div>
         <div class="container my-2 justify-content-center" *ngIf="!isLoading">
           <div class="card card-accent-secondary">
-            <div class="card-header">
-              <h3>BoK Backup</h3>
-              <a>Backup Version : v{{backupBokData.version}}</a>
-            </div>
             <div class="card-body">
               <div class="row">
                 <div class="col-md-6">
-                  <p>Total Topics : {{backupBokData.conceptsCount}}</p>
-                  <p>Total Learning Objectives : {{backupBokData.skillsCount}}</p>
-                  <p>Total Relations : {{backupBokData.relationsCount}}</p>
-                  <p>Total References : {{backupBokData.externalresCount}}</p>
-                  <p>Last Updated : {{backupBokData.updateDate | date:'short'}}</p>
+                  <h3>BoK Backup</h3>
+                  <p>Backup Version : v{{backupBokData.version}}</p>
                 </div>
                 <div class="col-md-6 text-center">
                   <p>
@@ -81,18 +74,11 @@
         </div>
         <div class="container my-2 justify-content-center" *ngIf="!isLoading">
           <div class="card card-accent-secondary">
-            <div class="card-header">
-              <h3>BoK API</h3>
-              <a>API Version : v2</a>
-            </div>
             <div class="card-body">
               <div class="row">
                 <div class="col-md-6">
-                  <p>BoK version: v{{apiVersion}}</p>
-                  <p>Total Topics : {{currentBokData.conceptsCount}}</p>
-                  <p>Total Learning Objectives : {{currentBokData.skillsCount}}</p>
-                  <p>Total Relations : {{currentBokData.relationsCount}}</p>
-                  <p>Total References : {{currentBokData.externalresCount}}</p>
+                  <h3>BoK API</h3>
+                  <p>API version : v{{apiVersion}}</p>
                 </div>
                 <div class="col-md-6 text-center">
                   <p>

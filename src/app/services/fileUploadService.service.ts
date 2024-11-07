@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Observable, of, throwError } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { HttpHeaders } from '@angular/common/http';
-import { catchError, map } from 'rxjs/operators';
+import { catchError, map, switchMap } from 'rxjs/operators';
 import { formatDate } from '@angular/common';
 import { environment } from '../../environments/environment';
 import { ApiUpdateService } from './apiUpdateService.service';
@@ -46,14 +46,12 @@ export class FileUploadServiceService {
 
       const vUrl = this.URL_BASE + '.json?auth=' + token;
       this.http.put(vUrl, currentFile, httpOptions).pipe(
+        switchMap(() => this.updateReplicas(token)),
+        catchError(this.handleError),
+        switchMap(() => this.apiUpdateService.convertBoKAPIPreviousVersion(token)),
         catchError(this.handleError)
       ).subscribe(
-        res => {
-          this.resp = res;
-          this.updateReplicas(token);
-          this.apiUpdateService.convertBoKAPIPreviousVersion(token);
-        },
-        err => this.resp = err,
+        err => this.handleError(err),
       );
     })
   }
@@ -76,16 +74,14 @@ export class FileUploadServiceService {
         'Content-Type': 'application/json'
       }),
     };
-    try {
-      const response = await this.http.put(vUrl, currentFile, httpOptions).toPromise();
-      if (!response) throw new Error('No response received');
-      this.resp = response;
-      this.updateReplicas(token);
-      this.apiUpdateService.convertBoKAPIPreviousVersion(token);
-    } catch (error) {
-      this.resp = error;
-      console.error('There was an error!', error);
-    }
+    this.http.put(vUrl, currentFile, httpOptions).pipe(
+      switchMap(() => this.updateReplicas(token)),
+      catchError(this.handleError),
+      switchMap(() => this.apiUpdateService.convertBoKAPIPreviousVersion(token)),
+      catchError(this.handleError)
+    ).subscribe(
+      err => this.handleError(err),
+    );
   }
 
   deleteCurrentVersion(allBoKs, token: any) {
@@ -100,14 +96,12 @@ export class FileUploadServiceService {
 
     const vUrl = this.URL_BASE + '.json?auth=' + token;
     this.http.put(vUrl, currentFile, httpOptions).pipe(
+      switchMap(() => this.updateReplicas(token)),
+      catchError(this.handleError),
+      switchMap(() => this.apiUpdateService.convertBoKAPIPreviousVersion(token)),
       catchError(this.handleError)
     ).subscribe(
-      res => {
-        this.resp = res;
-        this.updateReplicas(token);
-        this.apiUpdateService.convertBoKAPIPreviousVersion(token);
-      },
-      err => this.resp = err,
+      err => this.handleError(err),
     );
   }
 
@@ -127,6 +121,7 @@ export class FileUploadServiceService {
   }
 
   handleError(error: Error) {
+    console.log('There was an error!', error)
     return throwError(error);
   }
 
@@ -142,18 +137,14 @@ export class FileUploadServiceService {
         })
       };
 
-      console.log('Recover from backup');
-
       this.http.put(this.URL_BASE + '.json?auth=' + token, currentFile, httpOptions).pipe(
+        switchMap(() => this.updateReplicas(token)),
+        catchError(this.handleError),
+        switchMap(() => this.apiUpdateService.convertBoKAPIPreviousVersion(token)),
         catchError(this.handleError)
       ).subscribe(
-        res => {
-          this.resp = res;
-          this.updateReplicas(token);
-          this.apiUpdateService.convertBoKAPIPreviousVersion(token);
-        },
-        err => this.resp = err,
-      );
+        err => this.handleError(err),
+      )
     } catch (error) {
       console.error('Error updating backups: ' + error);
       throw new Error('Error updating backups: ' + error);

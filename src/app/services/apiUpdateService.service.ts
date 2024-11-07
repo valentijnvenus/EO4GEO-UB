@@ -13,8 +13,9 @@ export class ApiUpdateService {
   private BOK_BASE_URI = environment.BOK_BASE_URI;
   private URL_UPDATE_SERVICE = environment.URL_UPDATE_SERVICE;
   private API_BASE_URI = environment.API_BASE_URI;
+  private URL_BASE = environment.URL_BASE;
 
-  constructor(private http: HttpClient, private fileUploadService: FileUploadServiceService) {}
+  constructor(private http: HttpClient) {}
 
   /**
    * Retrieves the current API version from the server.
@@ -32,7 +33,7 @@ export class ApiUpdateService {
    * @returns An observable that emits the response from the server.
    */
   convertBoKAPIPreviousVersion(idToken: string): Observable<any> {
-    return this.fileUploadService.fullBoK().pipe(
+    return this.http.get<any>(this.URL_BASE + '.json').pipe(
       switchMap(fullBoK => {
         const allV = Object.keys(fullBoK);
         const currVersion = fullBoK.current.version;
@@ -65,7 +66,7 @@ export class ApiUpdateService {
       headers: new HttpHeaders(headers),
     };
     const fileToSave = JSON.stringify(file);
-    const configUrl = this.URL_UPDATE_SERVICE + '.json';
+    const configUrl = this.URL_UPDATE_SERVICE + 'update-api';
     return this.http.put(configUrl, fileToSave, httpOptions);
   }
     

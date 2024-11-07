@@ -139,6 +139,7 @@ export class CurrentVersionComponent implements OnInit {
     this.afAuth.auth.currentUser.getIdToken(true).then((idToken) => {
       this.fileUS.updateBackup(idToken).subscribe(
         (data) => {
+          this.backupBokData = this.currentBokData;
           this.isLoading = false;
           this.ref.detectChanges();
         },
@@ -157,6 +158,7 @@ export class CurrentVersionComponent implements OnInit {
     this.afAuth.auth.currentUser.getIdToken(true).then((idToken) => {
       this.apiUpdateService.convertBoKAPIPreviousVersion(idToken).subscribe(
         (data) => {
+          this.apiVersion = this.currentBokData.version;
           this.isLoading = false;
           this.ref.detectChanges();
         },
