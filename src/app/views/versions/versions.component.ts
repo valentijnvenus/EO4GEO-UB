@@ -40,6 +40,7 @@ export class VersionsComponent implements OnInit {
       }
     });
   }
+
   ngOnInit() {
     this.loadNewBoks();
   }
@@ -52,21 +53,29 @@ export class VersionsComponent implements OnInit {
       this.fileCS.allBoKs['current'] = this.fileCS.allBoKs[this.fileCS.listKeysAll[1]];
       delete this.fileCS.allBoKs[this.fileCS.listKeysAll[1]];
 
-      var res = this.fileUS.deleteCurrentVersion(this.fileCS.allBoKs, idToken);
+      this.fileUS.deleteCurrentVersion(this.fileCS.allBoKs, idToken).subscribe(
+        () => {
+          this.fileCS.manageCurrentVersions(this.fileCS.allBoKs);
+          this.fileCS.loading = false;
+        },
+        error => console.log(error)
 
-      this.fileCS.manageCurrentVersions(this.fileCS.allBoKs);
-      this.fileCS.loading = false;
+      );
     })
   }
 
   recoverFromBackup() {
     this.fileCS.loading = true;
     this.afAuth.auth.currentUser.getIdToken(true).then((idToken) => {
-      this.fileUS.recoverFromBackup(idToken).then(() => {
-        console.log("this.fileUs.allBoKs")
-        console.log(this.fileUS.allBoKs)
-        this.fileCS.manageCurrentVersions(this.fileUS.allBoKs);
-      });
+      this.fileUS.recoverFromBackup(idToken).subscribe(
+        value => {
+          console.log("this.fileUs.allBoKs")
+          console.log(this.fileUS.allBoKs)
+          this.fileCS.manageCurrentVersions(this.fileUS.allBoKs);
+          this.fileCS.loading = false;
+        },
+        error => console.log(error)
+      );
     });
   }
 

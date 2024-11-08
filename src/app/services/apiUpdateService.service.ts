@@ -62,12 +62,14 @@ export class ApiUpdateService {
       'Access-Control-Allow-Origin': '*',
       'Authorization': `Bearer ${idToken}`,
     };
-    const httpOptions = {
-      headers: new HttpHeaders(headers),
-    };
     const fileToSave = JSON.stringify(file);
     const configUrl = this.URL_UPDATE_SERVICE + 'update-api';
-    return this.http.put(configUrl, fileToSave, httpOptions);
+    return this.http.put(configUrl, fileToSave, 
+      {
+        headers,
+        responseType: 'text'
+      }
+    );
   }
     
   /**

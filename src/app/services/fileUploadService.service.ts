@@ -27,9 +27,7 @@ export class FileUploadServiceService {
         'Content-Type': 'application/json'
       })
     };
-    return this.currentVersions().pipe(
-      catchError(this.handleError)
-    ).subscribe((cversions) => {
+    return this.currentVersions().subscribe((cversions) => {
       file.creationYear = new Date().getFullYear();
       const newVersionNum = (parseInt(cversions.current.version) + 1).toString();
       const currentVersionNum = (parseInt(cversions.current.version)).toString();
@@ -47,11 +45,9 @@ export class FileUploadServiceService {
       const vUrl = this.URL_BASE + '.json?auth=' + token;
       this.http.put(vUrl, currentFile, httpOptions).pipe(
         switchMap(() => this.updateReplicas(token)),
-        catchError(this.handleError),
         switchMap(() => this.apiUpdateService.convertBoKAPIPreviousVersion(token)),
-        catchError(this.handleError)
       ).subscribe(
-        err => this.handleError(err),
+        err => console.log(err),
       );
     })
   }
@@ -76,15 +72,13 @@ export class FileUploadServiceService {
     };
     this.http.put(vUrl, currentFile, httpOptions).pipe(
       switchMap(() => this.updateReplicas(token)),
-      catchError(this.handleError),
       switchMap(() => this.apiUpdateService.convertBoKAPIPreviousVersion(token)),
-      catchError(this.handleError)
     ).subscribe(
-      err => this.handleError(err),
+      err => console.log(err),
     );
   }
 
-  deleteCurrentVersion(allBoKs, token: any) {
+  deleteCurrentVersion(allBoKs, token: any): Observable<any> {
     // Remove current current the new version and move the current one to vNum
     const httpOptions = {
       headers: new HttpHeaders({
@@ -95,14 +89,10 @@ export class FileUploadServiceService {
     const currentFile = JSON.stringify(allBoKs);
 
     const vUrl = this.URL_BASE + '.json?auth=' + token;
-    this.http.put(vUrl, currentFile, httpOptions).pipe(
+    return this.http.put(vUrl, currentFile, httpOptions).pipe(
       switchMap(() => this.updateReplicas(token)),
-      catchError(this.handleError),
       switchMap(() => this.apiUpdateService.convertBoKAPIPreviousVersion(token)),
-      catchError(this.handleError)
-    ).subscribe(
-      err => this.handleError(err),
-    );
+    )
   }
 
   // Get fullBoK
@@ -120,36 +110,25 @@ export class FileUploadServiceService {
     return this.http.get(this.URL_BASE + '.json');
   }
 
-  handleError(error: Error) {
-    console.log('There was an error!', error)
-    return throwError(error);
+  recoverFromBackup(token: any): Observable<any> {
+    return this.http.get(this.URL_BACKUP + '.json').pipe(
+      switchMap((response: any) => {
+        if (!response) throw new Error('No response received');
+        this.allBoKs = response;
+        const currentFile = JSON.stringify(this.allBoKs);
+        
+        const httpOptions = {
+          headers: new HttpHeaders({
+            'Content-Type': 'application/json'
+          })
+        };
+        return this.http.put(this.URL_BASE + '.json?auth=' + token, currentFile, httpOptions);
+      }),
+      switchMap(() => this.updateReplicas(token)),
+      switchMap(() => this.apiUpdateService.convertBoKAPIPreviousVersion(token)),
+    );
   }
-
-  async recoverFromBackup(token: any) {
-    try {
-      const response = await this.http.get(this.URL_BACKUP + '.json').toPromise();
-      if (!response) throw new Error('No response received');
-      this.allBoKs = response;
-      const currentFile = JSON.stringify(this.allBoKs);
-      const httpOptions = {
-        headers: new HttpHeaders({
-          'Content-Type': 'application/json'
-        })
-      };
-
-      this.http.put(this.URL_BASE + '.json?auth=' + token, currentFile, httpOptions).pipe(
-        switchMap(() => this.updateReplicas(token)),
-        catchError(this.handleError),
-        switchMap(() => this.apiUpdateService.convertBoKAPIPreviousVersion(token)),
-        catchError(this.handleError)
-      ).subscribe(
-        err => this.handleError(err),
-      )
-    } catch (error) {
-      console.error('Error updating backups: ' + error);
-      throw new Error('Error updating backups: ' + error);
-    }
-  }
+  
 
   updateReplicas(idToken: string, projects?: string[]): Observable<any> {
     const headers = {
