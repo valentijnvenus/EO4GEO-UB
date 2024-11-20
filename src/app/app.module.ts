@@ -7,6 +7,7 @@ import { HttpClientModule } from '@angular/common/http';
 
 // Import firebase-firestore
 import { AngularFireModule } from '@angular/fire';
+import { AngularFireStorageModule } from '@angular/fire/storage';
 import { AngularFirestoreModule } from '@angular/fire/firestore';
 import { AngularFireAuthModule } from '@angular/fire/auth';
 import { AngularFireAuthGuard } from '@angular/fire/auth-guard';
@@ -93,6 +94,7 @@ import { CurrentVersionComponent } from './views/currentVersion/currentVersion.c
     AngularFireModule.initializeApp(environment.firebase),
     AngularFirestoreModule,
     AngularFireAuthModule,
+    AngularFireStorageModule,
     AngularFireAnalyticsModule,
     AngularFirePerformanceModule,
     HttpClientModule,
