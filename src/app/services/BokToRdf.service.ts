@@ -1,27 +1,21 @@
 import { Injectable } from "@angular/core";
-import { Observable, forkJoin, from, throwError } from "rxjs";
 import { Reference } from "../model/rdf/Reference";
 import { TreeNode } from "../model/rdf/TreeNode";
 import { Skill } from "../model/rdf/Skill";
 import { Contributor } from "../model/rdf/Contributor";
 import { TreeRelation } from "../model/rdf/TreeRelation";
 import { RelationType } from "../model/rdf/RelationType";
-import { catchError, map, switchMap } from "rxjs/operators";
-import { AngularFireStorage } from "@angular/fire/storage";
 import { TTL } from "../model/rdf/ttl";
-import { HttpClient } from "@angular/common/http";
 
 @Injectable ({
     providedIn: "root"
 })
-export class RdfService {
+export class BokToRdf {
 
   private ttlPrefix: string = "@prefix dc: <http://purl.org/dc/elements/1.1/> .\n" + 
                               "@prefix dcterms: <http://purl.org/dc/terms/> .\n" +
                               "@prefix eo4geo: <https://bok.eo4geo.eu/> .\n" +
                               "@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .\n\n";
-
-  constructor(private http: HttpClient, private storage: AngularFireStorage) {}
 
   private formatStatus(input: string): string {
     return input
@@ -103,11 +97,11 @@ export class RdfService {
     const referenceArray: Reference[] = [];
     const skillArray: Skill[] = [];
 
-    const concepts: any[] = bok.current.concepts;
-    const relations: any[] = bok.current.relations;
-    const contributors: any[] = bok.current.contributors;
-    const references: any[] = bok.current.references;
-    const skills: any[] = bok.current.skills;
+    const concepts: any[] = bok.concepts;
+    const relations: any[] = bok.relations;
+    const contributors: any[] = bok.contributors;
+    const references: any[] = bok.references;
+    const skills: any[] = bok.skills;
 
     this.fillGraph(concepts, relations, graph);
     this.fillContributors(contributors, concepts, graph, contributorArray);
@@ -122,43 +116,9 @@ export class RdfService {
             }
   } 
 
-  private uploadFileFromString(filePath: string, content: string, version: string): Observable<any> {
-    const blob = new Blob([content], { type: 'application/x-turtle' });
-    
-    const metadata = {
-      customMetadata: {
-        version: version,
-        date: new Date().toISOString(),
-      },
-    };
-
-    const fileRef = this.storage.ref(filePath);
-    const uploadTask = fileRef.put(blob, metadata);
-
-    return from(uploadTask).pipe(
-      switchMap(() => fileRef.getDownloadURL()),
-      catchError(error => {
-        console.error('Error uploading file:', error);
-        throw error;
-      })
-    );
-  }
-
-  private deleteFile(filePath: string): Observable<any> {
-    const fileRef = this.storage.ref(filePath);
-
-    return from(fileRef.delete()).pipe(
-      catchError((error) => {
-        console.error('Error deleting file:', error);
-        throw error;
-      })
-    );
-  }
-
-  UpdateRDFVersion (bok: any): Observable<any> {
-    const { graph, contributors, references, skills } = this.GetRDFDataStructures(bok);
-
+  GetRDFString(bok: any): string {
     const allItems: TTL[] = [];
+    const { graph, contributors, references, skills } = this.GetRDFDataStructures(bok);
     allItems.concat(contributors, references, skills, Array.from(graph.values()));
 
     let ttlFile: string = this.ttlPrefix;
@@ -166,48 +126,7 @@ export class RdfService {
         ttlFile += item.ToTTL();
     });
 
-    return this.uploadFileFromString('RDF/Versions/BoK_' + bok.current.version + '.ttl', ttlFile, bok.current.version).pipe(
-      switchMap(() => this.uploadFileFromString('RDF/BoK.ttl', ttlFile, bok.current.version))
-    );
-  }
-
-  DeleteCurrentRDFVersion (bokVersion: number): Observable<any> {
-    return this.GetRDFVersion().pipe(
-      switchMap(rdfVersion => {
-        const deleteObservables = [];
-        for (let i = rdfVersion - 1; i > bokVersion; i--) {
-          const filePath = `RDF/Versions/BoK_${i}.ttl`;
-          deleteObservables.push(this.deleteFile(filePath));
-        }
-        return forkJoin(deleteObservables);
-      }),
-      switchMap(() => {
-        const fileRef = this.storage.ref(`RDF/Versions/BoK_${bokVersion}.ttl`);
-        return fileRef.getDownloadURL();
-      }),
-      switchMap(downloadUrl => {
-        return this.http.get(downloadUrl, { responseType: 'text' });
-      }),
-      switchMap(fileContent => {
-        return this.uploadFileFromString('RDF/BoK.ttl', fileContent, bokVersion.toString());
-      }),
-      catchError(error => {
-        console.error('Error in DeleteCurrentRDFVersion:', error);
-        return throwError(() => error);
-      })
-    );
-  }
-
-  RecoverFromBackup (): Observable<any> {
-    // TODO
-  }
-
-  GetRDFVersion (): Observable<number> {
-    const fileRef = this.storage.ref('RDF/BoK.ttl');
-    return fileRef.getMetadata().pipe(map(metadata => {
-      const fileVersion = metadata.customMetadata?.version;
-      return fileVersion ? Number(fileVersion) : NaN;
-    }));
+    return ttlFile;
   }
   
 }
