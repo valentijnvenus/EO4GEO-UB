@@ -5,7 +5,7 @@ import { Skill } from "../model/rdf/Skill";
 import { Contributor } from "../model/rdf/Contributor";
 import { TreeRelation } from "../model/rdf/TreeRelation";
 import { RelationType } from "../model/rdf/RelationType";
-import { TTL } from "../model/rdf/ttl";
+import { TTL } from "../model/rdf/TTL";
 
 @Injectable ({
     providedIn: "root"
@@ -21,18 +21,24 @@ export class BokToRdf {
     return input
         .replace(/<p>/g, "")
         .replace(/<\/p>/g, "")
+        .replace(/"/g, "'");
   }
   
   private formatCode(input: string, prefix: string = ""): string {
     return prefix + input
         .toLowerCase()
         .replace(/[^\w\s]/g, "")
-        .replace(/\s+/g, "_");
+        .replace(/\s+/g, "_")
+        .replace(/"/g, "'");
+  }
+
+  private formatText(input: string): string {
+    return input.replace(/"/g, "'");
   }
 
   private fillGraph(concepts: any[], relations: any[], graph: Map<string, TreeNode>) {
     concepts.forEach(concept => {
-      graph.set(concept.code, new TreeNode(concept.code, concept.name, concept.description, [], [], [], [], this.formatStatus(concept.selfAssesment)));
+      graph.set(concept.code, new TreeNode(concept.code, this.formatText(concept.name), this.formatText(concept.description), [], [], [], [], this.formatStatus(concept.selfAssesment || "")));
     });
     relations.forEach(relation => {
       const sourceCode = concepts[relation.source].code;
@@ -61,7 +67,7 @@ export class BokToRdf {
 
   private fillContributors(contributors: any[], concepts: any[], graph: Map<string, TreeNode>, contributorArray: Contributor[]) {
     contributors.forEach(contributor => {
-      const newContributor: Contributor = new Contributor(this.formatCode(contributor.name), contributor.name, contributor.description, contributor.url);
+      const newContributor: Contributor = new Contributor(this.formatCode(contributor.name), this.formatText(contributor.name), this.formatText(contributor.description), contributor.url);
       contributorArray.push(newContributor);
       contributor.concepts.forEach(conceptIndex => {
           const conceptData = graph.get(concepts[conceptIndex].code);
@@ -74,7 +80,7 @@ export class BokToRdf {
 
   private fillReferences(references: any[], concepts: any[], graph: Map<string, TreeNode>, referenceArray: Contributor[]) {
     references.forEach(reference => {
-      const newReference: Reference = new Reference(this.formatCode(reference.name, "bib_"), reference.name, reference.description, reference.url);
+      const newReference: Reference = new Reference(this.formatCode(reference.name, "bib_"), this.formatText(reference.name), this.formatText(reference.description), reference.url);
       referenceArray.push(newReference);
       reference.concepts.forEach(conceptIndex => {
           const conceptData = graph.get(concepts[conceptIndex].code);
@@ -87,7 +93,7 @@ export class BokToRdf {
 
   private fillSkills(skills: any[], concepts: any[], graph: Map<string, TreeNode>, skillArray: Skill[]) {
     skills.forEach(skill => {
-      const newSkill: Skill = new Skill(this.formatCode(skill.name, "skill_"), skill.name);
+      const newSkill: Skill = new Skill(this.formatCode(skill.name, "skill_"), this.formatText(skill.name));
       skillArray.push(newSkill);
       skill.concepts.forEach(conceptIndex => {
           const conceptData = graph.get(concepts[conceptIndex].code);
@@ -126,9 +132,9 @@ export class BokToRdf {
   } 
 
   GetRDFString(bok: any): string {
-    const allItems: TTL[] = [];
+    let allItems: TTL[] = [];
     const { graph, contributors, references, skills } = this.GetRDFDataStructures(bok);
-    allItems.concat(contributors, references, skills, Array.from(graph.values()));
+    allItems = allItems.concat(references, skills, Array.from(graph.values()));
 
     let ttlFile: string = this.ttlPrefix;
     allItems.forEach(item => {

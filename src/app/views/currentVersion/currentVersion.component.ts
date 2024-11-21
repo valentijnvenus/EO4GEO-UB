@@ -5,7 +5,7 @@ import { FileCompareService } from "../../services/fileCompareService.service";
 import { ReplicaState } from "../../model/replicaState";
 import { BokData } from "../../model/bokData";
 import { forkJoin, Observable } from "rxjs";
-import { tap } from "rxjs/operators";
+import { switchMap, tap } from "rxjs/operators";
 import { ApiUpdateService } from "../../services/apiUpdateService.service";
 import { RdfStorageService } from "../../services/rdfStorageService.service";
 
@@ -176,8 +176,24 @@ export class CurrentVersionComponent implements OnInit {
   }
 
   updateRDF() {
-    // TODO
-    console.log('TODO');
+    this.isLoading = true;
+    this.ref.detectChanges();
+    this.fileUS.currentVersions().pipe(
+      switchMap(bok => {
+        return this.rdf.UpdateRDFVersion(bok)
+      })
+    ).subscribe(
+      (data) => {
+        this.rdfVersion = this.currentBokData.version;
+        this.isLoading = false;
+        this.ref.detectChanges();
+      },
+      (error) => {
+        this.isLoading = false;
+        this.showDangerAlert();
+        this.ref.detectChanges();
+      }
+    );
   }
 
   getStatus(replica: ReplicaState

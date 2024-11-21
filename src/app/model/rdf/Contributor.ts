@@ -1,4 +1,4 @@
-import { TTL } from "./ttl";
+import { TTL } from "./TTL";
 
 export class Contributor implements TTL{
     code: string;
@@ -15,8 +15,8 @@ export class Contributor implements TTL{
 
     ToTTL(): string {
        return   "eo4geo:" + this.code + " a dcterms:Agent ;\n" + 
-                "    dc:title '" + this.name + "' ;\n" + 
-                "    dc:description '" + this.description + "';\n" + 
+                "    dc:title \"" + this.name + "\" ;\n" + 
+                "    dc:description \"" + this.description + "\";\n" + 
                 "    dc:identifier <" + this.url + "> ;\n" + 
                 ".\n\n";
     }

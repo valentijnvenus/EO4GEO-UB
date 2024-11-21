@@ -1,6 +1,6 @@
 import { RelationType } from "./RelationType";
 import { TreeRelation } from "./TreeRelation";
-import { TTL } from "./ttl";
+import { TTL } from "./TTL";
 
 export class TreeNode implements TTL {
     code: string;
@@ -25,8 +25,8 @@ export class TreeNode implements TTL {
 
     ToTTL(): string {
         let ttlConcept: string =  "eo4geo:" + this.code + " a rdfs:Resource ;\n" + 
-                                    "    dc:title '" + this.name + "' ;\n" + 
-                                    "    dc:description '" + this.description + "';\n";
+                                    "    dc:title \"" + this.name + "\" ;\n" + 
+                                    "    dc:description \"" + this.description + "\";\n";
         this.relations.forEach(relation => {
             let ttlRelation: string = "";
             switch(relation.type) {

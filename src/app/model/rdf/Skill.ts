@@ -1,4 +1,4 @@
-import { TTL } from "./ttl";
+import { TTL } from "./TTL";
 
 export class Skill implements TTL{
     code: string;
@@ -11,7 +11,7 @@ export class Skill implements TTL{
 
     ToTTL(): string {
         return   "eo4geo:" + this.code + " a dcterms:Subject ;\n" + 
-                 "    dc:title '" + this.name + "' ;\n" + 
+                 "    dc:title \"" + this.name + "\" ;\n" + 
                  ".\n\n";
      }
 }
