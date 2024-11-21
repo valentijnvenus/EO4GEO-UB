@@ -7,6 +7,7 @@ import { BokData } from "../../model/bokData";
 import { forkJoin, Observable } from "rxjs";
 import { tap } from "rxjs/operators";
 import { ApiUpdateService } from "../../services/apiUpdateService.service";
+import { RdfStorageService } from "../../services/rdfStorageService.service";
 
 @Component({
   selector: 'app-current-version',
@@ -25,10 +26,11 @@ export class CurrentVersionComponent implements OnInit {
   currentBokData: BokData = new BokData();;
   backupBokData: BokData = new BokData();;
   apiVersion = "";
+  rdfVersion = "";
 
   constructor(private readonly afAuth: AngularFireAuth, private readonly fileUS: FileUploadServiceService, 
               private readonly fileCS: FileCompareService, private readonly ref: ChangeDetectorRef,
-              private readonly apiUpdateService: ApiUpdateService) {}
+              private readonly apiUpdateService: ApiUpdateService, private readonly rdf: RdfStorageService) {}
 
   ngOnInit(): void {
     this.afAuth.auth.onAuthStateChanged(user => {
@@ -57,10 +59,12 @@ export class CurrentVersionComponent implements OnInit {
       const backupsState$ = this.getReplicasState(idToken);
       const bokInfo$ = this.loadBokInfo();
       const apiVersion$ = this.apiUpdateService.getAPIVersion();
+      const rdfVersion$ = this.rdf.GetRDFVersion();
   
-      forkJoin([backupsState$, bokInfo$, apiVersion$]).subscribe(
-        ([backupsState, bokInfo, apiVersion]) => {
+      forkJoin([backupsState$, bokInfo$, apiVersion$, rdfVersion$]).subscribe(
+        ([backupsState, bokInfo, apiVersion, rdfVersion]) => {
           this.apiVersion = apiVersion;
+          this.rdfVersion = rdfVersion;
           this.isLoading = false;
           this.loaded = true;
           this.warningAlert = false;
@@ -169,6 +173,11 @@ export class CurrentVersionComponent implements OnInit {
         }
       );
     });
+  }
+
+  updateRDF() {
+    // TODO
+    console.log('TODO');
   }
 
   getStatus(replica: ReplicaState

@@ -94,6 +94,28 @@
             </div>
           </div>
         </div>
+        <div class="container my-2 justify-content-center" *ngIf="!isLoading">
+          <div class="card card-accent-secondary">
+            <div class="card-body">
+              <div class="row">
+                <div class="col-md-6">
+                  <h3>BoK RDF</h3>
+                  <p>RDF version : v{{rdfVersion}}</p>
+                </div>
+                <div class="col-md-6 text-center">
+                  <p>
+                    {{
+                      rdfVersion === currentBokData.version ?
+                      'The RDF BoK is up to date!' :
+                      'Warning! Only update the RDF BoK version if you know that the current version is final and bug-free.'}}
+                  </p>
+                  <button class="btn btn-danger" [disabled]="rdfVersion === currentBokData.version"
+                    (click)="updateRDFModal.show()">Update</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
         <div class="alert alert-danger container d-flex justify-content-center" role="alert" *ngIf="dangerAlert">
           {{getErrorMessage()}}
         </div>  
@@ -102,7 +124,7 @@
         </div>                  
       </div>
       <div bsModal #updateModal="bs-modal" class="modal fade" tabindex="-1" role="dialog"
-        aria-labelledby="myModalLabel" aria-hidden="true">
+        aria-labelledby="Update Backup Modal" aria-hidden="true">
         <div class="modal-dialog modal-danger" role="document">
           <div class="modal-content">
             <div class="modal-header">
@@ -124,7 +146,7 @@
         </div>
       </div>
       <div bsModal #updateAPIModal="bs-modal" class="modal fade" tabindex="-1" role="dialog"
-        aria-labelledby="myModalLabel" aria-hidden="true">
+        aria-labelledby="Update API Modal" aria-hidden="true">
         <div class="modal-dialog modal-danger" role="document">
           <div class="modal-content">
             <div class="modal-header">
@@ -141,6 +163,28 @@
             <div class="modal-footer">
               <button type="button" class="btn btn-primary" (click)="updateAPIModal.hide()">Close</button>
               <button type="button" class="btn btn-danger" (click)="updateAPI(); updateAPIModal.hide()">Update</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div bsModal #updateRDFModal="bs-modal" class="modal fade" tabindex="-1" role="dialog"
+        aria-labelledby="Update RDF Modal" aria-hidden="true">
+        <div class="modal-dialog modal-danger" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h4 class="modal-title">Are you sure you want to continue?</h4>
+              <button type="button" class="close" (click)="updateRDFModal.hide()" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              <p>You are about to irreversibly update RDF version. Are you
+                sure you want to
+                continue?</p>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-primary" (click)="updateRDFModal.hide()">Close</button>
+              <button type="button" class="btn btn-danger" (click)="updateRDF(); updateRDFModal.hide()">Update</button>
             </div>
           </div>
         </div>

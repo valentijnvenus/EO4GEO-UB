@@ -64,7 +64,10 @@ export class BokToRdf {
       const newContributor: Contributor = new Contributor(this.formatCode(contributor.name), contributor.name, contributor.description, contributor.url);
       contributorArray.push(newContributor);
       contributor.concepts.forEach(conceptIndex => {
-          graph.get(concepts[conceptIndex].code)?.contributors.concat(newContributor.code);
+          const conceptData = graph.get(concepts[conceptIndex].code);
+          if (conceptData && conceptData.contributors) {
+              conceptData.contributors.concat(newContributor.code);
+          }
       })
     });
   }
@@ -74,7 +77,10 @@ export class BokToRdf {
       const newReference: Reference = new Reference(this.formatCode(reference.name, "bib_"), reference.name, reference.description, reference.url);
       referenceArray.push(newReference);
       reference.concepts.forEach(conceptIndex => {
-          graph.get(concepts[conceptIndex].code)?.references.concat(newReference.code);
+          const conceptData = graph.get(concepts[conceptIndex].code);
+          if (conceptData && conceptData.references) {
+              conceptData.references.concat(newReference.code);
+          }
       })
     });
   }
@@ -84,7 +90,10 @@ export class BokToRdf {
       const newSkill: Skill = new Skill(this.formatCode(skill.name, "skill_"), skill.name);
       skillArray.push(newSkill);
       skill.concepts.forEach(conceptIndex => {
-          graph.get(concepts[conceptIndex].code)?.references.concat(newSkill.code);
+          const conceptData = graph.get(concepts[conceptIndex].code);
+          if (conceptData && conceptData.skills) {
+              conceptData.skills.concat(newSkill.code);
+          }
       })
     });
   }

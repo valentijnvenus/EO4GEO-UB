@@ -47,7 +47,7 @@ export class RdfStorageService {
     return this.GetRDFVersion().pipe(
       switchMap(rdfVersion => {
         const deleteObservables = [];
-        for (let i = rdfVersion - 1; i > targetVersion; i--) {
+        for (let i = Number(rdfVersion) - 1; i > targetVersion; i--) {
           const filePath = `RDF/Versions/BoK_${i}.ttl`;
           deleteObservables.push(this.deleteFile(filePath));
         }
@@ -100,11 +100,12 @@ export class RdfStorageService {
     )
   }
 
-  GetRDFVersion (): Observable<number> {
+  GetRDFVersion (): Observable<string> {
     const fileRef = this.storage.ref('RDF/BoK.ttl');
     return fileRef.getMetadata().pipe(map(metadata => {
-      const fileVersion = metadata.customMetadata?.version;
-      return fileVersion ? Number(fileVersion) : NaN;
+      const customMetadata = metadata.customMetadata || {};
+      const fileVersion = customMetadata.version || "";
+      return fileVersion;
     }));
   }
   
