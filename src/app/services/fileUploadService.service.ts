@@ -52,7 +52,7 @@ export class FileUploadServiceService {
     })
   }
 
-  async replaceCurrentBok (file: any, token: any) {
+  replaceCurrentBok (file: any, token: any): Observable<any> {
     const cversions = {};
     file.creationYear = new Date().getFullYear();
     file.version = '1';
@@ -70,11 +70,9 @@ export class FileUploadServiceService {
         'Content-Type': 'application/json'
       }),
     };
-    this.http.put(vUrl, currentFile, httpOptions).pipe(
+    return this.http.put(vUrl, currentFile, httpOptions).pipe(
       switchMap(() => this.updateReplicas(token)),
       switchMap(() => this.apiUpdateService.convertBoKAPIPreviousVersion(token)),
-    ).subscribe(
-      err => console.log(err),
     );
   }
 

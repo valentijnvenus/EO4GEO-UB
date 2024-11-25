@@ -40,7 +40,10 @@ export class ApiUpdateService {
         const newApiVersion = {};
         allV.forEach(v => {
           const fileToSave = this.convertFileBoKAPI(fullBoK[v]);
-          if (v === 'current') fileToSave.version = currVersion;
+          if (v === 'current') {
+            fileToSave.version = currVersion;
+            newApiVersion['v' + currVersion] = fileToSave;
+          }
           newApiVersion[v] = fileToSave;
         });
         return this.uploadBoKAPIFile(newApiVersion, idToken)

@@ -47,7 +47,7 @@ export class RdfStorageService {
     return this.GetRDFVersion().pipe(
       switchMap(rdfVersion => {
         const deleteObservables = [];
-        for (let i = Number(rdfVersion) - 1; i > targetVersion; i--) {
+        for (let i = Number(rdfVersion); i >= targetVersion; i--) {
           const filePath = `RDF/Versions/BoK_${i}.ttl`;
           deleteObservables.push(this.deleteFile(filePath));
         }
@@ -57,19 +57,23 @@ export class RdfStorageService {
   }
 
   UpdateRDFVersion (bok: any): Observable<any> {
+    const previousVersion: number = bok.current.version - 1 
+    const previousTtlFile = this.bokToRdf.GetRDFString(bok['v' + previousVersion])
     const ttlFile: string = this.bokToRdf.GetRDFString(bok.current);
-
-    return this.uploadFileFromString('RDF/Versions/BoK_' + bok.current.version + '.ttl', ttlFile, bok.current.version).pipe(
-      switchMap(() => this.uploadFileFromString('RDF/BoK.ttl', ttlFile, bok.current.version))
+    return this.uploadFileFromString('RDF/BoK.ttl', ttlFile, bok.current.version).pipe(
+      switchMap(() => {
+        return this.uploadFileFromString(`RDF/Versions/Bok_${previousVersion}`, previousTtlFile, previousVersion.toString());
+      })
     );
+  }
+
+  ReplaceRDFVersion (bok: any): Observable<any> {
+    const ttlFile: string = this.bokToRdf.GetRDFString(bok.current);
+    return this.uploadFileFromString('RDF/BoK.ttl', ttlFile, bok.current.version);
   }
 
   DeleteCurrentRDFVersion (newBok: any): Observable<any> {
     return this.deleteVersions(newBok.current.version).pipe(
-      switchMap(() => {
-        const fileRef = this.storage.ref(`RDF/Versions/BoK_${newBok.current.version}.ttl`);
-        return fileRef.getDownloadURL();
-      }),
       switchMap(() => {
         const ttlFile: string = this.bokToRdf.GetRDFString(newBok.current);
         return this.uploadFileFromString('RDF/BoK.ttl', ttlFile, newBok.current.version);
@@ -82,14 +86,15 @@ export class RdfStorageService {
   }
 
   RecoverFromBackup (bokBackup: any): Observable<any> {
-    return this.deleteVersions(0).pipe(
+    return this.deleteVersions(1).pipe(
       switchMap(() => {
         const observables = [];
         let ttlFile: string = "";
-        for (let i = 1; i <= bokBackup.current.version; i++) {
+        for (let i = 1; i < bokBackup.current.version; i++) {
           ttlFile = this.bokToRdf.GetRDFString(bokBackup[`v${i}`]);
           observables.push(this.uploadFileFromString(`RDF/Versions/BoK_${i}.ttl`, ttlFile, i.toString()));
         }
+        ttlFile = this.bokToRdf.GetRDFString(bokBackup['current']);
         observables.push(this.uploadFileFromString('RDF/BoK.ttl', ttlFile, bokBackup.current.version));
         return forkJoin(observables);
       }),

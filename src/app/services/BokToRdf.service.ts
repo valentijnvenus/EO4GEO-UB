@@ -118,10 +118,10 @@ export class BokToRdf {
     const references: any[] = bok.references;
     const skills: any[] = bok.skills;
 
-    this.fillGraph(concepts, relations, graph);
-    this.fillContributors(contributors, concepts, graph, contributorArray);
-    this.fillReferences(references, concepts, graph, referenceArray);
-    this.fillSkills(skills, concepts, graph, skillArray);
+    if (concepts && relations) this.fillGraph(concepts, relations, graph);
+    if (contributors) this.fillContributors(contributors, concepts, graph, contributorArray);
+    if (references) this.fillReferences(references, concepts, graph, referenceArray);
+    if (skills) this.fillSkills(skills, concepts, graph, skillArray);
     
     return  {
               graph: graph,
@@ -134,7 +134,7 @@ export class BokToRdf {
   GetRDFString(bok: any): string {
     let allItems: TTL[] = [];
     const { graph, contributors, references, skills } = this.GetRDFDataStructures(bok);
-    allItems = allItems.concat(references, skills, Array.from(graph.values()));
+    allItems = allItems.concat(references, skills, contributors, Array.from(graph.values()));
 
     let ttlFile: string = this.ttlPrefix;
     allItems.forEach(item => {
