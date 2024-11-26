@@ -6,12 +6,13 @@ import { catchError, map, switchMap } from 'rxjs/operators';
 import { formatDate } from '@angular/common';
 import { environment } from '../../environments/environment';
 import { ApiUpdateService } from './apiUpdateService.service';
+import { RdfStorageService } from './rdfStorageService.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class FileUploadServiceService {
-  constructor(private http: HttpClient, private apiUpdateService: ApiUpdateService) { }
+  constructor(private http: HttpClient, private apiUpdateService: ApiUpdateService, private rdf: RdfStorageService) { }
 
 
   public URL_BASE = environment.URL_BASE;
@@ -27,29 +28,29 @@ export class FileUploadServiceService {
         'Content-Type': 'application/json'
       })
     };
-    return this.currentVersions().subscribe((cversions) => {
-      file.creationYear = new Date().getFullYear();
-      const newVersionNum = (parseInt(cversions.current.version) + 1).toString();
-      const currentVersionNum = (parseInt(cversions.current.version)).toString();
-      file.version = newVersionNum;
-      file.updateDate = formatDate(new Date(), 'yyyy/MM/dd', 'en');
+    return this.currentVersions().pipe(
+      switchMap((cversions) => {
+        file.creationYear = new Date().getFullYear();
+        const newVersionNum = (parseInt(cversions.current.version) + 1).toString();
+        const currentVersionNum = (parseInt(cversions.current.version)).toString();
+        file.version = newVersionNum;
+        file.updateDate = formatDate(new Date(), 'yyyy/MM/dd', 'en');
 
-      // Put in current the new version and move the current one to vNum
-      cversions['v' + currentVersionNum] = cversions.current;
-      cversions['current'] = file;
+        // Put in current the new version and move the current one to vNum
+        cversions['v' + currentVersionNum] = cversions.current;
+        cversions['current'] = file;
 
-      this.allBoKs = cversions;
+        this.allBoKs = cversions;
 
-      const currentFile = JSON.stringify(cversions);
+        const currentFile = JSON.stringify(cversions);
 
-      const vUrl = this.URL_BASE + '.json?auth=' + token;
-      this.http.put(vUrl, currentFile, httpOptions).pipe(
-        switchMap(() => this.updateReplicas(token)),
-        switchMap(() => this.apiUpdateService.convertBoKAPIPreviousVersion(token)),
-      ).subscribe(
-        err => console.log(err),
-      );
-    })
+        const vUrl = this.URL_BASE + '.json?auth=' + token;
+        return this.http.put(vUrl, currentFile, httpOptions)
+      }),
+      switchMap(() => this.updateReplicas(token)),
+      switchMap(() => this.apiUpdateService.convertBoKAPIPreviousVersion(token)),
+      switchMap(() => this.rdf.UpdateRDFVersion(this.allBoKs))
+      )
   }
 
   replaceCurrentBok (file: any, token: any): Observable<any> {
