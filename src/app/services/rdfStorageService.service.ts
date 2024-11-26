@@ -47,7 +47,7 @@ export class RdfStorageService {
     return this.GetRDFVersion().pipe(
       switchMap(rdfVersion => {
         const deleteObservables = [];
-        for (let i = Number(rdfVersion); i >= targetVersion; i--) {
+        for (let i = (Number(rdfVersion) - 1); i >= targetVersion; i--) {
           const filePath = `RDF/Versions/BoK_${i}.ttl`;
           deleteObservables.push(this.deleteFile(filePath));
         }
