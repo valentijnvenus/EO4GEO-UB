@@ -400,24 +400,24 @@ export class FileCompareService {
         return { 'Error': 'Invalid Format in external_resources section' };
         }
         if (obj.hasOwnProperty('learningOutcomes')) {
-        Object.keys(obj['learningOutcomes']).forEach(k => {
-            const nodeToAdd = [];
-            if (obj['learningOutcomes'][k].nodes.length > 0) {
-            obj['learningOutcomes'][k].nodes.forEach(node => {
-                if (node < gistNode) {
-                nodeToAdd.push(node + 1);
-                } else if (node === gistNode) {
-                nodeToAdd.push(0);
-                } else {
-                nodeToAdd.push(node);
+            Object.keys(obj['learningOutcomes']).forEach(k => {
+                const nodeToAdd = [];
+                if (obj['learningOutcomes'][k].nodes && obj['learningOutcomes'][k].nodes.length > 0) {
+                    obj['learningOutcomes'][k].nodes.forEach(node => {
+                        if (node < gistNode) {
+                        nodeToAdd.push(node + 1);
+                        } else if (node === gistNode) {
+                        nodeToAdd.push(0);
+                        } else {
+                        nodeToAdd.push(node);
+                        }
+                    });
+                    fileToSave.skills.push({
+                        'concepts': nodeToAdd.length > 0 ? nodeToAdd : ' ',
+                        'name': obj['learningOutcomes'][k].name.length > 0 ? obj['learningOutcomes'][k].name : ' ',
+                    });
                 }
             });
-            fileToSave.skills.push({
-                'concepts': nodeToAdd.length > 0 ? nodeToAdd : ' ',
-                'name': obj['learningOutcomes'][k].name.length > 0 ? obj['learningOutcomes'][k].name : ' ',
-            });
-            }
-        });
         } else {
         return { 'Error': 'Invalid Format in learning_outcomes section' };
         }
