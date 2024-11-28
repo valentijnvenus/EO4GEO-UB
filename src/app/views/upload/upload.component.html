@@ -46,8 +46,8 @@
                   <a href="https://bok.eo4geo.eu" target="_blank" rel="noopener noreferrer">Current Version : v{{fileCS.currentBoK.version}}</a>
                 </div>
                 <div class="card-body">
-                  <p>Total Topics : {{fileCS.comparison.current.conceptsCount}}</p>
-                  <p>Total Learning Objectives : {{fileCS.comparison.current.skillsCount}}</p>
+                  <p>Total Concepts : {{fileCS.comparison.current.conceptsCount}}</p>
+                  <p>Total Skills : {{fileCS.comparison.current.skillsCount}}</p>
                   <p>Total Relations : {{fileCS.comparison.current.relationsCount}}</p>
                   <p>Total References : {{fileCS.comparison.current.externalresCount}}</p>
                   <p>Last Updated : {{fileCS.currentBoK.updateDate | date:'short'}}</p>
@@ -69,7 +69,7 @@
                 <div *ngIf="fileCS.newBoK" class="card-body container">
                   <div class="row align-items-end">
                     <div class="col">
-                      <p>Total Topics : {{fileCS.comparison.new.conceptsCount}}
+                      <p>Total Concepts : {{fileCS.comparison.new.conceptsCount}}
                         <span class="text-success"
                           *ngIf="(fileCS.comparison.new.conceptsCount - fileCS.comparison.current.conceptsCount) > 0"> (
                           {{fileCS.comparison.new.conceptsCount - fileCS.comparison.current.conceptsCount > 0 ? '+' : ''}}
@@ -79,7 +79,7 @@
                           {{fileCS.comparison.new.conceptsCount - fileCS.comparison.current.conceptsCount > 0 ? '+' : ''}}
                           {{fileCS.comparison.new.conceptsCount - fileCS.comparison.current.conceptsCount}}) </span>
                       </p>
-                      <p>Total Learning Objectives : {{fileCS.comparison.new.skillsCount}}
+                      <p>Total Skills : {{fileCS.comparison.new.skillsCount}}
                         <span class="text-success"
                           *ngIf="(fileCS.comparison.new.skillsCount - fileCS.comparison.current.skillsCount) > 0"> (
                           {{fileCS.comparison.new.skillsCount - fileCS.comparison.current.skillsCount > 0 ? '+' : ''}}
@@ -172,8 +172,8 @@
                   <thead>
                     <tr>
                       <th scope="col" colspan="2">
-                        Topics differences:
-                        <span tooltip="Topic name or topic code is different in both versions" 
+                        Concepts differences:
+                        <span tooltip="Concept name or concept code is different in both versions" 
                           class="badge badge-primary badge-pill">i</span>
                         <div class="float-right">
                           ({{fileCS.comparison.addedConceptsIndex.length + fileCS.comparison.removedConceptsIndex.length}})
@@ -214,8 +214,8 @@
                   <thead>
                     <tr>
                       <th scope="col" colspan="2">
-                        Modified topics: 
-                        <span tooltip="Topics that have changed from the previous version of the BoK"
+                        Modified Concepts: 
+                        <span tooltip="Concepts that have changed from the previous version of the BoK"
                           class="badge badge-primary badge-pill">i</span>
                         <div class="float-right">
                           ({{fileCS.comparison.changedConceptsIndex.length}})
@@ -249,8 +249,8 @@
                   <thead>
                     <tr>
                       <th scope="col" colspan="2">
-                        Topics with no code: 
-                        <span tooltip="Topic code is empty"
+                        Concepts with no code: 
+                        <span tooltip="Concept code is empty"
                           class="badge badge-primary badge-pill">i</span>
                         <div class="float-right">
                           ({{fileCS.comparison.noCodeConceptsIndex.length}})
@@ -283,8 +283,8 @@
                   <thead>
                     <tr>
                       <th scope="col" colspan="2">
-                        Old topics: 
-                        <span tooltip="Topic codes which are found in older versions of the BoK"
+                        Old Concepts: 
+                        <span tooltip="Concept codes which are found in older versions of the BoK"
                           class="badge badge-primary badge-pill">i</span>
                         <div class="float-right">
                           ({{fileCS.comparison.oldConceptsIndex.length}})
@@ -360,8 +360,8 @@
                   <thead>
                     <tr>
                       <th scope="col" colspan="2">
-                        Orphan topics: 
-                        <span tooltip="Topics which are not connected to the root topic of the BoK. Orphan topics are ignored when publishing the BoK"
+                        Orphan Concepts: 
+                        <span tooltip="Concepts which are not connected to the root concept of the BoK. Orphan Concepts are ignored when publishing the BoK"
                           class="badge badge-primary badge-pill">i</span>
                         <div class="float-right">
                           ({{fileCS.comparison.new.isolatedNodes.length}})
@@ -396,7 +396,7 @@
                     <tr>
                       <th scope="col" colspan="2">
                         Duplicated codes: 
-                        <span tooltip="Topic codes which are repeated in the draft version"
+                        <span tooltip="Concept codes which are repeated in the draft version"
                           class="badge badge-primary badge-pill">i</span>
                         <div class="float-right">
                           ({{fileCS.comparison.new.duplicatedCodes.length}})
