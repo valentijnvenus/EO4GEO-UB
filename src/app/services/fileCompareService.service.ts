@@ -106,10 +106,6 @@ export class FileCompareService {
 
     }
 
-    detectIsolatedNodes() {
-
-    }
-
     getBoKList() {
         return this.listKeys;
     }
@@ -294,109 +290,162 @@ export class FileCompareService {
     }
 
     convertExportJSON(obj: any): any {
-        const fileToSave = { 'concepts': [], 'relations': [], 'references': [], 'skills': [], 'contributors': [], 'prior_knowledge': [], 'keywords': [], 'last_updated': null, 'date_created': null, 'date_published': null };
-        fileToSave.last_updated = obj.lastUpdated ? obj.lastUpdated : '';
-        fileToSave.date_created = obj.dateCreated ? obj.dateCreated : '';
-        fileToSave.date_published = obj.datePublished ? obj.datePublished : '';
+        const fileToSave = { 'concepts': [], 'relations': [], 'references': [], 'skills': [], 'contributors': [] };
+        let gistNode = 0;
         if (obj.hasOwnProperty('nodes')) {
-            obj['nodes'].forEach(k => {
-                fileToSave.concepts.push({
-                    'code': (k.label.split(']', 1)[0].split('[', 2)[1] != null &&
-                        k.label.split(']', 1)[0].split('[', 2)[1].length > 0) ?
-                        k.label.split(']', 1)[0].split('[', 2)[1] : ' ',
-                    'name': (k.label.split(']')[1] != null && k.label.split(']')[1].length > 0) ?
-                        k.label.split(']')[1].trim() : k.label != null ? k.label : ' ',
-                    'description': (k.definition != null && k.definition.length > 0) ?
-                        k.definition : ' ',
-                    'selfAssesment': (k.selfAssessment != null && k.selfAssessment.length > 0) ?
-                        k.selfAssessment : ' ',
-                    'additionalResources': (k.additionalResources != null && k.additionalResources.length > 0) ?
-                        k.additionalResources : ' ',
-                    'explanation': (k.explanation != null && k.explanation.length > 0) ?
-                        k.explanation : ' ',
-                    'howTo': (k.howTo != null && k.howTo.length > 0) ?
-                        k.howTo : ' ',
-                    'imagePath': (k.imagePath != null && k.imagePath.length > 0) ?
-                        k.imagePath : ' ',
-                    'instance': (k.instance != null && k.instance.length > 0) ?
-                        k.instance : false,
-                    'introduction': (k.introduction != null && k.introduction.length > 0) ?
-                        k.introduction : ' ',
-                    'examples': (k.examples != null && k.examples.length > 0) ?
-                        k.examples : ' ',
-                    'link': (k.link != null && k.link.length > 0) ?
-                        k.link : ' ',
-                    'numberOfLinks': (k.numberOfLinks != null && k.numberOfLinks.length >= 0) ?
-                        k.numberOfLinks : 0
-                });
+        fileToSave.concepts[0] = {};
+        Object.keys(obj['nodes']).forEach(k => {
+            if (obj['nodes'][k].label === '[GIST] Geographic Information Science and Technology' && obj['nodes'][k].numberOfLinks > 0) {
+            fileToSave.concepts[0] = {
+                'code': obj['nodes'][k].label.split(']', 1)[0].split('[', 2)[1],
+                'name': obj['nodes'][k].label.split(']')[1].trim(),
+                'description': obj['nodes'][k].definition
+            };
+            gistNode = Number(k);
+            } else {
+            fileToSave.concepts.push({
+                'code': (obj['nodes'][k].label.split(']', 1)[0].split('[', 2)[1] != null &&
+                obj['nodes'][k].label.split(']', 1)[0].split('[', 2)[1].length > 0) ?
+                obj['nodes'][k].label.split(']', 1)[0].split('[', 2)[1] : ' ',
+                'name': (obj['nodes'][k].label.split(']')[1] != null && obj['nodes'][k].label.split(']')[1].length > 0) ?
+                obj['nodes'][k].label.split(']')[1].trim() : ' ',
+                'description': (obj['nodes'][k].definition != null && obj['nodes'][k].definition.length > 0) ?
+                obj['nodes'][k].definition : ' ',
+                'selfAssesment': (obj['nodes'][k].selfAssessment != null && obj['nodes'][k].selfAssessment.length > 0) ?
+                obj['nodes'][k].selfAssessment : ' '
             });
+            }
+        });
         } else {
-            return { 'Error': 'Invalid Format in concepts section' };
+        return { 'Error': 'Invalid Format in concepts section' };
         }
         if (obj.hasOwnProperty('links')) {
-            obj['links'].forEach(k => {
-                // looping relation
-                if (k.target == k.source) {
-                    this.comparison.new.loopingRelations.push(k);
+        Object.keys(obj['links']).forEach(k => {
+            if (obj['links'][k].target === gistNode && obj['links'][k].source <= gistNode) {
+            fileToSave.relations.push({
+                'target': 0,
+                'source': obj['links'][k].source != null ? obj['links'][k].source + 1 : ' ',
+                'name': (obj['links'][k].relationName != null && obj['links'][k].relationName.length > 0) ? obj['links'][k].relationName : ' '
+            });
+            } else if (obj['links'][k].source === gistNode && obj['links'][k].target <= gistNode) {
+            fileToSave.relations.push({
+                'target': obj['links'][k].target != null ? obj['links'][k].target + 1 : ' ',
+                'source': 0,
+                'name': (obj['links'][k].relationName != null && obj['links'][k].relationName.length > 0) ? obj['links'][k].relationName : ' '
+            });
+            } else if (obj['links'][k].target === gistNode && obj['links'][k].source > gistNode) {
+            fileToSave.relations.push({
+                'target': 0,
+                'source': obj['links'][k].source != null ? obj['links'][k].source : ' ',
+                'name': (obj['links'][k].relationName != null && obj['links'][k].relationName.length > 0) ? obj['links'][k].relationName : ' '
+            });
+            } else if (obj['links'][k].source === gistNode && obj['links'][k].target > gistNode) {
+            fileToSave.relations.push({
+                'target': obj['links'][k].target != null ? obj['links'][k].target : ' ',
+                'source': 0,
+                'name': (obj['links'][k].relationName != null && obj['links'][k].relationName.length > 0) ? obj['links'][k].relationName : ' '
+            });
+            } else if (obj['links'][k].source <= gistNode && obj['links'][k].target > gistNode) {
+            fileToSave.relations.push({
+                'target': obj['links'][k].target != null ? obj['links'][k].target : ' ',
+                'source': obj['links'][k].source != null ? obj['links'][k].source + 1 : ' ',
+                'name': (obj['links'][k].relationName != null && obj['links'][k].relationName.length > 0) ? obj['links'][k].relationName : ' '
+            });
+            } else if (obj['links'][k].target <= gistNode && obj['links'][k].source > gistNode) {
+            fileToSave.relations.push({
+                'target': obj['links'][k].target != null ? obj['links'][k].target + 1 : ' ',
+                'source': obj['links'][k].source != null ? obj['links'][k].source : ' ',
+                'name': (obj['links'][k].relationName != null && obj['links'][k].relationName.length > 0) ? obj['links'][k].relationName : ' '
+            });
+            } else if (obj['links'][k].source <= gistNode && obj['links'][k].target <= gistNode) {
+            fileToSave.relations.push({
+                'target': obj['links'][k].target != null ? obj['links'][k].target + 1 : ' ',
+                'source': obj['links'][k].source != null ? obj['links'][k].source + 1 : ' ',
+                'name': (obj['links'][k].relationName != null && obj['links'][k].relationName.length > 0) ? obj['links'][k].relationName : ' '
+            });
+            } else {
+            fileToSave.relations.push({
+                'target': obj['links'][k].target != null ? obj['links'][k].target : ' ',
+                'source': obj['links'][k].source != null ? obj['links'][k].source : ' ',
+                'name': (obj['links'][k].relationName != null && obj['links'][k].relationName.length > 0) ? obj['links'][k].relationName : ' '
+            });
+            }
+        });
+        } else {
+        return { 'Error': 'Invalid Format in relations section' };
+        }
+        if (obj.hasOwnProperty('externalResources')) {
+        Object.keys(obj['externalResources']).forEach(k => {
+            const nodeToAdd = [];
+            if (obj['externalResources'][k].nodes && obj['externalResources'][k].nodes.length > 0) {
+                obj['externalResources'][k].nodes.forEach(node => {
+                    if (node < gistNode) {
+                    nodeToAdd.push(node + 1);
+                    } else if (node === gistNode) {
+                    nodeToAdd.push(0);
+                    } else {
+                    nodeToAdd.push(node);
+                    }
+                });
+                fileToSave.references.push({
+                    'concepts': nodeToAdd.length > 0 ? nodeToAdd : ' ',
+                    'name': obj['externalResources'][k].title.length > 0 ? obj['externalResources'][k].title : ' ',
+                    'description': (obj['externalResources'][k].description && obj['externalResources'][k].description.length > 0) ? obj['externalResources'][k].description : ' ',
+                    'url': (obj['externalResources'][k].url && obj['externalResources'][k].url.length > 0) ?
+                    obj['externalResources'][k].url : ' '
+                });
+            }
+        });
+        } else {
+        return { 'Error': 'Invalid Format in external_resources section' };
+        }
+        if (obj.hasOwnProperty('learningOutcomes')) {
+        Object.keys(obj['learningOutcomes']).forEach(k => {
+            const nodeToAdd = [];
+            if (obj['learningOutcomes'][k].nodes.length > 0) {
+            obj['learningOutcomes'][k].nodes.forEach(node => {
+                if (node < gistNode) {
+                nodeToAdd.push(node + 1);
+                } else if (node === gistNode) {
+                nodeToAdd.push(0);
                 } else {
-                    fileToSave.relations.push({
-                        'target': k.target != null ? k.target : ' ',
-                        'source': k.source != null ? k.source : ' ',
-                        'name': k.relationName
+                nodeToAdd.push(node);
+                }
+            });
+            fileToSave.skills.push({
+                'concepts': nodeToAdd.length > 0 ? nodeToAdd : ' ',
+                'name': obj['learningOutcomes'][k].name.length > 0 ? obj['learningOutcomes'][k].name : ' ',
+            });
+            }
+        });
+        } else {
+        return { 'Error': 'Invalid Format in learning_outcomes section' };
+        }
+        if (obj.hasOwnProperty('contributors')) {
+            Object.keys(obj['contributors']).forEach(k => {
+                const nodeToAdd = [];
+                if (obj['contributors'][k].nodes && obj['contributors'][k].nodes.length > 0) {
+                    obj['contributors'][k].nodes.forEach(node => {
+                        if (node < gistNode) {
+                        nodeToAdd.push(node + 1);
+                        } else if (node === gistNode) {
+                        nodeToAdd.push(0);
+                        } else {
+                        nodeToAdd.push(node);
+                        }
+                    });
+                    fileToSave.contributors.push({
+                        'concepts': nodeToAdd.length > 0 ? nodeToAdd : ' ',
+                        'name': obj['contributors'][k].name.length > 0 ? obj['contributors'][k].name : ' ',
+                        'description': (obj['contributors'][k].description && obj['contributors'][k].description.length > 0) ? obj['contributors'][k].description : ' ',
+                        'url': (obj['contributors'][k].url && obj['contributors'][k].url.length > 0) ?
+                        obj['contributors'][k].url : ' '
                     });
                 }
             });
-
         } else {
-            return { 'Error': 'Invalid Format in relations section' };
+        return { 'Error': 'Invalid Format in contributors section' };
         }
-        if (obj.hasOwnProperty('externalResources')) {
-            obj['externalResources'].forEach(k => {
-                if (k.nodes)
-                    fileToSave.references.push({
-                        'concepts': k.nodes.length > 0 ? k.nodes : [],
-                        'name': k.title.length > 0 ? k.title : ' ',
-                        'description': (k.description && k.description.length > 0) ? k.description : ' ',
-                        'url': (k.url && k.url.length > 0) ? k.url : ' '
-                    });
-            });
-
-        } else {
-            return { 'Error': 'Invalid Format in external_resources section' };
-        }
-        if (obj.hasOwnProperty('learningOutcomes')) {
-            obj['learningOutcomes'].forEach(k => {
-                if (k.nodes)
-                    fileToSave.skills.push({
-                        'concepts': k.nodes.length > 0 ? k.nodes : [],
-                        'name': k.name.length > 0 ? k.name : ' ',
-                        'content': k.content.length > 0 ? k.content : ' ',
-                        'number': k.number != null ? k.number : ' '
-                    });
-            });
-
-        } else {
-            return { 'Error': 'Invalid Format in learning_outcomes section' };
-        }
-        if (obj.hasOwnProperty('priorKnowledge')) {
-            obj['priorKnowledge'].forEach(k => {
-                fileToSave.prior_knowledge.push({
-                    'concepts': k.isPriorKnowledgeOf.length > 0 ? k.isPriorKnowledgeOf : [],
-                    'target': k.node != null ? k.node : ' '
-                });
-            });
-        }
-        if (obj.hasOwnProperty('tags')) {
-            obj['tags'].forEach(k => {
-                fileToSave.keywords.push({
-                    'concepts': k.nodes.length > 0 ? k.nodes : [],
-                    'color': k.color != null ? k.color : '',
-                    'name': k.name != null ? k.name : '',
-                    'description': k.description != null ? k.description : ''
-                });
-            });
-        }
-
         return fileToSave;
     }
 

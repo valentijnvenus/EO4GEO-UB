@@ -62,7 +62,7 @@ export class RdfStorageService {
     const ttlFile: string = this.bokToRdf.GetRDFString(bok.current);
     return this.uploadFileFromString('RDF/BoK.ttl', ttlFile, bok.current.version).pipe(
       switchMap(() => {
-        return this.uploadFileFromString(`RDF/Versions/Bok_${previousVersion}.ttl`, previousTtlFile, previousVersion.toString());
+        return this.uploadFileFromString(`RDF/Versions/BoK_${previousVersion}.ttl`, previousTtlFile, previousVersion.toString());
       })
     );
   }
