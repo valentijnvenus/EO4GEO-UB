@@ -1,5 +1,5 @@
 import { Injectable } from "@angular/core";
-import { Observable, forkJoin, from, throwError } from "rxjs";
+import { Observable, forkJoin, from, of, throwError } from "rxjs";
 import { catchError, map, switchMap } from "rxjs/operators";
 import { AngularFireStorage } from "@angular/fire/storage";
 import { BokToRdf } from "./BokToRdf.service";
@@ -38,7 +38,7 @@ export class RdfStorageService {
     return from(fileRef.delete()).pipe(
       catchError((error) => {
         console.error('Error deleting file:', error);
-        throw error;
+        return of(null);
       })
     );
   }
@@ -62,7 +62,7 @@ export class RdfStorageService {
     const ttlFile: string = this.bokToRdf.GetRDFString(bok.current);
     return this.uploadFileFromString('RDF/BoK.ttl', ttlFile, bok.current.version).pipe(
       switchMap(() => {
-        return this.uploadFileFromString(`RDF/Versions/Bok_${previousVersion}`, previousTtlFile, previousVersion.toString());
+        return this.uploadFileFromString(`RDF/Versions/BoK_${previousVersion}.ttl`, previousTtlFile, previousVersion.toString());
       })
     );
   }

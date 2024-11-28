@@ -55,7 +55,7 @@ export class VersionsComponent implements OnInit {
 
       this.fileUS.deleteCurrentVersion(this.fileCS.allBoKs, idToken).pipe(
         switchMap(() => { 
-          return this.rdf.DeleteCurrentRDFVersion(this.fileUS.allBoKs); 
+          return this.rdf.DeleteCurrentRDFVersion(this.fileCS.allBoKs); 
         })
       ).subscribe(
         () => {

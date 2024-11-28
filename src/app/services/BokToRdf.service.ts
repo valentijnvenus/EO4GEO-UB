@@ -38,7 +38,7 @@ export class BokToRdf {
 
   private fillGraph(concepts: any[], relations: any[], graph: Map<string, TreeNode>) {
     concepts.forEach(concept => {
-      graph.set(concept.code, new TreeNode(concept.code, this.formatText(concept.name), this.formatText(concept.description), [], [], [], [], this.formatStatus(concept.selfAssesment || "")));
+      graph.set(concept.code, new TreeNode(concept.code, this.formatText(concept.name), this.formatText(concept.description || ""), [], [], [], [], this.formatStatus(concept.selfAssesment || "")));
     });
     relations.forEach(relation => {
       const sourceCode = concepts[relation.source].code;
@@ -67,7 +67,7 @@ export class BokToRdf {
 
   private fillContributors(contributors: any[], concepts: any[], graph: Map<string, TreeNode>, contributorArray: Contributor[]) {
     contributors.forEach(contributor => {
-      const newContributor: Contributor = new Contributor(this.formatCode(contributor.name), this.formatText(contributor.name), this.formatText(contributor.description), contributor.url);
+      const newContributor: Contributor = new Contributor(this.formatCode(contributor.name), this.formatText(contributor.name), this.formatText(contributor.description || ""), contributor.url);
       contributorArray.push(newContributor);
       contributor.concepts.forEach(conceptIndex => {
           const conceptData = graph.get(concepts[conceptIndex].code);
@@ -80,7 +80,7 @@ export class BokToRdf {
 
   private fillReferences(references: any[], concepts: any[], graph: Map<string, TreeNode>, referenceArray: Contributor[]) {
     references.forEach(reference => {
-      const newReference: Reference = new Reference(this.formatCode(reference.name, "bib_"), this.formatText(reference.name), this.formatText(reference.description), reference.url);
+      const newReference: Reference = new Reference(this.formatCode(reference.name, "bib_"), this.formatText(reference.name), this.formatText(reference.description || ""), reference.url);
       referenceArray.push(newReference);
       reference.concepts.forEach(conceptIndex => {
           const conceptData = graph.get(concepts[conceptIndex].code);
